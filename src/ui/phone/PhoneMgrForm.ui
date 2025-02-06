@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PhoneMgrForm</class>
+ <widget class="QWidget" name="PhoneMgrForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>791</width>
+    <height>512</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>170</y>
+     <width>771</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>id</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>手机号码</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>电信运营商</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>服务密码</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>PIN</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>PUK</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>入网时间</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>归属地</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>所属系统用户</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>创建时间</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>更新时间</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QFrame" name="frameDetails">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>360</y>
+     <width>771</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QWidget" name="formLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>261</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="fLay">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelId">
+       <property name="text">
+        <string>id</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="editId"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPhone">
+       <property name="text">
+        <string>手机号</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="editPhone"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelTeleOper">
+       <property name="text">
+        <string>电信运营商</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="editTeleOper"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>10</y>
+      <width>211</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="fLay_2">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="editServPwd"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPin">
+       <property name="text">
+        <string>PIN</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="editPin"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelPuk">
+       <property name="text">
+        <string>PUK</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="editPuk"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelServPwd">
+       <property name="text">
+        <string>服务密码</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>10</y>
+      <width>261</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="fLay_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelJoinTime">
+       <property name="text">
+        <string>入网日期</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPhoneArea">
+       <property name="text">
+        <string>归属地</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="editPhoneArea"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelOwner">
+       <property name="text">
+        <string>所属用户</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="editOwner"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QDateTimeEdit" name="editJoinTime"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pBtnUpdate">
+    <property name="geometry">
+     <rect>
+      <x>386</x>
+      <y>101</y>
+      <width>80</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>更新</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBtnDelete">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>101</y>
+      <width>80</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>删除</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBtnRefresh">
+    <property name="geometry">
+     <rect>
+      <x>302</x>
+      <y>101</y>
+      <width>80</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>刷新</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBtnAdd">
+    <property name="geometry">
+     <rect>
+      <x>218</x>
+      <y>101</y>
+      <width>80</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>新增</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>47</y>
+     <width>241</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>筛选条件</string>
+   </property>
+   <widget class="QPushButton" name="pBtnClear">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>20</y>
+      <width>51</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>清空</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pBtnQuery">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>50</y>
+      <width>51</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>查询</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="formLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>160</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>运营商</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cBoxTelecomOperator"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>手机号</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="cBoxPhoneNumber"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QToolButton" name="tBtnMore">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>80</y>
+      <width>51</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>更多</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QTextEdit" name="MsgDisplay">
+   <property name="geometry">
+    <rect>
+     <x>13</x>
+     <y>50</y>
+     <width>521</width>
+     <height>111</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>10</y>
+     <width>391</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="placeholderText">
+       <string>输入你要查询的关键字</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>全局搜索</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,1 @@
+gcc pwdgen.c color.c -o pwdgen.exe -Os

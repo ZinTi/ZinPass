@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>AccountDlg</class>
+    <widget class="QDialog" name="AccountDlg">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>521</width>
+                <height>432</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>AccountDlg</string>
+        </property>
+        <widget class="QGroupBox" name="gBox1">
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>40</y>
+                    <width>231</width>
+                    <height>151</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>产品信息</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>20</y>
+                        <width>211</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <layout class="QFormLayout" name="fLayout">
+                    <item row="0" column="0">
+                        <widget class="QLabel" name="labelProvider">
+                            <property name="text">
+                                <string>服务商</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QLineEdit" name="editProvider"/>
+                    </item>
+                    <item row="1" column="0">
+                        <widget class="QLabel" name="labelPlatform">
+                            <property name="text">
+                                <string>平台名</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="1" column="1">
+                        <widget class="QLineEdit" name="editPlatform"/>
+                    </item>
+                    <item row="2" column="0">
+                        <widget class="QLabel" name="labelUrl">
+                            <property name="text">
+                                <string>网址</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="2" column="1">
+                        <widget class="QLineEdit" name="editUrl"/>
+                    </item>
+                    <item row="3" column="0">
+                        <widget class="QLabel" name="labelHotline">
+                            <property name="text">
+                                <string>客服热线</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="3" column="1">
+                        <widget class="QLineEdit" name="editHotline"/>
+                    </item>
+                </layout>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="gBox2">
+            <property name="geometry">
+                <rect>
+                    <x>270</x>
+                    <y>40</y>
+                    <width>231</width>
+                    <height>151</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>账号信息</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget_2">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>20</y>
+                        <width>211</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <layout class="QFormLayout" name="fLayout_2">
+                    <item row="0" column="0">
+                        <widget class="QLabel" name="labelUserId">
+                            <property name="text">
+                                <string>账号</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QLineEdit" name="editUserId"/>
+                    </item>
+                    <item row="1" column="0">
+                        <widget class="QLabel" name="labelAlias">
+                            <property name="text">
+                                <string>昵称</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="1" column="1">
+                        <widget class="QLineEdit" name="editAlias"/>
+                    </item>
+                    <item row="2" column="0">
+                        <widget class="QLabel" name="labelPwd1">
+                            <property name="text">
+                                <string>输入密码</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="2" column="1">
+                        <widget class="QLineEdit" name="editPwd"/>
+                    </item>
+                    <item row="3" column="0">
+                        <widget class="QLabel" name="label">
+                            <property name="text">
+                                <string>类型</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="3" column="1">
+                        <widget class="QComboBox" name="editCategory"/>
+                    </item>
+                </layout>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="gBox3">
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>200</y>
+                    <width>231</width>
+                    <height>141</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>第三方账号绑定</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget_3">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>20</y>
+                        <width>211</width>
+                        <height>111</height>
+                    </rect>
+                </property>
+                <layout class="QFormLayout" name="formLayout_3">
+                    <item row="0" column="0">
+                        <widget class="QLabel" name="labelPhone">
+                            <property name="text">
+                                <string>绑定手机号</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QComboBox" name="editPhone"/>
+                    </item>
+                    <item row="1" column="0">
+                        <widget class="QLabel" name="labelEmail">
+                            <property name="text">
+                                <string>绑定邮箱</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="1" column="1">
+                        <widget class="QComboBox" name="editEmail"/>
+                    </item>
+                </layout>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="gBox4">
+            <property name="geometry">
+                <rect>
+                    <x>270</x>
+                    <y>200</y>
+                    <width>231</width>
+                    <height>141</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>其他信息</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget_4">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>20</y>
+                        <width>211</width>
+                        <height>101</height>
+                    </rect>
+                </property>
+                <layout class="QFormLayout" name="formLayout_4">
+                    <item row="0" column="0">
+                        <widget class="QLabel" name="labelSubAccount">
+                            <property name="text">
+                                <string>子账号</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="0" column="1">
+                        <widget class="QLineEdit" name="editSubAccount"/>
+                    </item>
+                    <item row="1" column="0">
+                        <widget class="QLabel" name="labelPostscript">
+                            <property name="text">
+                                <string>附言</string>
+                            </property>
+                        </widget>
+                    </item>
+                    <item row="1" column="1">
+                        <widget class="QPlainTextEdit" name="editPostscript"/>
+                    </item>
+                </layout>
+            </widget>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget">
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>350</y>
+                    <width>481</width>
+                    <height>61</height>
+                </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout"/>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>logo.png</file>
+        <file>pixels.ico</file>
+        <file>mascot.png</file>
+    </qresource>
+    <qresource prefix="/btn"/>
+</RCC>
