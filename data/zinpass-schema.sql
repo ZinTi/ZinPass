@@ -1,18 +1,31 @@
 -- 密码管理系统
-PRAGMA foreign_keys= ON;
+PRAGMA foreign_keys= ON;       -- 每次连接数据库后执行
 BEGIN TRANSACTION;
 
 CREATE TABLE system_user
 (
-    user_id      VARCHAR(16) NOT NULL PRIMARY KEY,
-    alias        VARCHAR(100) NOT NULL UNIQUE,
-    hashed_pwd   CHAR(64)    NOT NULL, -- SHA256
-    salt         VARCHAR(50) NOT NULL,
-    created_time DATETIME    NOT NULL,
-    updated_time DATETIME    NOT NULL
+    id              VARCHAR(36) NOT NULL PRIMARY KEY,   -- 主键 UUID
+    username        VARCHAR(16) NOT NULL UNIQUE,        -- 登录用户名
+    nickname        TEXT NOT NULL,                      -- 昵称
+    hashed_pwd      CHAR(64) NOT NULL, -- SHA256
+    salt            VARCHAR(50) NOT NULL,
+    created_time    DATETIME NOT NULL,
+    updated_time    DATETIME NOT NULL
 );
 
--- 新增一个电信运营商的表
+-- 新增session表
+CREATE TABLE session
+(
+    id              VARCHAR(36) NOT NULL PRIMARY KEY,
+    sys_user_id     VARCHAR(36) NOT NULL,
+    data            TEXT,
+    created_time    DATETIME NOT NULL,
+    expires_time    DATETIME NOT NULL,
+    accessed_time   DATETIME NOT NULL,
+    CONSTRAINT session_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)
+);
+
+-- 电信运营商
 CREATE TABLE telecom_operator
 (
     id   TINYINT     NOT NULL PRIMARY KEY,
@@ -29,18 +42,19 @@ VALUES (1, '中国联通'),
 
 CREATE TABLE mobile_phone
 (
-    id               TINYINT     NOT NULL PRIMARY KEY,
-    phone_number     VARCHAR(15) NOT NULL,     -- '手机号码'
-    telecom_operator VARCHAR(8)  DEFAULT NULL, -- '电信运营商'
-    service_pwd      VARCHAR(10) DEFAULT NULL, -- '服务密码'
-    pin              VARCHAR(10) DEFAULT NULL, -- 'PIN'
-    puk              CHAR(8)     DEFAULT NULL, -- 'PUK'
-    join_time        DATETIME    DEFAULT NULL, -- '入网时间'
-    phone_area       VARCHAR(50) NOT NULL,     -- '归属地'
-    sys_user_id      VARCHAR(16) NOT NULL,     -- '所属系统用户'
+    id               INT         NOT NULL PRIMARY KEY,
+    phone_number     VARCHAR(15) NOT NULL,     -- 手机号码
+    telecom_operator VARCHAR(8)  DEFAULT NULL, -- 电信运营商
+    service_pwd      VARCHAR(10) DEFAULT NULL, -- 服务密码
+    pin              VARCHAR(10) DEFAULT NULL, -- PIN
+    puk              CHAR(8)     DEFAULT NULL, -- PUK
+    join_time        DATETIME    DEFAULT NULL, -- 入网时间
+    phone_area       VARCHAR(50) NOT NULL,     -- 归属地
+    postscript       TEXT        DEFAULT NULL, -- 备注
+    sys_user_id      VARCHAR(36) NOT NULL,     -- 所属系统用户
     created_time     DATETIME    NOT NULL,
     updated_time     DATETIME    NOT NULL,
-    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (user_id)
+    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)
 );
 
 CREATE TABLE account_category
@@ -72,38 +86,38 @@ VALUES (1, '电子邮件'),
 -- email_id 为 自引用外键：邮件也有可能绑定邮件，比如@outlook邮箱
 CREATE TABLE account
 (
-    id            MEDIUMINT    NOT NULL PRIMARY KEY,
-    user_id       VARCHAR(100) NOT NULL,                                    -- '账号'
-    alias         VARCHAR(100) DEFAULT NULL,                                 -- '昵称'
-    encrypted_pwd BLOB         NOT NULL,                                    -- 加密后的密码
-    iv            BLOB         NOT NULL,                                    -- 初始化向量（IV），用于AES-128-CTR模式解密
-    sub_account   VARCHAR(100) DEFAULT NULL,                                 -- '子账号'
-    phone_id      TINYINT     DEFAULT NULL,                                 -- '绑定手机号编号'
-    email_id      TINYINT     DEFAULT NULL,                                 -- '绑定邮箱编号'
-    postscript    TEXT        DEFAULT NULL,                                 -- '附言'
-    platform_name VARCHAR(255)  NOT NULL,                                    -- '平台名称'
-    provider_name VARCHAR(255) DEFAULT NULL,                                 -- '服务商名称'
-    URL           VARCHAR(255) DEFAULT NULL,                                 -- '网址'
-    hotline       VARCHAR(50) DEFAULT NULL,                                 -- '客服热线'
-    category_id   TINYINT      NOT NULL,                                    -- '类别'
-    sys_user_id   VARCHAR(16)  NOT NULL,                                    -- '所属系统用户'
+    id            MEDIUMINT    NOT NULL PRIMARY KEY, -- 主键
+    username      VARCHAR(100) NOT NULL,             -- 登录用户名
+    nickname      VARCHAR(100) DEFAULT NULL,         -- 昵称
+    encrypted_pwd BLOB         NOT NULL,             -- 加密后的密码
+    iv            BLOB         NOT NULL,             -- 初始化向量（IV），用于AES-128-CTR模式解密
+    sub_account   VARCHAR(100) DEFAULT NULL,         -- 子账号
+    phone_id      INT          DEFAULT NULL,         -- 绑定手机号编号
+    email_id      INT          DEFAULT NULL,         -- 绑定邮箱编号
+    postscript    TEXT         DEFAULT NULL,         -- 附言
+    platform_name VARCHAR(255) NOT NULL,             -- 平台名称
+    provider_name VARCHAR(255) DEFAULT NULL,         -- 服务商名称
+    URL           VARCHAR(255) DEFAULT NULL,         -- 网址
+    hotline       VARCHAR(50)  DEFAULT NULL,         -- 客服热线
+    category_id   TINYINT      NOT NULL,             -- 类别
+    sys_user_id   VARCHAR(36)  NOT NULL,             -- 所属系统用户
     created_time  DATETIME     NOT NULL,
     updated_time  DATETIME     NOT NULL,
     CONSTRAINT account_fk_1 FOREIGN KEY (phone_id) REFERENCES mobile_phone (id),
     CONSTRAINT account_fk_2 FOREIGN KEY (email_id) REFERENCES account (id), -- 自引用外键
     CONSTRAINT account_fk_3 FOREIGN KEY (category_id) REFERENCES account_category (id),
-    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (user_id)
+    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)
 );
 
 CREATE VIEW view_account AS
 SELECT a1.id,
        a1.provider_name,
        a1.platform_name,
-       a1.user_id,
-       a1.alias,
+       a1.username,
+       a1.nickname,
        a1.sub_account,
        mobile_phone.phone_number AS phone,
-       a2.user_id                AS email,
+       a2.username               AS email,
        a1.postscript,
        a1.URL,
        a1.hotline,

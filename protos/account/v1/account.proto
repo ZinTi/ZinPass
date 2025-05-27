@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package account.v1;
+
+// import "common/v1/common.proto"; // 导入公共定义（分页、错误等）
+
+service AccountService{
+    rpc ListEmailAddresses(ListEmailAddressesRequest) returns (ListEmailAddressesResponse);     // 列出所有可选的邮箱地址（邮箱类别的账号）
+
+    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);        // 创建账号
+    rpc ListAccountById(ListAccountByIdRequest) returns (ListAccountByIdResponse);  // 根据 session_id 和 account_id 查询账号
+    rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);           // 根据 session_id 查询账号
+    rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);        // 更新账号
+    rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);        // 删除账号
+
+    rpc FetchPassword(FetchPasswordRequest) returns (FetchPasswordResponse);        // 获取密码
+    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);     // 修改密码
+}
+
+message ViewAccount{
+    int64 account_id = 1;
+    string provider_name = 2;
+    string platform_name = 3;
+    string username = 4;
+    string nickname = 5;
+    string sub_account = 6;
+    string mobile_phone = 7;
+    string email = 8;
+    string postscript = 9;
+    string url = 10;
+    string hotline = 11;
+    string category = 12;
+    string created_time = 13;
+    string updated_time = 14;
+}
+
+message Account{
+    string provider_name = 1;
+    string platform_name = 2;
+    string username = 3;
+    string nickname = 4;
+    string sub_account = 5;
+    string mobile_phone = 6;
+    string email = 7;
+    string postscript = 8;
+    string url = 9;
+    string hotline = 10;
+    string category = 11;
+}
+
+message ListEmailAddressesRequest{
+    string session_id = 1;
+}
+
+message ListEmailAddressesResponse{
+    repeated string email_addresses = 1;
+    string message = 2;
+}
+
+message CreateAccountRequest{
+    string session_id = 1;
+    Account account = 2;
+    string password = 3;
+    string main_password = 4;
+}
+
+message CreateAccountResponse{
+    bool result = 1;
+    string message = 2;
+}
+
+message ListAccountByIdRequest{
+    string session_id = 1;
+    int64 account_id = 2;
+}
+
+message ListAccountByIdResponse{
+    ViewAccount account = 1;
+    string message = 2;
+}
+
+/*
+message ListAccountsRequest{
+    string session_id = 1;
+    common.v1.Filter filter = 2;
+    int32 page_size = 3;
+}
+
+message ListAccountsResponse{
+    repeated Account accounts = 1;
+    string message = 2;
+}*/
+
+message ListAccountsRequest{
+    string session_id = 1;
+    Account conditions = 2;
+    int32 page_size = 3;
+}
+
+message ListAccountsResponse{
+    repeated ViewAccount accounts = 1;
+    string message = 2;
+}
+
+message UpdateAccountRequest{
+    string session_id = 1;
+    int64 account_id = 2;
+    Account account = 3;
+    string account_password = 4;
+    string main_password = 5;
+}
+
+message UpdateAccountResponse{
+    bool result = 1;
+    string message = 2;
+}
+
+message DeleteAccountRequest{
+    string session_id = 1;
+    int64 account_id = 2;
+    string main_password = 3;
+}
+
+message DeleteAccountResponse{
+    bool result = 1;
+    string message = 2;
+}
+
+message FetchPasswordRequest{
+    string session_id = 1;
+    int64 account_id = 2;
+    string main_password = 3;
+}
+
+message FetchPasswordResponse{
+    string password = 1;
+    string message = 2;
+}
+
+message ChangePasswordRequest{
+    string session_id = 1;
+    int64 account_id = 2;
+    string main_password = 3;
+    string new_password = 4;
+}
+
+message ChangePasswordResponse{
+    string message = 1;
+}
