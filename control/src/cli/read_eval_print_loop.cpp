@@ -15,7 +15,7 @@ namespace zinpass::cli {
 
     int ReadEvalPrintLoop::run() {
         while (!this->quit_) {
-            this->prompt_.print();
+            Prompt::getInstance().print();
             std::getline(std::cin, input_);
             command_handler_->handle(input_);
 

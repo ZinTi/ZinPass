@@ -81,7 +81,7 @@ AccountManager::Return<std::vector<models::ViewAccount>> AccountManager::get_acc
     return {view_accounts, message};
 }
 
-AccountManager::Return<models::ViewAccount> AccountManager::get_account_by_id(const long long account_id) {
+AccountManager::Return<models::ViewAccount> AccountManager::get_account_by_id(const std::string& account_id) {
     models::ViewAccount view_account;
     std::string message;
     const repository::AccountDAO account_dao;
@@ -95,7 +95,7 @@ AccountManager::Return<models::ViewAccount> AccountManager::get_account_by_id(co
     return {view_account, message};
 }
 
-AccountManager::Return<std::string> AccountManager::retrieve_decrypted_password(const long long account_id, const std::string& sys_user_id, const std::string& main_password) {
+AccountManager::Return<std::string> AccountManager::retrieve_decrypted_password(const std::string& account_id, const std::string& sys_user_id, const std::string& main_password) {
     // 1. 从数据库读取数据
     std::vector<unsigned char> ciphertext, iv;
     const repository::AccountDAO account_dao;
@@ -153,7 +153,7 @@ AccountManager::Return<bool> AccountManager::add_account(
 
     // 3\ 将 phone -> phone_id , 将 email -> email_id , 将 category -> category_id， 获取时间
     int phone_id = -1;
-    long long email_id = -1;
+    std::string email_id = "";
     short category_id = -1;
 
     if (phone != "无" && phone != "空" && phone != "NULL") {
@@ -166,11 +166,7 @@ AccountManager::Return<bool> AccountManager::add_account(
 
     if (email != "无" && email != "空" && email != "NULL") {
         const repository::AccountDAO email_dao;
-        short temp_email_id;
-        if (const repository::DaoStatus ret_email_dao = email_dao.emailAddressToId(email, &temp_email_id);
-            repository::DaoStatus::Success == ret_email_dao) {
-            email_id = temp_email_id;
-        }
+        email_id = email_dao.getIdByEmailAddress(email);
     }
 
     const repository::CategoryDAO category_dao;
@@ -263,8 +259,8 @@ AccountManager::Return<bool> AccountManager::update_account(
     models::ViewAccount new_view_account(view_account);
 
     // 1\ 检查输入数据的合法性
-    if (view_account.getId() <= 0) {
-        return {false, "因不合法主键中断更新账号数据，主键不得小于或等于 0"};
+    if (view_account.getId().empty()) {
+        return {false, "因不合法主键中断更新账号数据，主键长度为0"};
     }
 
     // 2\ 新密码：加密 "明文密码" 和 生成 "iv"
@@ -295,8 +291,8 @@ AccountManager::Return<bool> AccountManager::update_account_base_info(const mode
     const repository::AccountDAO account_dao;
 
     // 1\ 检查输入数据的合法性
-    if (view_account.getId() <= 0) {
-        return {false, "因不合法主键中断更新账号数据，主键不得小于或等于 0"};
+    if (view_account.getId().empty()) {
+        return {false, "因不合法主键中断更新账号数据，主键长度为0"};
     }
 
     if (const repository::DaoStatus ret_account_dao_2 = account_dao.update_main_properties(view_account);   // 忽略 encrypted_pwd 和 iv
@@ -306,7 +302,7 @@ AccountManager::Return<bool> AccountManager::update_account_base_info(const mode
     return {true, "成功"};
 }
 
-AccountManager::Return<bool> AccountManager::update_account_password(const long long account_id,
+AccountManager::Return<bool> AccountManager::update_account_password(const std::string& account_id,
     const std::string& sys_user_id,const std::string& main_password,const std::string& plaintext_pwd)
 {
     // 0\ 定义部分变量
@@ -342,7 +338,7 @@ AccountManager::Return<bool> AccountManager::update_account_password(const long 
 
 /*
 AccountManager::Return<bool> AccountManager::update_account(
-    const long long account_id,
+    const std::string& account_id,
     const std::string& username,
     const std::string& nickname,
     const std::string& pwd,
@@ -365,14 +361,15 @@ AccountManager::Return<bool> AccountManager::update_account(
         data.push_back({AccountDAO::ColumnType::password, pwd});
     }
     data.push_back({AccountDAO::ColumnType::subAccount, subAccount});
-    short phoneId, emailId;
+    short phoneId;
+    std::string emailId;
     std::string phoneMsg, emailMsg;
     MobilePhoneDAO phoneDAO;
     AccountDAO emailDAO;
     if (phoneDAO.phoneNumberToId(phoneMsg, phone, &phoneId)) {
         data.push_back({AccountDAO::ColumnType::phoneId, phoneId});
     }
-    if (emailDAO.emailAddressToId(emailMsg, email, &emailId)) {
+    if (emailId = emailDAO.getIdByEmailAddress(email) && !emailId.empty()) {
         data.push_back({AccountDAO::ColumnType::emailId, emailId});
     }
     data.push_back({AccountDAO::ColumnType::postscript, postscript});
@@ -394,7 +391,7 @@ AccountManager::Return<bool> AccountManager::update_account(
     return ret;
 }*/
 
-AccountManager::Return<bool> AccountManager::delete_account(const long long account_id) {
+AccountManager::Return<bool> AccountManager::delete_account(const std::string& account_id) {
     const repository::AccountDAO account_dao;
     if (const repository::DaoStatus ret_account_dao = account_dao.remove(account_id);
         repository::DaoStatus::Success != ret_account_dao)

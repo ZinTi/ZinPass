@@ -10,10 +10,10 @@ class DialogDeleteAccount : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogDeleteAccount(const long long account_id, QWidget* parent = nullptr);
+    explicit DialogDeleteAccount(const std::string& account_id, QWidget* parent = nullptr);
     ~DialogDeleteAccount();
 
-    void set_account_id(const long long account_id);
+    void set_account_id(const std::string& account_id);
     std::string get_input_main_password() const;
 
 private slots:
@@ -24,7 +24,7 @@ private:
     QPushButton* btn_okay_;
     QPushButton* btn_cancel_;
 
-    long long account_id_;
+    std::string account_id_;
     std::string main_password_;
 
     void setup_ui();

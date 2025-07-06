@@ -27,6 +27,10 @@ int main(int argc, char* argv[]){
 
     cli::CliCommand::version(true);
     std::cout << "Enter \"help\" for usage hints." << std::endl;
+
+    // 获取单例实例
+    auto& prompt = cli::Prompt::getInstance();
+
     cli::ReadEvalPrintLoop REPL;
     REPL.run();
     return 0;

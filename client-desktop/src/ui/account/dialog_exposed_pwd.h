@@ -11,7 +11,7 @@ class DialogExposedPwd : public QDialog{
     Q_OBJECT
 
 public:
-    explicit DialogExposedPwd(long long account_id, QWidget *parent = nullptr);
+    explicit DialogExposedPwd(const std::string& account_id, QWidget *parent = nullptr);
     ~DialogExposedPwd() override;
 
 private slots:
@@ -23,7 +23,7 @@ private slots:
     void on_btn_read_and_copy_clicked();    // 查看并复制
 
 private:
-    long long account_id_;
+    std::string account_id_;
 
     void setup_ui();
 

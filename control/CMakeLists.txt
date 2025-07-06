@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(zinpassctl VERSION 0.0.2 LANGUAGES CXX)
+project(zinpassctl VERSION 0.0.3 LANGUAGES CXX)
 
 # 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
 list(APPEND CMAKE_PREFIX_PATH

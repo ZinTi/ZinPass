@@ -86,14 +86,14 @@ VALUES (1, '电子邮件'),
 -- email_id 为 自引用外键：邮件也有可能绑定邮件，比如@outlook邮箱
 CREATE TABLE account
 (
-    id            MEDIUMINT    NOT NULL PRIMARY KEY, -- 主键
+    id            VARCHAR(36)  NOT NULL PRIMARY KEY, -- 主键(改为UUID)
     username      VARCHAR(100) NOT NULL,             -- 登录用户名
     nickname      VARCHAR(100) DEFAULT NULL,         -- 昵称
     encrypted_pwd BLOB         NOT NULL,             -- 加密后的密码
     iv            BLOB         NOT NULL,             -- 初始化向量（IV），用于AES-128-CTR模式解密
     sub_account   VARCHAR(100) DEFAULT NULL,         -- 子账号
     phone_id      INT          DEFAULT NULL,         -- 绑定手机号编号
-    email_id      INT          DEFAULT NULL,         -- 绑定邮箱编号
+    email_id      VARCHAR(36)  DEFAULT NULL,         -- 绑定邮箱编号
     postscript    TEXT         DEFAULT NULL,         -- 附言
     platform_name VARCHAR(255) NOT NULL,             -- 平台名称
     provider_name VARCHAR(255) DEFAULT NULL,         -- 服务商名称

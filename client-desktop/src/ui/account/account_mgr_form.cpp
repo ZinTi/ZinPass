@@ -60,7 +60,7 @@ void AccountMgrForm::setup_ui(){
     this->dialog_add_account_ = new DialogAddAccount(this);
     this->dialog_add_account_->setWindowTitle(QString("新增账号密码记录"));
     //QModelIndex index = this->table_model_->index(this->row_of_table_view_, 0);
-    //const long long dest_account_id = this->table_model_->data(index).toLongLong();
+    //const std::string& dest_account_id = this->table_model_->data(index).toLongLong();
 
     // 创建布局
     QVBoxLayout* layout_main = new QVBoxLayout(this);
@@ -159,7 +159,7 @@ void AccountMgrForm::list_accounts(){
     this->table_model_->setRowCount(num_rows);
     for(int i = 0 ; i < num_rows ; ++i){
         zinpass::models::ViewAccount row = accounts[i];
-        this->table_model_->setItem(i, 0, new QStandardItem(QString::number(row.getId())));
+        this->table_model_->setItem(i, 0, new QStandardItem(QString::fromStdString(row.getId())));
         this->table_model_->setItem(i, 1, new QStandardItem(QString::fromStdString(row.getProviderName())));
         this->table_model_->setItem(i, 2, new QStandardItem(QString::fromStdString(row.getPlatformName())));
         this->table_model_->setItem(i, 3, new QStandardItem(QString::fromStdString(row.getUsername())));
@@ -204,7 +204,7 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
         QStandardItem* item_comlumn0 = this->table_model_->item(this->row_of_table_view_, 0);
         if (item_comlumn0) {
             QVariant data = item_comlumn0->data(Qt::DisplayRole);
-            const long long account_id = data.toLongLong();
+            const std::string account_id = data.toString().toStdString();
 
             DialogExposedPwd dialog_exposed_pwd(account_id, this);
             dialog_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(account_id));
@@ -229,7 +229,7 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() {
         QStandardItem* item_comlumn0 = this->table_model_->item(this->row_of_table_view_, 0);
         if (item_comlumn0) {
             QVariant data = item_comlumn0->data(Qt::DisplayRole);
-            const long long account_id = data.toLongLong();
+            const std::string account_id = data.toString().toStdString();
             this->dialog_detail_and_edit_ = new DialogEditAccount(account_id, this);
             this->dialog_detail_and_edit_->setWindowTitle(QString("详情和编辑(%1)").arg(account_id));
             this->dialog_detail_and_edit_->exec();

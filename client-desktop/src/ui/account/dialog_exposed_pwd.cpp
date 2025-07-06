@@ -8,7 +8,7 @@
 #include "state_manager.h"
 #include "account_rpc.h"
 
-DialogExposedPwd::DialogExposedPwd(const long long account_id, QWidget* parent)
+DialogExposedPwd::DialogExposedPwd(const std::string& account_id, QWidget* parent)
     : QDialog(parent), account_id_(account_id) {
     setup_ui();
 }

@@ -8,7 +8,7 @@ namespace zinpass::models{
 
 class Account {
 protected:
-    long long id_;                                     // 主键
+    std::string id_;                                     // 主键
     std::string username_;                       // 登录用户名
     std::string nickname_;                       // 昵称
     std::string sub_account_;                     // 子账号
@@ -24,14 +24,14 @@ private:
     std::vector<unsigned char> encrypted_pwd_;    // 加密后的密码值
     std::vector<unsigned char> iv_;              // 初始化向量IV
     short phone_id_;                              // 手机号主键
-    long long email_id_;                              // 邮箱号主键
+    std::string email_id_;                              // 邮箱号主键
     short category_id_;                           // 类别号主键
 
 public:
     // Constructor && Destructor
     Account();
     Account(
-        long long id,
+        const std::string& id,
         const std::string& username,
         const std::string& nickname,
         const std::string& sub_account,
@@ -47,14 +47,14 @@ public:
         std::vector<unsigned char> encrypted_pwd,
         std::vector<unsigned char> iv,
         short phone_id,
-        long long email_id,
+        const std::string& email_id,
         short category_id
         );
     Account(Account const& account);
     ~Account();
 
     // Getter && Setter
-    [[nodiscard]] long long getId() const;
+    [[nodiscard]] std::string getId() const;
     [[nodiscard]] std::string getUsername() const;
     [[nodiscard]] std::string getNickname() const;
     [[nodiscard]] std::string getSubAccount() const;
@@ -70,10 +70,10 @@ public:
     [[nodiscard]] const std::vector<unsigned char>& getEncryptedPwd() const;
     [[nodiscard]] const std::vector<unsigned char>& getIv() const;
     [[nodiscard]] short getPhoneId() const;
-    [[nodiscard]] long long getEmailId() const;
+    [[nodiscard]] std::string getEmailId() const;
     [[nodiscard]] short getCategoryId() const;
 
-    void setId(long long id);
+    void setId(const std::string& id);
     void setUsername(const std::string& username);
     void setNickname(const std::string& nickname);
     void setSubAccount(const std::string& sub_account);
@@ -89,7 +89,7 @@ public:
     void setEncryptedPwd(const std::vector<unsigned char>& encrypted_pwd);
     void setIv(const std::vector<unsigned char>& iv);
     void setPhoneId(short phone_id);
-    void setEmailId(long long email_id);
+    void setEmailId(const std::string& email_id);
     void setCategoryId(short category_id);
 };
 

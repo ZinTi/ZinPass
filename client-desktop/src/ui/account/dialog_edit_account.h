@@ -16,13 +16,13 @@ class DialogEditAccount : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogEditAccount(long long account_id, QWidget* parent = nullptr);
+    explicit DialogEditAccount(const std::string& account_id, QWidget* parent = nullptr);
     ~DialogEditAccount();
 
     QMap<QString, QVariant> get_form_data() const;
 
 signals:
-    void form_submited();
+    void form_submitted();
 
 private slots:
     void on_btn_read_passwd_clicked();
@@ -32,7 +32,7 @@ private slots:
     void update_edit_main_password_state();
 
 private:
-    long long account_id_;
+    std::string account_id_;
 
     void setup_ui();
     void initial_input_widgets();

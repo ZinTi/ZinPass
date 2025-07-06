@@ -1,10 +1,10 @@
 #include "account_dao.h"
+#include "date_time.h"
+#include "log_manager.h"
 #include <common/sql_debug.h>
 #include <map>
 #include <sstream>
-#include <stdexcept>
-#include "date_time.h"
-#include "log_manager.h"
+#include "uuid_generator.h"
 
 namespace zinpass::repository{
 
@@ -17,12 +17,8 @@ AccountDAO::~AccountDAO() = default;
 models::ViewAccount AccountDAO::ViewAccountFromStatement(sqlite3_stmt* stmt){
     models::ViewAccount view_account;
 
-    if (SQLITE_NULL != sqlite3_column_type(stmt, 0)) {
-        view_account.setId(sqlite3_column_int(stmt, 0));
-    }else {
-        utils::LogManager::AddLog("[WARNING] Severe Warning: The primary key of the view_account record is NULL, which may indicate an error. Resolution: Assign a default value of 0 to the variable.");
-        view_account.setId(0);
-    }
+    const auto* account_id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+    view_account.setId(account_id ? account_id : "");
     const auto* provider_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
     view_account.setProviderName(provider_name ? provider_name : "");
     const auto* platform_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
@@ -121,33 +117,11 @@ std::string AccountDAO::buildSqlPart(const std::map<ColumnType, std::string>& da
     return part;
 }
 
-long long AccountDAO::generateId() const {
-    sqlite3* conn = pool_.get_connection();
-
-    sqlite3_stmt* stmt = nullptr;
-    long long id = 0;
-
-    const std::string sql_find_unused = "SELECT MIN(id) AS first_unused_id FROM (SELECT t1.id + 1 AS id FROM account t1 LEFT JOIN account t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL AND t1.id < (SELECT MAX(id) FROM account) UNION SELECT (SELECT MAX(id) FROM account) + 1 AS id) AS subquery;";
-    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_find_unused.c_str(), -1, &stmt, nullptr)) {
-        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
-        sqlite3_finalize(stmt);
-        pool_.release_connection(conn);
-        return -1;
-    }
-    SQLDebug::log_sql(stmt, true);
-    if (SQLITE_ROW == sqlite3_step(stmt)) {
-        id = sqlite3_column_int64(stmt, 0);
-    }
-    sqlite3_finalize(stmt);
-    pool_.release_connection(conn);
-    return id;
-}
-
-DaoStatus AccountDAO::findById(const long long id, models::ViewAccount& view_account)const {
+DaoStatus AccountDAO::findById(const std::string& id, models::ViewAccount& view_account)const {
     DaoStatus status;
     sqlite3* conn = pool_.get_connection();
 
-    const std::string sql("SELECT * FROM view_account WHERE id = ?");
+    const std::string sql("SELECT * FROM view_account WHERE id = ? LIMIT 1");
     sqlite3_stmt* stmt = nullptr;
 
     if (SQLITE_OK != sqlite3_prepare_v2(conn, sql.c_str(), -1, &stmt, nullptr)) {
@@ -156,7 +130,7 @@ DaoStatus AccountDAO::findById(const long long id, models::ViewAccount& view_acc
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 1, id);
+    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT);
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_ROW == sqlite3_step(stmt)) {
         view_account = ViewAccountFromStatement(stmt);
@@ -261,10 +235,8 @@ DaoStatus AccountDAO::find(
     return DaoStatus::Success;
 }
 
-DaoStatus AccountDAO::findEncryptedPwdAndIv(
-    const long long id, const std::string& sys_user_id,
-    std::vector<unsigned char>& encrypted_pwd,
-    std::vector<unsigned char>& iv)const
+DaoStatus AccountDAO::findEncryptedPwdAndIv(const std::string& id, const std::string& sys_user_id,
+    std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv)const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -276,7 +248,7 @@ DaoStatus AccountDAO::findEncryptedPwdAndIv(
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 1, id);
+    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 2, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
     SQLDebug::log_sql(stmt, true);
     if (const int stepResult = sqlite3_step(stmt);
@@ -321,8 +293,8 @@ DaoStatus AccountDAO::add(const models::Account& account)const {
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-
-    sqlite3_bind_int64(stmt, 1, this->generateId()); // 生成id主键, NOT NULL
+    const std::string new_account_id = utils::UUIDGenerator::generate(); // 生成id主键, NOT NULL
+    sqlite3_bind_text(stmt, 1, new_account_id.c_str(), static_cast<int>(new_account_id.size()), SQLITE_TRANSIENT);
     if (account.getUsername().empty())
         sqlite3_bind_null(stmt, 2);
     else sqlite3_bind_text(stmt, 2, account.getUsername().c_str(), static_cast<int>(account.getUsername().size()), SQLITE_TRANSIENT);
@@ -335,8 +307,8 @@ DaoStatus AccountDAO::add(const models::Account& account)const {
     else sqlite3_bind_text(stmt, 6, account.getSubAccount().c_str(), static_cast<int>(account.getSubAccount().size()), SQLITE_TRANSIENT);
     if (account.getPhoneId() < 0) sqlite3_bind_null(stmt, 7);
     else sqlite3_bind_int(stmt, 7, account.getPhoneId());
-    if (account.getEmailId() < 0) sqlite3_bind_null(stmt, 8);
-    else sqlite3_bind_int64(stmt, 8, account.getEmailId());
+    if (account.getEmailId().empty()) sqlite3_bind_null(stmt, 8);
+    else sqlite3_bind_text(stmt, 8, account.getEmailId().c_str(), static_cast<int>(account.getEmailId().size()), SQLITE_TRANSIENT);
     if (account.getPostscript().empty())
         sqlite3_bind_null(stmt, 9);
     else sqlite3_bind_text(stmt, 9, account.getPostscript().c_str(), static_cast<int>(account.getPostscript().size()), SQLITE_TRANSIENT);
@@ -393,7 +365,8 @@ DaoStatus AccountDAO::add(const models::ViewAccount& view_account)const {
         return DaoStatus::InvalidData;
     }
 
-    sqlite3_bind_int64(stmt, 1, this->generateId()); // 生成id主键, NOT NULL
+    const std::string new_account_id = utils::UUIDGenerator::generate(); // 生成id主键, NOT NULL
+    sqlite3_bind_text(stmt, 1, new_account_id.c_str(), static_cast<int>(new_account_id.size()), SQLITE_TRANSIENT);
     if (view_account.getUsername().empty()) sqlite3_bind_null(stmt, 2);
     else sqlite3_bind_text(stmt, 2, view_account.getUsername().c_str(), static_cast<int>(view_account.getUsername().size()), SQLITE_TRANSIENT);
     if (view_account.getNickname().empty()) sqlite3_bind_null(stmt, 3);
@@ -510,11 +483,11 @@ DaoStatus AccountDAO::update(const models::ViewAccount& view_account)const {
         sqlite3_bind_text(stmt, 14, view_account.getUpdatedTime().c_str(), static_cast<int>(view_account.getUpdatedTime().size()), SQLITE_TRANSIENT);
     }
     SQLDebug::log_sql(stmt, true);
-    if (view_account.getId() <= 0) {
-        utils::LogManager::AddLog(std::string("[INVALID DATA] Primary Key is less than or equal to 0."));
+    if (view_account.getId().empty()) {
+        utils::LogManager::AddLog(std::string("[INVALID DATA] 不合法主键。主键长度为0."));
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 15, view_account.getId());
+    sqlite3_bind_text(stmt, 15, view_account.getId().c_str(), static_cast<int>(view_account.getId().size()), SQLITE_TRANSIENT);
     if (view_account.getSysUserId().empty()) {
         utils::LogManager::AddLog(std::string("[INVALID DATA] SysUserId is NULL."));
         return DaoStatus::InvalidData;
@@ -529,7 +502,7 @@ DaoStatus AccountDAO::update(const models::ViewAccount& view_account)const {
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(view_account.getId()));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + view_account.getId());
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -589,11 +562,11 @@ DaoStatus AccountDAO::update_main_properties(const models::ViewAccount& view_acc
     else {
         sqlite3_bind_text(stmt, 12, view_account.getUpdatedTime().c_str(), static_cast<int>(view_account.getUpdatedTime().size()), SQLITE_TRANSIENT);
     }
-    if (view_account.getId() <= 0) {
-        utils::LogManager::AddLog(std::string("[INVALID DATA] Primary Key is less than or equal to 0."));
+    if (view_account.getId().empty()) {
+        utils::LogManager::AddLog(std::string("[INVALID DATA] 不合法主键。主键长度为0."));
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 13, view_account.getId());
+    sqlite3_bind_text(stmt, 13, view_account.getId().c_str(), static_cast<int>(view_account.getId().size()), SQLITE_TRANSIENT);
     if (view_account.getSysUserId().empty()) {
         utils::LogManager::AddLog(std::string("[INVALID DATA] SysUserId is NULL."));
         return DaoStatus::InvalidData;
@@ -616,7 +589,7 @@ DaoStatus AccountDAO::update_main_properties(const models::ViewAccount& view_acc
 /**
  * @brief 修改账号记录的密码（密文密码、初始化向量、更新时间）
  */
-DaoStatus AccountDAO::update_password(const long long id,
+DaoStatus AccountDAO::update_password(const std::string& id,
     const std::string& sys_user_id,
     const std::vector<unsigned char>& encrypted_pwd,
     const std::vector<unsigned char>& iv,
@@ -650,7 +623,7 @@ DaoStatus AccountDAO::update_password(const long long id,
     } else {
         sqlite3_bind_text(stmt, 3, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);
     }
-    sqlite3_bind_int64(stmt, 4, id);
+    sqlite3_bind_text(stmt, 4, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 5, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
@@ -660,7 +633,7 @@ DaoStatus AccountDAO::update_password(const long long id,
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -671,7 +644,7 @@ DaoStatus AccountDAO::update_password(const long long id,
  */
 __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_platform(
-    const long long id,
+    const std::string& id,
     const std::string& provider_name,
     const std::string& platform_name,
     const std::string& url,
@@ -701,9 +674,9 @@ DaoStatus AccountDAO::update_platform(
         const std::string now = utils::DateTime::getCurrentDateTime();
         sqlite3_bind_text(stmt, 5, now.c_str(), static_cast<int>(now.size()), SQLITE_TRANSIENT);
     } else {
-        sqlite3_bind_text(stmt, 5, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);
+      sqlite3_bind_text(stmt, 5, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);
     }
-    sqlite3_bind_int64(stmt, 6, id); // NOT NULL
+    sqlite3_bind_text(stmt, 6, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[ERROR] Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
@@ -712,7 +685,7 @@ DaoStatus AccountDAO::update_platform(
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -723,7 +696,7 @@ DaoStatus AccountDAO::update_platform(
  */
 __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_user(
-    const long long id,
+    const std::string& id,
     const std::string& username,
     const std::string& nickname,
     const std::vector<unsigned char>& encrypted_pwd,
@@ -766,7 +739,7 @@ DaoStatus AccountDAO::update_user(
     } else {
         sqlite3_bind_text(stmt, 6, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);
     }
-    sqlite3_bind_int64(stmt, 7, id); // NOT NULL
+    sqlite3_bind_text(stmt, 7, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
@@ -775,7 +748,7 @@ DaoStatus AccountDAO::update_user(
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -786,9 +759,9 @@ DaoStatus AccountDAO::update_user(
  */
 __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_third(
-    const long long id,
+    const std::string& id,
     const int phone_id,
-    const long long email_id,
+    const std::string& email_id,
     const std::string& update_time)const
 {
     sqlite3* conn = pool_.get_connection();
@@ -805,13 +778,13 @@ DaoStatus AccountDAO::update_third(
 
     if (phone_id < 0) sqlite3_bind_null(stmt, 1);
     else sqlite3_bind_int(stmt, 1, phone_id);
-    if (email_id < 0) sqlite3_bind_null(stmt, 2);
-    else sqlite3_bind_int64(stmt, 2, email_id);
+    if (email_id.empty()) sqlite3_bind_null(stmt, 2);
+    else sqlite3_bind_text(stmt, 2, email_id.c_str(), static_cast<int>(email_id.size()), SQLITE_TRANSIENT);
     if (update_time.empty()){
         const std::string now = utils::DateTime::getCurrentDateTime();
         sqlite3_bind_text(stmt, 3, now.c_str(), static_cast<int>(now.size()), SQLITE_TRANSIENT);
     } else {sqlite3_bind_text(stmt, 3, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);}
-    sqlite3_bind_int64(stmt, 4, id); // NOT NULL
+    sqlite3_bind_text(stmt, 4, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[ERROR] Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
@@ -820,7 +793,7 @@ DaoStatus AccountDAO::update_third(
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -831,7 +804,7 @@ DaoStatus AccountDAO::update_third(
  */
 __attribute__((optimize("O0"))) // 禁用优化
 DaoStatus AccountDAO::update_other(
-    const long long id,
+    const std::string& id,
     const std::string& sub_account,
     const std::string& postscript,
     const std::string& update_time)const
@@ -857,7 +830,7 @@ DaoStatus AccountDAO::update_other(
     } else {
         sqlite3_bind_text(stmt, 3, update_time.c_str(), static_cast<int>(update_time.size()), SQLITE_TRANSIENT);
     }
-    sqlite3_bind_int64(stmt, 4, id); // NOT NULL
+    sqlite3_bind_text(stmt, 4, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[ERROR] Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
@@ -866,7 +839,7 @@ DaoStatus AccountDAO::update_other(
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -875,7 +848,7 @@ DaoStatus AccountDAO::update_other(
 // 此版本方法有很多BUG，不要使用
 DaoStatus AccountDAO::update(
     const std::vector<KeyValuePair>& data,
-    const long long id)const
+    const std::string& id)const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -1092,7 +1065,7 @@ DaoStatus AccountDAO::update(
         }
     }
 
-    sqlite3_bind_int64(stmt, static_cast<int>(textIndices.size() + intIndices.size() + 1), id);
+    sqlite3_bind_text(stmt, static_cast<int>(textIndices.size() + intIndices.size() + 1), id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[ERROR] Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
@@ -1101,13 +1074,13 @@ DaoStatus AccountDAO::update(
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account updated successfully: ") + id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
 }
 
-DaoStatus AccountDAO::remove(const long long id)const {
+DaoStatus AccountDAO::remove(const std::string& id)const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "DELETE FROM account WHERE id = ?";
@@ -1118,7 +1091,8 @@ DaoStatus AccountDAO::remove(const long long id)const {
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 1, id);
+    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
+
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_DONE != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[ERROR] Failed to remove record: ") + std::string(sqlite3_errmsg(conn)));
@@ -1127,7 +1101,7 @@ DaoStatus AccountDAO::remove(const long long id)const {
         return DaoStatus::GenericError;
     }
 
-    utils::LogManager::AddLog(std::string("[OK] Account removed successfully: ") + std::to_string(id));
+    utils::LogManager::AddLog(std::string("[OK] Account removed successfully: ") +id);
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
     return DaoStatus::Success;
@@ -1160,35 +1134,37 @@ DaoStatus AccountDAO::findEmailList(
     return DaoStatus::Success;
 }
 
-DaoStatus AccountDAO::emailAddressToId(const std::string& email_address, short* id)const {
+std::string AccountDAO::getIdByEmailAddress(const std::string& email_address) const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT id FROM view_email WHERE username = ?";
     sqlite3_stmt* stmt = nullptr;
     if (SQLITE_OK != sqlite3_prepare_v2(conn, sql.c_str(), -1, &stmt, nullptr)) {
-        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
-        sqlite3_finalize(stmt);
-        pool_.release_connection(conn);
-        return DaoStatus::InvalidData;
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") +
+          std::string(sqlite3_errmsg(conn)));
+      sqlite3_finalize(stmt);
+      pool_.release_connection(conn);
+      return "";
     }
-    sqlite3_bind_text(stmt, 1, email_address.c_str(), static_cast<int>(email_address.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 1, email_address.c_str(),
+                      static_cast<int>(email_address.size()), SQLITE_TRANSIENT);
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_ROW != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[NOT FOUND] Email(Account) ID not found with the given emailAddress in the database."));
         sqlite3_finalize(stmt);
         pool_.release_connection(conn);
-        return DaoStatus::NotFound;
+        return "";
     }
 
-    *id = static_cast<short>(sqlite3_column_int(stmt, 0));
+    std::string id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
     utils::LogManager::AddLog("[OK] Account found.");
     sqlite3_finalize(stmt);
     pool_.release_connection(conn);
-    return DaoStatus::Success;
+    return id;
 }
 
 // 根据 id 查询目标 email 记录
-DaoStatus AccountDAO::findEmailById(const long long id, models::ViewAccount& email)const {
+DaoStatus AccountDAO::findEmailById(const std::string& id, models::ViewAccount& email)const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT * FROM view_email WHERE id = ?";
@@ -1199,7 +1175,7 @@ DaoStatus AccountDAO::findEmailById(const long long id, models::ViewAccount& ema
         pool_.release_connection(conn);
         return DaoStatus::InvalidData;
     }
-    sqlite3_bind_int64(stmt, 1, id);
+    sqlite3_bind_text(stmt, 1, id.c_str(), static_cast<int>(id.size()), SQLITE_TRANSIENT); // NOT NULL
     SQLDebug::log_sql(stmt, true);
     if (SQLITE_ROW != sqlite3_step(stmt)) {
         utils::LogManager::AddLog(std::string("[NOT FOUND] Email(Account) not found with the given ID in the database."));

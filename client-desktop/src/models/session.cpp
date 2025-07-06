@@ -1,7 +1,6 @@
 #include "session.h"
 #include <iostream>
 #include <ostream>
-#include <utility>
 
 namespace zinpass::models {
 

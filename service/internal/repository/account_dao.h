@@ -60,7 +60,7 @@ public:
 	 * @param view_account 查询到的账号信息
 	 * @return 状态码
      */
-    DaoStatus findById(long long id, models::ViewAccount& view_account)const;
+    DaoStatus findById(const std::string& id, models::ViewAccount& view_account)const;
 
     /**
      * @brief 查询账号记录
@@ -100,14 +100,14 @@ public:
 	 * @param iv 查询到的初始化向量值
 	 * @return 成功与否
 	 */
-	DaoStatus findEncryptedPwdAndIv(long long id, const std::string& sys_user_id, std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv)const;
+	DaoStatus findEncryptedPwdAndIv(const std::string& id, const std::string& sys_user_id, std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv)const;
 
 
 	/**
 	 * @brief 存储账号记录（需手动设置好 phone_id email_id category_id 等）
      * @param account Account 类型记录
      * account.id 主键不需要设置，会自动生成
-     * account.emailId < 0 时，设置为NULL,
+     * account.emailId 为空字符串时，设置为NULL,
      * account.phoneId < 0 时, 设置为NULL
 	 * @return 成功与否
 	 */
@@ -145,7 +145,7 @@ public:
 	 * @return 成功与否
 	 */
 	[[nodiscard]] DaoStatus update_password(
-		long long id,
+		const std::string& id,
 		const std::string& sys_user_id,
 		const std::vector<unsigned char>& encrypted_pwd,
 		const std::vector<unsigned char>& iv,
@@ -163,7 +163,7 @@ public:
 	 * @return 成功与否
 	 */
 	[[nodiscard]] DaoStatus update_platform(
-		long long id,
+		const std::string& id,
 		const std::string& provider_name,
 		const std::string& platform_name,
 		const std::string& url,
@@ -183,7 +183,7 @@ public:
      * @return 成功与否
      */
     [[nodiscard]] DaoStatus update_user(
-		long long id,
+		const std::string& id,
 		const std::string& username,
 		const std::string& nickname,
 		const std::vector<unsigned char>& encrypted_pwd,
@@ -201,9 +201,9 @@ public:
 	 * @return 成功与否
 	 */
 	[[nodiscard]] DaoStatus update_third(
-		long long id,
+		const std::string& id,
 		int phone_id,
-		long long email_id,
+		const std::string& email_id,
 		const std::string& update_time
 		)const;
 
@@ -216,21 +216,21 @@ public:
 	 * @return 成功与否
      */
 	[[nodiscard]] DaoStatus update_other(
-		long long id,
+		const std::string& id,
 		const std::string& sub_account,
 		const std::string& postscript,
 		const std::string& update_time
 		)const;
 
 	// 此函数有问题
-	[[nodiscard]] DaoStatus update(const std::vector<KeyValuePair>& data, long long id) const;
+	[[nodiscard]] DaoStatus update(const std::vector<KeyValuePair>& data, const std::string& id) const;
 
 	/**
 	 * @brief 删除Account记录
 	 * @param id 删除目标的id
 	 * @return 成功与否
 	 */
-	[[nodiscard]] DaoStatus remove(long long id)const;
+	[[nodiscard]] DaoStatus remove(const std::string& id)const;
 
 	// Email部分（特殊的Account）
 	/**
@@ -242,12 +242,11 @@ public:
 	DaoStatus findEmailList(const std::string& sys_user_id, std::vector<std::string>& email_addresses) const;
 
 	/**
-	 * @brief emailAddressToId 将emailAddress转换成对应的id主键
+	 * @brief getIdByEmailAddress 根据 emailAddress 查询对应的主键 id
 	 * @param email_address 邮箱地址
-	 * @param id 查询到的id主键，如果未查询到则 id 为 -1
-	 * @return 成功与否
+	 * @return 若查询到返回主键 id ，若未查询到则返回空字符串 ""
 	 */
-	DaoStatus emailAddressToId(const std::string& email_address, short* id)const;
+	std::string getIdByEmailAddress(const std::string& email_address) const;
 
     /**
      * @brief 根据id查询目标email记录
@@ -255,7 +254,7 @@ public:
      * @param email 保存查询到的email信息
      * @return 成功与否
      */
-    DaoStatus findEmailById(long long id, models::ViewAccount& email)const;
+    DaoStatus findEmailById(const std::string& id, models::ViewAccount& email)const;
 
 	/**
 	 * @brief 查询所有email记录
@@ -276,12 +275,6 @@ private:
 	static models::ViewAccount ViewAccountFromStatement(sqlite3_stmt* stmt);
 
 	static std::string buildSqlPart(const std::map<ColumnType, std::string>& data, const std::string& separator);
-
-	/**
-	 * @brief 生成主键
-	 * @return 生成的id
-	 */
-	[[nodiscard]] long long generateId()const;
 };
 
 }

@@ -14,7 +14,7 @@ namespace zinpass::models{
   public:
     ViewAccount();
     ViewAccount(
-        long long id,
+        const std::string& id,
         const std::string& username,
         const std::string& nickname,
         const std::string& sub_account,

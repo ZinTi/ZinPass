@@ -9,7 +9,7 @@
 #include "phone_rpc.h"
 #include "category_rpc.h"
 
-DialogEditAccount::DialogEditAccount(const long long account_id, QWidget* parent) : account_id_(account_id), QDialog(parent) {
+DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* parent) : account_id_(account_id), QDialog(parent) {
     // 创建主窗口的中心部件
     setup_ui();
     initial_input_widgets(); // 初始化输入控件
@@ -142,7 +142,7 @@ void DialogEditAccount::setup_ui(){
     connect(this->btn_edit_, &QPushButton::clicked, this, [this, b = false](){
         DialogEditAccount::read_only(b);
     });
-    // connect(this->btn_submit_, &QPushButton::clicked, this, &DialogEditAccount::form_submited);
+    // connect(this->btn_submit_, &QPushButton::clicked, this, &DialogEditAccount::form_submitted);
     connect(this->btn_submit_, &QPushButton::clicked, this, &DialogEditAccount::on_btn_submit_clicked);
     connect(this->btn_delete_, &QPushButton::clicked, this, &DialogEditAccount::on_btn_delete_clicked);
 

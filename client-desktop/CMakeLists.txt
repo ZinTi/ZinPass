@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(client-desktop VERSION 0.0.1 LANGUAGES CXX)
+project(client-desktop VERSION 0.0.3 LANGUAGES CXX)
 
 # 设置 Qt 库路径（mingw64静态库）
 set(CMAKE_PREFIX_PATH
@@ -143,8 +143,6 @@ set(PROJECT_SOURCES
         # (7.2) generated
         generate/grpc/common/v1/common.pb.cc
         generate/grpc/common/v1/common.grpc.pb.cc
-        generate/grpc/hello/hello.pb.cc
-        generate/grpc/hello/hello.grpc.pb.cc
         generate/grpc/user/v1/user.pb.cc
         generate/grpc/user/v1/user.grpc.pb.cc
         generate/grpc/user/v1/auth.pb.cc

@@ -1,35 +1,40 @@
 #include "prompt.h"
-
 #include <iostream>
 
-#define CURRENT_USER_DEFAULT "root"
+#define USERNAME_DEFAULT "root"
 #define PROMPT_DEFAULT "$ "
 
 namespace zinpass::cli {
 
-    Prompt::Prompt() {
-        this->currentUser = CURRENT_USER_DEFAULT;
-        this->prompt = PROMPT_DEFAULT;
-    }
+// 只保留默认构造函数
+Prompt::Prompt()
+    : username_(USERNAME_DEFAULT), prompt_(PROMPT_DEFAULT) {}
 
-    Prompt::Prompt(const std::string& prompt) {
-        this->currentUser = CURRENT_USER_DEFAULT;
-        this->prompt = prompt;
-    }
+// 线程安全的成员函数实现
+std::string Prompt::getPrompt() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return prompt_;
+}
 
-    Prompt::~Prompt() {}
+void Prompt::setPrompt(const std::string& prompt) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    prompt_ = prompt;
+}
 
-    std::string Prompt::getPrompt() { return this->prompt; }
+std::string Prompt::getUsername() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return username_;
+}
 
-    void Prompt::setPrompt(const std::string& prompt) { this->prompt = prompt; }
+void Prompt::setUsername(const std::string& username) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    username_ = username;
+}
 
-    std::string Prompt::getCurrentUser() { return this->currentUser; }
-
-    void Prompt::setCurrentUser(const std::string& currentUser) { this->currentUser = currentUser; }
-
-    void Prompt::print() const {
-        std::cout << "[" << this->currentUser << "]" << std::endl;
-        std::cout << this->prompt;
-    }
+void Prompt::print() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::cout << "[" << username_ << "]" << std::endl;
+    std::cout << prompt_;
+}
 
 } // namespace zinpass::cli

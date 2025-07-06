@@ -53,7 +53,7 @@ public:
      * @param account_id 目标
      * @return view_account + message
      */
-    static Return<models::ViewAccount> get_account_by_id(long long account_id);
+    static Return<models::ViewAccount> get_account_by_id(const std::string& account_id);
 
     /**
      * @brief 获取账号密码的密文并解密，返回明文
@@ -62,7 +62,7 @@ public:
      * @param main_password 主密码
      * @return plaintext + message
      */
-    static Return<std::string> retrieve_decrypted_password(long long account_id, const std::string& sys_user_id, const std::string& main_password);
+    static Return<std::string> retrieve_decrypted_password(const std::string& account_id, const std::string& sys_user_id, const std::string& main_password);
 
     /**
      * @brief 新增账号记录
@@ -132,14 +132,14 @@ public:
      * @param plaintext_pwd 明文密码（新）
      * @return 成功与否 + message
      */
-    static Return<bool> update_account_password(long long account_id,const std::string& sys_user_id,const std::string& main_password,const std::string& plaintext_pwd);
+    static Return<bool> update_account_password(const std::string& account_id,const std::string& sys_user_id,const std::string& main_password,const std::string& plaintext_pwd);
 
     /**
      * @brief 删除目标账号密码记录
      * @param account_id 目标账号
      * @return 成功与否 + message
      */
-    static Return<bool> delete_account(long long account_id);
+    static Return<bool> delete_account(const std::string& account_id);
 
 private:
     /**

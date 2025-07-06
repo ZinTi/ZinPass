@@ -1,6 +1,4 @@
 #include "view_account.h"
-#include <utility>
-#include <iostream>
 
 namespace zinpass::models{
 
@@ -24,7 +22,7 @@ ViewAccount::ViewAccount() {
 }
 
 ViewAccount::ViewAccount(
-    const long long id,
+    const std::string& id,
     const std::string& username,
     const std::string& nickname,
     const std::string& sub_account,
@@ -123,6 +121,7 @@ void ViewAccount::copy(const ViewAccount& other) {
 }
 
 void ViewAccount::print() const {
+    /*
     std::cout << "[ zinpass::models::ViewAccount ]" << std::endl;
     std::cout << "id: " << this->id_ << std::endl;
     std::cout << "username: " << this->username_ << std::endl;
@@ -140,6 +139,7 @@ void ViewAccount::print() const {
     std::cout << "phone: " << this->phone_  << std::endl;
     std::cout << "email: " << this->email_ << std::endl;
     std::cout << "category: " << this->category_  << std::endl;
+    */
 }
 
 }

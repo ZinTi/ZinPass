@@ -23,7 +23,7 @@ ViewAccount::ViewAccount() {
 }
 
 ViewAccount::ViewAccount(
-    const long long id,
+    const std::string& id,
     const std::string& username,
     const std::string& nickname,
     const std::string& sub_account,

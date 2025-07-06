@@ -19,7 +19,6 @@ namespace zinpass::cli {
     private:
         unsigned long command_count_ = 0; // 用户输入指令 计数器
         bool quit_ = false;
-        Prompt prompt_;
 
         std::string input_;
         CommandHandler* command_handler_;

@@ -68,7 +68,7 @@ public:
      * @param account_id
      * @return view_account + message
      */
-    Return<zinpass::models::ViewAccount> list_account_by_id(const std::string& session_id, long long account_id);
+    Return<zinpass::models::ViewAccount> list_account_by_id(const std::string& session_id, const std::string& account_id);
 
     /**
      * @brief list_accounts
@@ -124,7 +124,7 @@ public:
      */
     Return<bool> update_account(
         const std::string& session_id,
-        const long long account_id,
+        const std::string& account_id,
         const std::string& provider_name,
         const std::string& platform_name,
         const std::string& username,
@@ -146,7 +146,7 @@ public:
      * @param main_password
      * @return
      */
-    Return<bool> remove_account(const std::string& session_id, long long account_id, const std::string& main_password);
+    Return<bool> remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_password);
 
     /**
      * @brief fetch_password
@@ -155,7 +155,7 @@ public:
      * @param main_password
      * @return plaintext + message
      */
-    Return<std::string> fetch_password(const std::string& session_id,long long account_id,const std::string main_password);
+    Return<std::string> fetch_password(const std::string& session_id, const std::string& account_id, const std::string& main_password);
 
 
 private:

@@ -22,7 +22,7 @@ public:
     void fetch_phone_by_id(int phone_id);
 
 signals:
-    void form_submited();
+    void form_submitted();
 
 private slots:
     void on_btn_submit_clicked();

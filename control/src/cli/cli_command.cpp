@@ -1,7 +1,9 @@
 #include "cli_command.h"
+#include "status_rpc.h"
 #include <cstdlib>
 #include <iostream>
-#include "status_rpc.h"
+
+#include <prompt.h>
 
 #define TEMPORARY_CONTROL_KEY "test-key"
 
@@ -52,7 +54,7 @@ void CliCommand::help(){
 }
 
 void CliCommand::prompt(const std::string& str){
-
+    Prompt::getInstance().setPrompt(str);
 }
 
 void CliCommand::reload(){

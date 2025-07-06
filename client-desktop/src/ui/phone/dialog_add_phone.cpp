@@ -2,7 +2,6 @@
 #include <QMessageBox>
 #include <QFormLayout>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include "state_manager.h"
 #include "telecom_rpc.h"
 #include "phone_rpc.h"

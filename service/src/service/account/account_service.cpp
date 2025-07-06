@@ -36,7 +36,7 @@ grpc::Status AccountServiceImpl::ListAccountById(ServerContext* context, const a
     }
 
     // 2. 解析请求体
-    const long long account_id = request->account_id();
+    const std::string& account_id = request->account_id();
     const auto[data, message] = business::AccountManager::get_account_by_id(account_id);
     response->set_message(message);
     auto* v_acc = new account::v1::ViewAccount();
@@ -79,7 +79,7 @@ grpc::Status AccountServiceImpl::CreateAccount(ServerContext* context, const acc
     // 3. 新增
     const std::string& main_password = request->main_password();
     models::ViewAccount view_account(
-        0,
+        "",
         request->account().username(),
         request->account().nickname(),
         request->account().sub_account(),
@@ -299,7 +299,7 @@ grpc::Status AccountServiceImpl::DeleteAccount(ServerContext *context, const acc
     }
 
     // 3. 删除操作
-    const long long account_id = request->account_id();
+    const std::string& account_id = request->account_id();
     const auto[ret_delete, message_delete] = business::AccountManager::delete_account(account_id);
     response->set_result(ret_delete);
     response->set_message(message_delete);
@@ -325,7 +325,7 @@ grpc::Status AccountServiceImpl::FetchPassword(ServerContext* context, const acc
     }
 
     // 3. 若密码正确查询密码
-    const long long account_id = request->account_id();
+    const std::string& account_id = request->account_id();
     const std::string& main_password = request->main_password();
     const auto[plaintext_password, message_plaintext] = business::AccountManager::retrieve_decrypted_password(account_id, user_id, main_password);
     if (plaintext_password.empty()) {

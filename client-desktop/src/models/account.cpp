@@ -1,9 +1,8 @@
 #include "account.h"
-#include <utility>
 
 namespace zinpass::models {
     Account::Account() {
-        id_ = -1;
+        id_ = "";
         username_ = "";
         nickname_ = "";
         sub_account_ = "";
@@ -24,7 +23,7 @@ namespace zinpass::models {
     }
 
     Account::Account(
-        const long long id,
+        const std::string& id,
         const std::string& username,
         const std::string& nickname,
         const std::string& sub_account,
@@ -40,7 +39,7 @@ namespace zinpass::models {
         std::vector<unsigned char> encrypted_pwd,
         std::vector<unsigned char> iv,
         const short phone_id,
-        const long long email_id,
+        const std::string& email_id,
         const short category_id)
         :
         id_(id),
@@ -87,7 +86,7 @@ namespace zinpass::models {
     Account::~Account() = default;
 
     // Getter && Setter
-    long long Account::getId() const { return this->id_; }
+    std::string Account::getId() const { return this->id_; }
     std::string Account::getUsername() const { return this->username_; }
     std::string Account::getNickname() const { return this->nickname_; }
     std::string Account::getSubAccount() const { return this->sub_account_; }
@@ -103,10 +102,10 @@ namespace zinpass::models {
     const std::vector<unsigned char>& Account::getEncryptedPwd() const{ return this->encrypted_pwd_; }
     const std::vector<unsigned char>& Account::getIv() const{ return this->iv_; }
     short Account::getPhoneId() const { return this->phone_id_; }
-    long long Account::getEmailId() const { return this->email_id_; }
+    std::string Account::getEmailId() const { return this->email_id_; }
     short Account::getCategoryId() const { return this->category_id_; }
 
-    void Account::setId(const long long id) { this->id_ = id; }
+    void Account::setId(const std::string& id) { this->id_ = id; }
     void Account::setUsername(const std::string& username) { this->username_ = username; }
     void Account::setNickname(const std::string& nickname) { this->nickname_ = nickname; }
     void Account::setSubAccount(const std::string& sub_account) { this->sub_account_ = sub_account; }
@@ -122,6 +121,6 @@ namespace zinpass::models {
     void Account::setEncryptedPwd(const std::vector<unsigned char>& encrypted_pwd){ this->encrypted_pwd_ = encrypted_pwd; }
     void Account::setIv(const std::vector<unsigned char>& iv){ this->iv_ = iv; }
     void Account::setPhoneId(const short phone_id) { this->phone_id_ = phone_id; }
-    void Account::setEmailId(const long long email_id) { this->email_id_ = email_id; }
+    void Account::setEmailId(const std::string& email_id) { this->email_id_ = email_id; }
     void Account::setCategoryId(const short category_id) { this->category_id_ = category_id; }
 }

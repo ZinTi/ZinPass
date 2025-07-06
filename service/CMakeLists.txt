@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(zinpass_service VERSION 0.0.2 LANGUAGES CXX)
+project(zinpass_service VERSION 0.0.3 LANGUAGES CXX)
 
 # 设置平台相关变量
 if(WIN32)
@@ -15,7 +15,7 @@ list(APPEND CMAKE_PREFIX_PATH
         "A:/build/grpc-1.71.0-amd64-win-mingw64"    # gRPC-1.71.0
         # "A:/build/openssl-win64-mingw"              # OpenSSL-3.5.0 (gRPC 库中内置了 OpenSSL，所以使用 gRPC 内置的 OpenSSL 库)
         "A:/build/boost-msys2-mingw64"              # Boost-1.88
-        "A:/build/sqlite-3.49.1-mingw64-static"     # SQLite-3.49.1 (libsqlite3.a)
+        "A:/build/sqlite-v3.50.0-windows-amd64"     # SQLite-3.50.0 (libsqlite3.a)
 )
 
 # 查找依赖包

@@ -9,7 +9,8 @@ ZinPass v0.0.2（当前版本）
 6、美化桌面客户端界面，优化操作逻辑，适配GNU/Linux桌面发行版本程序
 7、开发安卓端App、小程序端App
 8、提高性能，解决Bug，
-account、phone主键从0开始，修改这个问题，
+筛选账号有些条件被忽略
+phone主键从0开始，修改这个问题，
 删除账号后，复用主键id会导致引用出现问题，例如一个 account 引用了 email(也是account的一种) 和 phone， 如果删除 email 或 phone 会导致原有的 email_id 和 phone_id 被以后的新记录复用。执行删除前，先检查外键约束，确保不被其他表记录引用。
 
 二、开发及更新时间

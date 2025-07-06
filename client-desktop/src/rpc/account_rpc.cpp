@@ -91,7 +91,7 @@ namespace zinpass::rpc{
         return {accounts, response.message()};
     }*/
 
-    AccountRPC::Return<zinpass::models::ViewAccount> AccountRPC::list_account_by_id(const std::string& session_id, long long account_id){
+    AccountRPC::Return<zinpass::models::ViewAccount> AccountRPC::list_account_by_id(const std::string& session_id, const std::string& account_id){
         account::v1::ListAccountByIdRequest request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
@@ -185,7 +185,7 @@ namespace zinpass::rpc{
 
     AccountRPC::Return<bool> AccountRPC::update_account(
         const std::string& session_id,
-        const long long account_id,
+        const std::string& account_id,
         const std::string& provider_name,
         const std::string& platform_name,
         const std::string& username,
@@ -224,7 +224,7 @@ namespace zinpass::rpc{
         return {response.result(), response.message()};
     }
 
-    AccountRPC::Return<bool> AccountRPC::remove_account(const std::string& session_id, long long account_id, const std::string& main_password){
+    AccountRPC::Return<bool> AccountRPC::remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_password){
         account::v1::DeleteAccountRequest request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
@@ -235,7 +235,7 @@ namespace zinpass::rpc{
         return {response.result(), response.message()};
     }
 
-    AccountRPC::Return<std::string> AccountRPC::fetch_password(const std::string& session_id,long long account_id,const std::string main_password){
+    AccountRPC::Return<std::string> AccountRPC::fetch_password(const std::string& session_id, const std::string& account_id,const std::string& main_password){
         account::v1::FetchPasswordRequest request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
