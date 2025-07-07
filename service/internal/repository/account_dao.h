@@ -78,6 +78,8 @@ public:
 	 * @param nickname 昵称
 	 * @param phone 绑定手机号
 	 * @param email 绑定邮箱
+	 * @param category 所属类别
+	 * @param postscript 备注
 	 * @param sys_user_id 指定系统用户
 	 * @param view_accounts 保存查询到的viewAccount信息的vector容器
 	 * @return 成功与否
@@ -89,6 +91,8 @@ public:
 		const std::string& nickname,
 		const std::string& phone,
 		const std::string& email,
+		const std::string& category,
+		const std::string& postscript,
 		const std::string& sys_user_id,
 		std::vector<models::ViewAccount>& view_accounts)const;
 

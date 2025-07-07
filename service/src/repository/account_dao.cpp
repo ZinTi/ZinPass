@@ -117,7 +117,7 @@ std::string AccountDAO::buildSqlPart(const std::map<ColumnType, std::string>& da
     return part;
 }
 
-DaoStatus AccountDAO::findById(const std::string& id, models::ViewAccount& view_account)const {
+DaoStatus AccountDAO::findById(const std::string& id, models::ViewAccount& view_account) const {
     DaoStatus status;
     sqlite3* conn = pool_.get_connection();
 
@@ -146,7 +146,7 @@ DaoStatus AccountDAO::findById(const std::string& id, models::ViewAccount& view_
     return status;
 }
 
-DaoStatus AccountDAO::find(const std::string& sys_user_id, std::vector<models::ViewAccount>& view_accounts)const {
+DaoStatus AccountDAO::find(const std::string& sys_user_id, std::vector<models::ViewAccount>& view_accounts) const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT * FROM view_account WHERE sys_user_id = ?";
@@ -178,15 +178,23 @@ DaoStatus AccountDAO::find(
     const std::string& nickname,
     const std::string& phone,
     const std::string& email,
+    const std::string& category,
+    const std::string& postscript,
     const std::string& sys_user_id,
-    std::vector<models::ViewAccount>& view_accounts)const
+    std::vector<models::ViewAccount>& view_accounts) const
 {
     sqlite3* conn = pool_.get_connection();
 
-    const std::string sql = "SELECT * FROM view_account WHERE (provider_name LIKE ? OR (? = '' AND provider_name IS NULL))"
-        "AND (platform_name LIKE ? OR (? = '' AND platform_name IS NULL)) AND (username LIKE ? OR (? = '' AND username IS NULL))"
-        "AND (nickname LIKE ? OR (? = '' AND nickname IS NULL)) AND (phone = ? OR (? = '' AND (phone IS NOT NULL OR phone IS NULL)))"
-        "AND (email = ? OR (? = '' AND (email IS NOT NULL OR email IS NULL))) AND (sys_user_id = ? OR (? = '' AND sys_user_id IS NULL));";
+    const std::string sql = "SELECT * FROM view_account WHERE "
+        "(provider_name LIKE ? OR (? = '' AND provider_name IS NULL)) AND "
+        "(platform_name LIKE ? OR (? = '' AND platform_name IS NULL)) AND "
+        "(username LIKE ? OR (? = '' AND username IS NULL)) AND "
+        "(nickname LIKE ? OR (? = '' AND nickname IS NULL)) AND "
+        "(phone = ? OR (? = '' AND (phone IS NOT NULL OR phone IS NULL))) AND "
+        "(email = ? OR (? = '' AND (email IS NOT NULL OR email IS NULL))) AND "
+        "(category = ? OR (? = '' AND (category IS NOT NULL OR category IS NULL))) AND "
+        "(postscript LIKE ? OR (? = '' AND postscript IS NULL)) AND "
+        "(sys_user_id = ? OR (? = '' AND sys_user_id IS NULL));";
 
     sqlite3_stmt* stmt = nullptr;
     if (SQLITE_OK != sqlite3_prepare_v2(conn, sql.c_str(), -1, &stmt, nullptr)) {
@@ -196,34 +204,43 @@ DaoStatus AccountDAO::find(
         return DaoStatus::InvalidData;
     }
 
+    int index = 1;
     std::ostringstream oss_provider_name;
     oss_provider_name << "%" << provider_name << "%";
-    sqlite3_bind_text(stmt, 1, oss_provider_name.str().c_str(), static_cast<int>(oss_provider_name.str().size()), SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 2, provider_name.c_str(), static_cast<int>(provider_name.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, oss_provider_name.str().c_str(), static_cast<int>(oss_provider_name.str().size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, provider_name.c_str(), static_cast<int>(provider_name.size()), SQLITE_TRANSIENT);
 
     std::ostringstream oss_platform_name;
     oss_platform_name << "%" << platform_name << "%";
-    sqlite3_bind_text(stmt, 3, oss_platform_name.str().c_str(), static_cast<int>(oss_platform_name.str().size()), SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 4, platform_name.c_str(), static_cast<int>(platform_name.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, oss_platform_name.str().c_str(), static_cast<int>(oss_platform_name.str().size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, platform_name.c_str(), static_cast<int>(platform_name.size()), SQLITE_TRANSIENT);
 
     std::ostringstream oss_username;
     oss_username << "%" << username << "%";
-    sqlite3_bind_text(stmt, 5, oss_username.str().c_str(), static_cast<int>(oss_username.str().size()), SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 6, username.c_str(), static_cast<int>(username.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, oss_username.str().c_str(), static_cast<int>(oss_username.str().size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, username.c_str(), static_cast<int>(username.size()), SQLITE_TRANSIENT);
 
     std::ostringstream oss_nickname;
     oss_nickname << "%" << nickname << "%";
-    sqlite3_bind_text(stmt, 7, oss_nickname.str().c_str(), static_cast<int>(oss_nickname.str().size()), SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 8, nickname.c_str(), static_cast<int>(nickname.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, oss_nickname.str().c_str(), static_cast<int>(oss_nickname.str().size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, nickname.c_str(), static_cast<int>(nickname.size()), SQLITE_TRANSIENT);
 
-    sqlite3_bind_text(stmt, 9, phone.c_str(), static_cast<int>(phone.size()), SQLITE_TRANSIENT); // phone是精确而非模糊筛选（当为空时则不筛选）
-    sqlite3_bind_text(stmt, 10, phone.c_str(), static_cast<int>(phone.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, phone.c_str(), static_cast<int>(phone.size()), SQLITE_TRANSIENT); // phone是精确而非模糊筛选（当为空时则不筛选）
+    sqlite3_bind_text(stmt, index++, phone.c_str(), static_cast<int>(phone.size()), SQLITE_TRANSIENT);
 
-    sqlite3_bind_text(stmt, 11, email.c_str(), static_cast<int>(email.size()), SQLITE_TRANSIENT); // email是精确而非模糊筛选（当为空时则不筛选）
-    sqlite3_bind_text(stmt, 12, email.c_str(), static_cast<int>(email.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, email.c_str(), static_cast<int>(email.size()), SQLITE_TRANSIENT); // email是精确而非模糊筛选（当为空时则不筛选）
+    sqlite3_bind_text(stmt, index++, email.c_str(), static_cast<int>(email.size()), SQLITE_TRANSIENT);
 
-    sqlite3_bind_text(stmt, 13, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 14, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, category.c_str(), static_cast<int>(category.size()), SQLITE_TRANSIENT); // category是精确而非模糊筛选（当为空时则不筛选）
+    sqlite3_bind_text(stmt, index++, category.c_str(), static_cast<int>(category.size()), SQLITE_TRANSIENT);
+
+    std::ostringstream oss_postscript;
+    oss_postscript << "%" << postscript << "%";
+    sqlite3_bind_text(stmt, index++, oss_postscript.str().c_str(), static_cast<int>(oss_postscript.str().size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, postscript.c_str(), static_cast<int>(postscript.size()), SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(stmt, index++, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, index++, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
     SQLDebug::log_sql(stmt, true);
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         view_accounts.push_back(ViewAccountFromStatement(stmt));
@@ -236,7 +253,7 @@ DaoStatus AccountDAO::find(
 }
 
 DaoStatus AccountDAO::findEncryptedPwdAndIv(const std::string& id, const std::string& sys_user_id,
-    std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv)const
+    std::vector<unsigned char>& encrypted_pwd, std::vector<unsigned char>& iv) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -278,7 +295,7 @@ DaoStatus AccountDAO::findEncryptedPwdAndIv(const std::string& id, const std::st
 }
 
 // __attribute__((optimize("O0")))     // 禁用优化
-DaoStatus AccountDAO::add(const models::Account& account)const {
+DaoStatus AccountDAO::add(const models::Account& account) const {
     DaoStatus status;
     sqlite3* conn = pool_.get_connection();
 
@@ -348,7 +365,7 @@ DaoStatus AccountDAO::add(const models::Account& account)const {
     return status;
 }
 
-DaoStatus AccountDAO::add(const models::ViewAccount& view_account)const {
+DaoStatus AccountDAO::add(const models::ViewAccount& view_account) const {
     DaoStatus status;
     sqlite3* conn = pool_.get_connection();
 
@@ -411,7 +428,7 @@ DaoStatus AccountDAO::add(const models::ViewAccount& view_account)const {
 /**
  * @brief 修改账号记录（ 以 view_account.getId() 为目标 ）
  */
-DaoStatus AccountDAO::update(const models::ViewAccount& view_account)const {
+DaoStatus AccountDAO::update(const models::ViewAccount& view_account) const {
     sqlite3* conn = pool_.get_connection();
     const std::string sql = "UPDATE account SET"
                             "  username = ?1,"
@@ -593,7 +610,7 @@ DaoStatus AccountDAO::update_password(const std::string& id,
     const std::string& sys_user_id,
     const std::vector<unsigned char>& encrypted_pwd,
     const std::vector<unsigned char>& iv,
-    const std::string& update_time)const
+    const std::string& update_time) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -649,7 +666,7 @@ DaoStatus AccountDAO::update_platform(
     const std::string& platform_name,
     const std::string& url,
     const std::string& hotline,
-    const std::string& update_time)const
+    const std::string& update_time) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -702,7 +719,7 @@ DaoStatus AccountDAO::update_user(
     const std::vector<unsigned char>& encrypted_pwd,
     const std::vector<unsigned char>& iv,
     const short category_id,
-    const std::string& update_time)const
+    const std::string& update_time) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -762,7 +779,7 @@ DaoStatus AccountDAO::update_third(
     const std::string& id,
     const int phone_id,
     const std::string& email_id,
-    const std::string& update_time)const
+    const std::string& update_time) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -807,7 +824,7 @@ DaoStatus AccountDAO::update_other(
     const std::string& id,
     const std::string& sub_account,
     const std::string& postscript,
-    const std::string& update_time)const
+    const std::string& update_time) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -848,7 +865,7 @@ DaoStatus AccountDAO::update_other(
 // 此版本方法有很多BUG，不要使用
 DaoStatus AccountDAO::update(
     const std::vector<KeyValuePair>& data,
-    const std::string& id)const
+    const std::string& id) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -1080,7 +1097,7 @@ DaoStatus AccountDAO::update(
     return DaoStatus::Success;
 }
 
-DaoStatus AccountDAO::remove(const std::string& id)const {
+DaoStatus AccountDAO::remove(const std::string& id) const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "DELETE FROM account WHERE id = ?";
@@ -1110,7 +1127,7 @@ DaoStatus AccountDAO::remove(const std::string& id)const {
 // Email 部分（特殊的 Account）
 DaoStatus AccountDAO::findEmailList(
     const std::string& sys_user_id,
-    std::vector<std::string>& email_addresses)const
+    std::vector<std::string>& email_addresses) const
 {
     sqlite3* conn = pool_.get_connection();
 
@@ -1164,7 +1181,7 @@ std::string AccountDAO::getIdByEmailAddress(const std::string& email_address) co
 }
 
 // 根据 id 查询目标 email 记录
-DaoStatus AccountDAO::findEmailById(const std::string& id, models::ViewAccount& email)const {
+DaoStatus AccountDAO::findEmailById(const std::string& id, models::ViewAccount& email) const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT * FROM view_email WHERE id = ?";
@@ -1200,7 +1217,7 @@ DaoStatus AccountDAO::findEmailById(const std::string& id, models::ViewAccount& 
 }
 
 // 查询所有 email 记录
-DaoStatus AccountDAO::findEmail(const std::string& sys_user_id, std::vector<models::ViewAccount>& emails)const {
+DaoStatus AccountDAO::findEmail(const std::string& sys_user_id, std::vector<models::ViewAccount>& emails) const {
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT * FROM view_email WHERE sys_user_id = ?";

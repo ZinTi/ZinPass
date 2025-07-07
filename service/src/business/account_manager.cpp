@@ -60,6 +60,8 @@ AccountManager::Return<std::vector<models::ViewAccount>> AccountManager::get_acc
     const std::string& nickname,
     const std::string& telephone,
     const std::string& email,
+    const std::string& category,
+    const std::string& postscript,
     const std::string& sys_user_id
 ) {
     std::vector<models::ViewAccount> view_accounts;
@@ -67,7 +69,7 @@ AccountManager::Return<std::vector<models::ViewAccount>> AccountManager::get_acc
     try {
         repository::AccountDAO account_dao;
         if (const repository::DaoStatus dao_ret = account_dao.find(provider_name,platform_name,
-            username,nickname,telephone,email,sys_user_id,view_accounts);
+            username,nickname,telephone,email,category,postscript,sys_user_id,view_accounts);
             dao_ret == repository::DaoStatus::Success) {
             message = "成功";
         } else if (dao_ret == repository::DaoStatus::NotFound) {

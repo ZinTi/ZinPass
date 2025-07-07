@@ -35,6 +35,8 @@ public:
      * @param nickname 别称
      * @param telephone 手机号
      * @param email 邮箱
+     * @param category 类别
+     * @param postscript 备注
      * @param sys_user_id 系统用户
      * @return view_accounts + message
      */
@@ -45,6 +47,8 @@ public:
         const std::string& nickname,
         const std::string& telephone,
         const std::string& email,
+        const std::string& category,
+        const std::string& postscript,
         const std::string& sys_user_id
         );
 

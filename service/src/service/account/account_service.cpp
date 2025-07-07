@@ -203,6 +203,8 @@ grpc::Status AccountServiceImpl::ListAccounts(ServerContext* context, const acco
         conditions.nickname(),
         conditions.mobile_phone(),
         conditions.email(),
+        conditions.category(),
+        conditions.postscript(),
         user_id
         );
 

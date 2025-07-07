@@ -54,7 +54,7 @@ CREATE TABLE mobile_phone
     sys_user_id      VARCHAR(36) NOT NULL,     -- 所属系统用户
     created_time     DATETIME    NOT NULL,
     updated_time     DATETIME    NOT NULL,
-    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)
+    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE account_category
@@ -103,10 +103,10 @@ CREATE TABLE account
     sys_user_id   VARCHAR(36)  NOT NULL,             -- 所属系统用户
     created_time  DATETIME     NOT NULL,
     updated_time  DATETIME     NOT NULL,
-    CONSTRAINT account_fk_1 FOREIGN KEY (phone_id) REFERENCES mobile_phone (id),
-    CONSTRAINT account_fk_2 FOREIGN KEY (email_id) REFERENCES account (id), -- 自引用外键
-    CONSTRAINT account_fk_3 FOREIGN KEY (category_id) REFERENCES account_category (id),
-    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)
+    CONSTRAINT account_fk_1 FOREIGN KEY (phone_id) REFERENCES mobile_phone (id) ON UPDATE CASCADE,
+    CONSTRAINT account_fk_2 FOREIGN KEY (email_id) REFERENCES account (id) ON UPDATE CASCADE, -- 自引用外键
+    CONSTRAINT account_fk_3 FOREIGN KEY (category_id) REFERENCES account_category (id) ON UPDATE CASCADE,
+    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE
 );
 
 CREATE VIEW view_account AS

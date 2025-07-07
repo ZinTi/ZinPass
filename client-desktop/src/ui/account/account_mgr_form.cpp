@@ -123,7 +123,7 @@ void AccountMgrForm::list_accounts(){
 
     std::string provider_name = (data["provider_name"].toString().isEmpty() ? "" : data["provider_name"].toString().toStdString());
     std::string platform_name = (data["platform_name"].toString().isEmpty() ? "" : data["platform_name"].toString().toStdString());
-    std::string username = (data["nickname"].toString().isEmpty() ? "" : data["nickname"].toString().toStdString());
+    std::string username = (data["username"].toString().isEmpty() ? "" : data["username"].toString().toStdString());
     std::string nickname = (data["nickname"].toString().isEmpty() ? "" : data["nickname"].toString().toStdString());
     std::string mobile_phone = (data["phone"].toString() == "所有" ? "" : data["phone"].toString().toStdString()); // 所有、空值、数据库 mobile phone 可选项
     std::string email = (data["email"].toString() == "所有" ? "" : data["email"].toString().toStdString()); // 所有、空值、数据库 email 可选项
