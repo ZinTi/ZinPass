@@ -1,6 +1,6 @@
 #ifndef MOBILE_PHONE_DAO_H
 #define MOBILE_PHONE_DAO_H
-#include "mobile_phone.h"
+#include "models/mobile_phone.h"
 #include <string>
 #include <vector>
 #include "common/dao_status.h"

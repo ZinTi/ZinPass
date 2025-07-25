@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <variant>
-#include "account.h"
-#include "view_account.h"
+#include "models/account.h"
+#include "models/view_account.h"
 #include "common/dao_status.h"
 #include "connection_pool.h"
 extern "C" {

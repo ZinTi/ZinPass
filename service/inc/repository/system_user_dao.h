@@ -1,7 +1,7 @@
 #ifndef SYSTEM_USER_DAO_H
 #define SYSTEM_USER_DAO_H
 
-#include "system_user.h"
+#include "models/system_user.h"
 #include <string>
 #include <vector>
 extern "C" {

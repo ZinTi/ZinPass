@@ -1,6 +1,7 @@
-#include "mobile_phone_dao.h"
-#include "common/sql_debug.h"
-#include "log_manager.h"
+#include "models/mobile_phone.h"
+#include "repository/mobile_phone_dao.h"
+#include "repository/common/sql_debug.h"
+#include "utils/log_manager.h"
 #include <sstream>
 extern "C" {
 #include <sqlite3.h>

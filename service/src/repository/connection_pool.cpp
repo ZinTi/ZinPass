@@ -1,6 +1,6 @@
-#include "connection_pool.h"
+#include "repository/connection_pool.h"
 #include <stdexcept>
-#include "log_manager.h"
+#include "utils/log_manager.h"
 
 namespace zinpass::repository {
 

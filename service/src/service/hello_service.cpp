@@ -1,4 +1,4 @@
-#include "hello_service.h"
+#include "service/hello_service.h"
 
 namespace zinpass::service {
     grpc::Status GreeterServiceImpl::SayHello(

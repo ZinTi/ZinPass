@@ -1,5 +1,5 @@
-#include "grpc_client_service.h"
-#include "log_manager.h"
+#include "service/grpc_client_service.h"
+#include "utils/log_manager.h"
 
 
 namespace zinpass::service {

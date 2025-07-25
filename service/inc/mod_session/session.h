@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace zinpass::models {
+namespace zinpass::mod_session {
 
 class Session {
 private:
@@ -55,6 +55,6 @@ public:
 
 };
 
-} // zinpass::models
+}
 
 #endif //SESSION_H

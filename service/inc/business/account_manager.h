@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "view_account.h"
+#include "models/view_account.h"
 
 namespace zinpass::business{
 class AccountManager {

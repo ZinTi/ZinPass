@@ -2,14 +2,14 @@
 #include <thread>
 #include <chrono>
 #include <filesystem>
-#include "read_configuration_file.h"
-#include "init_database.h"
-#include "log_manager.h"
-#include "state_manager.h"
-#include "session_manager.h"
-#include "connection_pool.h"
-#include "grpc_client_service.h"
-#include "grpc_control_service.h"
+#include "config/read_configuration_file.h"
+#include "repository/init_database.h"
+#include "utils/log_manager.h"
+#include "config/state_manager.h"
+#include "mod_session/session_mgr.h"
+#include "repository/connection_pool.h"
+#include "service/grpc_client_service.h"
+#include "service/grpc_control_service.h"
 
 #define GRPC_CLIENT_SVC_AP      "0.0.0.0:50051"
 #define GRPC_CTRL_SVC_AP        "127.0.0.1:50052"
@@ -89,11 +89,12 @@ void init() {
 // 增加线程池
 // 改为条件变量方式
 [[noreturn]] void periodic_task_worker() {
-    constexpr int seconds = 1800;   // 30min 清理一次无效 session
+    constexpr int seconds = 600;   // 10min 清理一次无效 session
     while (true) {
         std::this_thread::sleep_for(std::chrono::seconds(seconds));
-        // 自动清理无效 session 记录等操作
-        const int sum = business::SessionManager::purge_expired_sessions();
+        // 自动清理内存中的无效 session 记录等操作
+        auto& session_mgr = mod_session::SessionMgr::get_instance();
+        const int sum = session_mgr.purge_expired_sessions();
         utils::LogManager::AddLog("[MESSAGE] purged expired sessions, sum: " + std::to_string(sum));
     }
 }

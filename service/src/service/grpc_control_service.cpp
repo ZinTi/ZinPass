@@ -1,5 +1,5 @@
-#include "grpc_control_service.h"
-#include "log_manager.h"
+#include "service/grpc_control_service.h"
+#include "utils/log_manager.h"
 #include <chrono>
 #include <thread>
 #include <grpcpp/server_builder.h>

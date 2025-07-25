@@ -1,16 +1,17 @@
-#include "account/account_service.h"
+#include "service/account/account_service.h"
 
-#include "account_manager.h"
-#include "authentication.h"
-#include "session_manager.h"
-#include "pwd_utils.h"
+#include "business/account_manager.h"
+#include "business/authentication.h"
+#include "mod_session/session_mgr.h"
+#include "utils/pwd_utils.h"
 
 namespace zinpass::service {
 
 grpc::Status AccountServiceImpl::ListEmailAddresses(ServerContext* context, const account::v1::ListEmailAddressesRequest* request, account::v1::ListEmailAddressesResponse* response) {
     // std::cout << "[RPC] ListEmailAddresses Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -28,7 +29,8 @@ grpc::Status AccountServiceImpl::ListEmailAddresses(ServerContext* context, cons
 grpc::Status AccountServiceImpl::ListAccountById(ServerContext* context, const account::v1::ListAccountByIdRequest* request, account::v1::ListAccountByIdResponse* response) {
     // std::cout << "[RPC] ListAccountById Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -61,7 +63,8 @@ grpc::Status AccountServiceImpl::ListAccountById(ServerContext* context, const a
 grpc::Status AccountServiceImpl::CreateAccount(ServerContext* context, const account::v1::CreateAccountRequest* request, account::v1::CreateAccountResponse* response){
     // std::cout << "[RPC] CreateAccount Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -106,7 +109,8 @@ grpc::Status AccountServiceImpl::CreateAccount(ServerContext* context, const acc
 grpc::Status AccountServiceImpl::ListAccounts(ServerContext* context, const account::v1::ListAccountsRequest* request, account::v1::ListAccountsResponse* response) {
     // std::cout << "[RPC] ListAccounts Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -185,7 +189,8 @@ grpc::Status AccountServiceImpl::ListAccounts(ServerContext* context, const acco
 grpc::Status AccountServiceImpl::ListAccounts(ServerContext* context, const account::v1::ListAccountsRequest* request, account::v1::ListAccountsResponse* response) {
     // std::cout << "[RPC] ListAccounts Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -233,7 +238,8 @@ grpc::Status AccountServiceImpl::ListAccounts(ServerContext* context, const acco
 grpc::Status AccountServiceImpl::UpdateAccount(ServerContext *context, const account::v1::UpdateAccountRequest *request, account::v1::UpdateAccountResponse *response) {
     // std::cout << "[RPC] UpdateAccount Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()) {
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -285,7 +291,8 @@ grpc::Status AccountServiceImpl::UpdateAccount(ServerContext *context, const acc
 
 grpc::Status AccountServiceImpl::DeleteAccount(ServerContext *context, const account::v1::DeleteAccountRequest *request, account::v1::DeleteAccountResponse *response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -311,7 +318,8 @@ grpc::Status AccountServiceImpl::DeleteAccount(ServerContext *context, const acc
 
 grpc::Status AccountServiceImpl::FetchPassword(ServerContext* context, const account::v1::FetchPasswordRequest* request, account::v1::FetchPasswordResponse* response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -341,7 +349,8 @@ grpc::Status AccountServiceImpl::FetchPassword(ServerContext* context, const acc
 
 grpc::Status AccountServiceImpl::ChangePassword(ServerContext* context, const account::v1::ChangePasswordRequest* request, account::v1::ChangePasswordResponse* response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");

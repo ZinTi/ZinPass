@@ -1,9 +1,9 @@
-#include "system_user_dao.h"
+#include "repository/system_user_dao.h"
 extern "C" {
 #include <sqlite3.h>
 }
-#include "log_manager.h"
-#include "common/sql_debug.h"
+#include "utils/log_manager.h"
+#include "repository/common/sql_debug.h"
 
 namespace zinpass::repository{
 

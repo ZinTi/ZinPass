@@ -1,10 +1,11 @@
-#include "account_dao.h"
-#include "date_time.h"
-#include "log_manager.h"
-#include <common/sql_debug.h>
+#include "repository/account_dao.h"
+#include "utils/date_time.h"
+#include "utils/log_manager.h"
+#include "repository/common/sql_debug.h"
 #include <map>
 #include <sstream>
-#include "uuid_generator.h"
+#include "utils/uuid_generator.h"
+#include "models/view_account.h"
 
 namespace zinpass::repository{
 

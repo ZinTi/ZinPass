@@ -1,12 +1,13 @@
-#include "phone/phone_service.h"
-#include "session_manager.h"
-#include "mobile_phone_manager.h"
+#include "service/phone/phone_service.h"
+#include "mod_session/session_mgr.h"
+#include "business/mobile_phone_manager.h"
 
 namespace zinpass::service{
 
 grpc::Status PhoneServiceImpl::CreatePhone(ServerContext *context, const account::v1::CreatePhoneRequest *request, account::v1::CreatePhoneResponse *response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -33,7 +34,8 @@ grpc::Status PhoneServiceImpl::CreatePhone(ServerContext *context, const account
 grpc::Status PhoneServiceImpl::ListPhoneNumbers(ServerContext* context, const account::v1::ListPhoneNumbersRequest* request, account::v1::ListPhoneNumbersResponse* response){
     // std::cout << "[RPC] ListPhoneNumbers Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -51,7 +53,8 @@ grpc::Status PhoneServiceImpl::ListPhoneNumbers(ServerContext* context, const ac
 grpc::Status PhoneServiceImpl::ListPhone(ServerContext *context, const account::v1::ListPhoneRequest *request, account::v1::ListPhoneResponse *response) {
     // std::cout << "[RPC] ListPhone Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -87,7 +90,8 @@ grpc::Status PhoneServiceImpl::ListPhone(ServerContext *context, const account::
 grpc::Status PhoneServiceImpl::FindPhoneById(ServerContext* context, const account::v1::FindPhoneByIdRequest* request, account::v1::FindPhoneByIdResponse* response) {
     // std::cout << "[RPC] FindPhoneById Request: " << request->DebugString() << std::endl;
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -118,7 +122,8 @@ grpc::Status PhoneServiceImpl::FindPhoneById(ServerContext* context, const accou
 
 grpc::Status PhoneServiceImpl::UpdatePhone(ServerContext *context, const account::v1::UpdatePhoneRequest *request, account::v1::UpdatePhoneResponse *response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
@@ -145,7 +150,8 @@ grpc::Status PhoneServiceImpl::UpdatePhone(ServerContext *context, const account
 
 grpc::Status PhoneServiceImpl::DeletePhone(ServerContext *context, const account::v1::DeletePhoneRequest *request, account::v1::DeletePhoneResponse *response) {
     // 1. 检查 session_id 有效性
-    const std::string user_id = business::SessionManager::validate_session_and_get_user_id(request->session_id());
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
         // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");

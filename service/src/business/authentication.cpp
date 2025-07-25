@@ -1,10 +1,10 @@
-#include "authentication.h"
-#include "common/dao_status.h"
-#include "system_user_dao.h"
-#include "user_manager.h"
-#include "session_manager.h"
-#include "pwd_utils.h"
-#include "date_time.h"
+#include "business/authentication.h"
+#include "repository/common/dao_status.h"
+#include "repository/system_user_dao.h"
+#include "business/user_manager.h"
+#include "mod_session/session_mgr.h"
+#include "utils/pwd_utils.h"
+#include "utils/date_time.h"
 
 namespace zinpass::business {
     AuthResult<std::optional<login_data_t>> Authentication::loginById(const std::string& id, const std::string& password) {
@@ -22,7 +22,8 @@ namespace zinpass::business {
             }
 
         // 2\ 创建会话
-        const std::string session_id = SessionManager::create_session(data->getId(), 1800);
+        auto& session_mgr = mod_session::SessionMgr::get_instance();
+        const std::string session_id = session_mgr.create(data->getId(), "default data", 600);
         if (session_id.empty()) {
             return {std::nullopt, "会话建立失败"};
         }
@@ -49,7 +50,8 @@ namespace zinpass::business {
         }
 
         // 2\ 创建会话
-        const std::string session_id = SessionManager::create_session(data->getId(), 1800);
+        auto& session_mgr = mod_session::SessionMgr::get_instance();
+        const std::string session_id = session_mgr.create(data->getId(), "default data", 600);
         if (session_id.empty()) {
             return {std::nullopt, "会话建立失败"};
         }

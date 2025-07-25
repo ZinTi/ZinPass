@@ -1,6 +1,6 @@
-#include "status/status_service.h"
-#include "about.h"
-#include "state_manager.h"
+#include "service/status/status_service.h"
+#include "config/about.h"
+#include "config/state_manager.h"
 
 #define TEMPORARY_CONTROL_KEY    "test-key"
 

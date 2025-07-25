@@ -51,7 +51,8 @@ set(PROJECT_SOURCES
 
         # 3. 业务逻辑层-business
         src/business/user_manager.cpp
-        src/business/session_manager.cpp
+        src/mod_session/session_persistence.cpp
+        src/mod_session/session_mgr.cpp
         src/business/telecom_operator_manager.cpp
         src/business/mobile_phone_manager.cpp
         src/business/account_manager.cpp
@@ -62,7 +63,7 @@ set(PROJECT_SOURCES
         src/repository/common/sql_debug.cpp
         src/repository/init_database.cpp # 初始化 Database
         src/repository/system_user_dao.cpp
-        src/repository/session_dao.cpp
+        src/mod_session/session_dao.cpp
         src/repository/telecom_operator_dao.cpp
         src/repository/mobile_phone_dao.cpp
         src/repository/category_dao.cpp
@@ -70,7 +71,7 @@ set(PROJECT_SOURCES
 
         # 5. 领域模型（与proto解耦）-models
         src/models/system_user.cpp
-        src/models/session.cpp
+        src/mod_session/session.cpp
         src/models/mobile_phone.cpp
         src/models/account.cpp
         src/models/view_account.cpp
@@ -122,16 +123,7 @@ set_target_properties(zinpass_service PROPERTIES
 # 包含头文件目录（在add_executable、add_library之后）
 target_include_directories(zinpass_service
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/internal
-        ${CMAKE_SOURCE_DIR}/internal/utils
-        ${CMAKE_SOURCE_DIR}/internal/config
-        ${CMAKE_SOURCE_DIR}/internal/models
-        ${CMAKE_SOURCE_DIR}/internal/repository
-        ${CMAKE_SOURCE_DIR}/internal/business
-
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/include/service
-
+        ${CMAKE_SOURCE_DIR}/inc/
         ${CMAKE_SOURCE_DIR}/generate/
 
         ${OPENSSL_INCLUDE_DIR} # OpenSSL 头文件

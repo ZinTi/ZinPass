@@ -1,5 +1,5 @@
-#include "user/auth_service.h"
-#include "authentication.h"
+#include "service/user/auth_service.h"
+#include "business/authentication.h"
 
 namespace zinpass::service{
 

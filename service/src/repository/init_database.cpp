@@ -1,5 +1,5 @@
-#include "init_database.h"
-#include "log_manager.h"
+#include "repository/init_database.h"
+#include "utils/log_manager.h"
 
 namespace zinpass::repository {
     InitDatabase::InitDatabase(const std::string& db_path) {

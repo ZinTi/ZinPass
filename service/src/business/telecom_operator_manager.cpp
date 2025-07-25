@@ -1,5 +1,5 @@
-#include "telecom_operator_manager.h"
-#include "telecom_operator_dao.h"
+#include "business/telecom_operator_manager.h"
+#include "repository/telecom_operator_dao.h"
 
 namespace zinpass::business{
 

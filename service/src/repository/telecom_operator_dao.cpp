@@ -1,6 +1,6 @@
-#include "telecom_operator_dao.h"
-#include "common/sql_debug.h"
-#include "log_manager.h"
+#include "repository/telecom_operator_dao.h"
+#include "repository/common/sql_debug.h"
+#include "utils/log_manager.h"
 extern "C" {
     #include <sqlite3.h>
 }

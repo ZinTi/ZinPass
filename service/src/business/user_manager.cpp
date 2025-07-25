@@ -1,9 +1,9 @@
-#include "user_manager.h"
-#include "system_user_dao.h"
-#include "pwd_utils.h"
-#include "date_time.h"
-#include "common/dao_status.h"
-#include "uuid_generator.h"
+#include "business/user_manager.h"
+#include "repository/system_user_dao.h"
+#include "utils/pwd_utils.h"
+#include "utils/date_time.h"
+#include "repository/common/dao_status.h"
+#include "utils/uuid_generator.h"
 
 namespace zinpass::business {
 

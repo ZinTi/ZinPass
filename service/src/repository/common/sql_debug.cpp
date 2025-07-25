@@ -1,5 +1,5 @@
-#include "common/sql_debug.h"
-#include "log_manager.h"
+#include "repository/common/sql_debug.h"
+#include "utils/log_manager.h"
 #include <string>
 
 namespace zinpass::repository {

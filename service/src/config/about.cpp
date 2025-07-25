@@ -1,4 +1,4 @@
-#include "about.h"
+#include "config/about.h"
 
 #include <ostream>
 
