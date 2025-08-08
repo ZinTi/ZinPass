@@ -13,7 +13,7 @@
 #include "log_run_form.h"
 #include "log_handle_form.h"
 #include "personal_mgr_form.h" // 管理个人账号
-#include "cancel_personal_user_form.h" // 注销账号
+#include "preferences_form.h" // 注销账号
 
 namespace Ui {
 class MainWorkbench;
@@ -57,7 +57,7 @@ private:
     LogHandleForm* log_handle_form_; // 操作日志
 
     PersonalMgrForm* m_personalMgrForm; // 编辑个人资料
-    CancelPersonalUserForm* m_cancelPersonalUserForm; // 注销账号
+    PreferencesForm* m_cancelPersonalUserForm; // 注销账号
 
 };
 

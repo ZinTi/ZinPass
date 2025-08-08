@@ -59,7 +59,7 @@ void AccountMgrForm::setup_ui(){
     this->table_view_->setModel(this->table_model_); // 关联 model_ 和 table_view_
 
     this->btn_data_owner_ = new QToolButton(this);
-    this->btn_data_owner_->setText("数据所有权");
+    this->btn_data_owner_->setText("数据归属");
     this->btn_passwd_generator_ = new QToolButton(this); // 随机密码生成器
     this->btn_passwd_generator_->setText("随机密码生成器");
     this->btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码

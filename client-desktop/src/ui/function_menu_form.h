@@ -4,17 +4,15 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
-
-namespace Ui {
-class FunctionMenuForm;
-}
+#include <QToolBox>
+#include <QVBoxLayout>
 
 class FunctionMenuForm final : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit FunctionMenuForm(QWidget *parent = nullptr);
+    explicit FunctionMenuForm(QWidget* parent = nullptr);
     ~FunctionMenuForm();
 
 signals:
@@ -22,23 +20,59 @@ signals:
     void buttonClicked(int index);
 
 private slots:
-    void on_pBtnPwd_clicked();
-    void on_pBtnTele_clicked();
-    void on_pBtnCheck_clicked();
-    void on_pBtnOwner_clicked();
-    void on_pBtnOut_clicked();
-    void on_pBtnIn_clicked();
-    void on_pBtnLogRun_clicked();
-    void on_pBtnLogHandle_clicked();
-    void on_pBtnEditPersonal_clicked();
-    void on_pBtnCancelUser_clicked();
-    void on_pBtnExit_clicked();
+    void on_btn_pwd_clicked();
+    void on_btn_tele_clicked();
+    void on_btn_check_clicked();
+    void on_btn_owner_clicked();
+
+    void on_btn_out_clicked();
+    void on_btn_in_clicked();
+
+    void on_btn_log_run_clicked();
+    void on_btn_log_handle_clicked();
+
+    void on_btn_edit_personal_clicked();
+    void on_btn_preferences_clicked();
+    void on_btn_session_clicked();
+    void on_btn_exit_clicked();
 
 private:
-    Ui::FunctionMenuForm *ui;
+    QLabel* l_title_;
+    QFrame* line_;
+    QToolBox* toolbox_func_menu_;
+    QWidget* page_data_mgr_;          // 数据管理
+    QWidget* page_migrate_;           // 迁移备份
+    QWidget* page_log_;               // 日志信息
+    QWidget* page_personal_;          // 个人信息
+
+    QPushButton* btn_pwd_;
+    QPushButton* btn_tele_;
+    QPushButton* btn_check_;
+    QPushButton* btn_owner_;
+
+    QPushButton* btn_out_;
+    QPushButton* btn_in_;
+
+    QPushButton* btn_log_run_;
+    QPushButton* btn_log_handle_;
+
+    QPushButton* btn_edit_personal_;
+    QPushButton* btn_preferences_;
+    QPushButton* btn_session_;
+    QPushButton* btn_exit_;
+
     QLabel* mascotLabel;
 
+    // layout
+    QVBoxLayout* lyt_main_;
+    QVBoxLayout* lyt_data_mgr_;
+    QVBoxLayout* lyt_migrate_;
+    QVBoxLayout* lyt_log_;
+    QVBoxLayout* lyt_personal_;
+
+    void setup_ui();
     void displayMascot(int ax, int ay, int maxHeight);
+
 };
 
 #endif // FUNCTION_MENU_FORM_H

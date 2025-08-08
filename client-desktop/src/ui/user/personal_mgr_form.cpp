@@ -91,6 +91,7 @@ void PersonalMgrForm::setup_ui() {
     this->btn_refresh_ = new QPushButton("刷新", this);
     this->btn_save_ = new QPushButton("保存信息", this);
     this->btn_ch_pwd_ = new QPushButton("修改密码", this);
+    this->btn_cancel_acc_ = new QPushButton("注销账号", this);
 
     this->e_info_ = new QTextEdit(this);
     this->e_info_->setHtml("<h3>说明</h3>"
@@ -124,6 +125,7 @@ void PersonalMgrForm::setup_ui() {
     lyt_btn_->addWidget(this->btn_refresh_);
     lyt_btn_->addWidget(this->btn_save_);
     lyt_btn_->addWidget(this->btn_ch_pwd_);
+    lyt_btn_->addWidget(this->btn_cancel_acc_);
     lyt_bottom_->addWidget(this->box_info_);
     lyt_bottom_->addWidget(this->box_pwd_);
     lyt_bottom_->addLayout(lyt_btn_);
@@ -135,6 +137,7 @@ void PersonalMgrForm::setup_ui() {
     connect(this->btn_refresh_, &QPushButton::clicked, this, &PersonalMgrForm::on_btn_refresh_clicked);
     connect(this->btn_save_, &QPushButton::clicked, this, &PersonalMgrForm::on_btn_save_clicked);
     connect(this->btn_ch_pwd_, &QPushButton::clicked, this, &PersonalMgrForm::on_btn_ch_pwd_clicked);
+    connect(this->btn_cancel_acc_, &QPushButton::clicked, this, &PersonalMgrForm::on_btn_cancel_acc_clicked);
 }
 
 void PersonalMgrForm::on_btn_refresh_clicked() {
@@ -190,4 +193,8 @@ void PersonalMgrForm::on_btn_ch_pwd_clicked() {
         result_msg += QString::fromStdString(id) + "\n";
     }
     QMessageBox::information(this, "执行结果", result_msg);
+}
+
+void PersonalMgrForm::on_btn_cancel_acc_clicked() {
+    QMessageBox::warning(this, "警告", "注销账号功能暂未实现！");
 }

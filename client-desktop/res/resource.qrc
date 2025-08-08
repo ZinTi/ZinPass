@@ -3,6 +3,23 @@
         <file>logo.png</file>
         <file>pixels.ico</file>
         <file>mascot.png</file>
+        <file>spider_128.png</file>
+        <file>spider_400.png</file>
+        <file>spider_256.ico</file>
     </qresource>
-    <qresource prefix="/btn"/>
+    <qresource prefix="/btn">
+        <file>btn/account.png</file>
+        <file>btn/analytics.png</file>
+        <file>btn/bus.png</file>
+        <file>btn/couple.png</file>
+        <file>btn/down.png</file>
+        <file>btn/focus.png</file>
+        <file>btn/gear.png</file>
+        <file>btn/hidden.png</file>
+        <file>btn/phone.png</file>
+        <file>btn/preferences.png</file>
+        <file>btn/search.png</file>
+        <file>btn/up.png</file>
+        <file>btn/write.png</file>
+    </qresource>
 </RCC>

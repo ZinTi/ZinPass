@@ -70,7 +70,7 @@ void MainWorkbench::handleButtonClick(const int index){
         m_stackedWidget->setCurrentIndex(1);
     }else if(index>=7 && index<=8){
         m_stackedWidget->setCurrentIndex(2);
-    }else if(index>=9 && index<=11){
+    }else if(index>=9 && index<=12){
         m_stackedWidget->setCurrentIndex(3);
     }else{
         QMessageBox::information(this, QString("无效的按键信号"), QString::fromStdString(std::to_string(index)));
@@ -117,7 +117,11 @@ void MainWorkbench::handleButtonClick(const int index){
         m_pagePersonal->setCurrentIndex(1);
         break;
     }
-    case 11:{
+    case 11: {
+        m_pagePersonal->setCurrentIndex(2);
+        break;
+    }
+    case 12:{
         // 弹出确认退出的消息框
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(this, QString("退出程序"), QString("确定退出吗？"), QMessageBox::Yes | QMessageBox::No);
@@ -156,6 +160,8 @@ void MainWorkbench::logMgrPageInit(){
 void MainWorkbench::personalMgrPageInit(){
     m_personalMgrForm = new PersonalMgrForm(m_pagePersonal);
     m_pagePersonal->addTab(m_personalMgrForm, QString("编辑个人资料"));
-    m_cancelPersonalUserForm = new CancelPersonalUserForm(m_pagePersonal);
-    m_pagePersonal->addTab(m_cancelPersonalUserForm, QString("注销个人账号"));
+    m_cancelPersonalUserForm = new PreferencesForm(m_pagePersonal);
+    m_pagePersonal->addTab(m_cancelPersonalUserForm, QString("系统偏好设置"));
+    QWidget* sessionWidget = new QWidget(m_pagePersonal);
+    m_pagePersonal->addTab(sessionWidget, QString("会话设置"));
 }

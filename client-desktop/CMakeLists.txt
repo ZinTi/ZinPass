@@ -105,17 +105,15 @@ set(PROJECT_SOURCES
         src/ui/widget_public_method.cpp # 部件公用方法
         # (6.2) 系统登录界面、系统用户注册界面
         src/ui/user/login_dlg.cpp
-        src/ui/user/login_dlg.ui
         src/ui/user/signup_dlg.cpp
         src/ui/user/signup_dlg.ui
         src/ui/user/personal_mgr_form.cpp
-        src/ui/user/cancel_personal_user_form.cpp
+        src/ui/user/preferences_form.cpp
         # (6.3) 主工作台
         src/ui/main_workbench.cpp
         src/ui/main_workbench.ui
         # (6.4) 主功能菜单
         src/ui/function_menu_form.cpp
-        src/ui/function_menu_form.ui
         # (6.5) 管理账号：页面框架、添加和修改账号记录、修改账号所属人
         src/ui/account/account_filter_form.cpp
         src/ui/account/account_mgr_form.cpp

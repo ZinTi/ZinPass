@@ -1,29 +1,93 @@
 #include "login_dlg.h"
 #include <QMessageBox>
 #include <state_manager.h>
-#include "ui_login_dlg.h"
 #include "signup_dlg.h"
 #include "user.h"
 #include "user_rpc.h"
 #include "auth_rpc.h"
 #include "state_manager.h"
 
-LoginDlg::LoginDlg(QWidget* parent) : QDialog(parent), ui(new Ui::LoginDlg) {
-    ui->setupUi(this);
+LoginDlg::LoginDlg(QWidget* parent) : QDialog(parent) {
+    setup_ui();
 
-    refreshComboBoxUserId(); // 刷新登录UserId列表
-
-    this->logoLabel = new QLabel(this); // 创建 QLabel 用于显示 logo
-    displayLogo(236, 100, 72);
+    refreshComboBoxUserId(); // 刷新登录Username列表
 }
 
 LoginDlg::~LoginDlg() {
-    delete logoLabel;
-    delete ui;
+    delete l_logo_;
+}
+
+void LoginDlg::setup_ui() {
+    this->resize(360, 480);
+    this->setWindowTitle("登录 | ZinPass");
+    this->l_title_ = new QLabel("ZinPass 守密司", this);
+    const QFont font_title("字酷堂石刻体", 26, QFont::Bold);
+    this->l_title_->setFont(font_title);
+    this->l_title_->setAlignment(Qt::AlignCenter);
+
+    this->l_logo_ = new QLabel(this);
+    this->pixmap_logo_ = new QPixmap(":/icon/spider_128.png");
+    if (this->pixmap_logo_->isNull()) {
+        this->l_logo_->setText("- Failed to load LOGO! -");
+        // qDebug() << "Failed to load logo from resource.";
+    } else {
+        constexpr int max_height = 128;
+        const int width = this->pixmap_logo_->width() * max_height / this->pixmap_logo_->height();
+        this->l_logo_->setFixedSize(width, max_height);
+        this->l_logo_->setPixmap(this->pixmap_logo_->scaled(this->l_logo_->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)); // 使用平滑转换模式
+    }
+
+    const QFont font_common("Microsoft YaHei UI", 12);
+    this->l_username_ = new QLabel("账号", this);
+    this->l_username_->setFont(font_common);
+    this->l_key_ = new QLabel("密钥", this);
+    this->l_key_->setFont(font_common);
+
+    constexpr int max_width = 220;
+    this->combo_username_ = new QComboBox(this);
+    this->combo_username_->setFont(font_common);
+    this->combo_username_->setMaximumWidth(max_width);
+    this->e_key_ = new QLineEdit(this);
+    this->e_key_->setFont(font_common);
+    this->e_key_->setMaximumWidth(max_width);
+    this->e_key_->setEchoMode(QLineEdit::Password);
+    this->e_key_->setMaxLength(24); // 密钥最大字符长度
+
+    this->btn_login_ = new QPushButton("登录", this);
+    this->btn_login_->setMaximumWidth(100);
+    this->btn_signup_ = new QPushButton("注册", this);
+    this->btn_signup_->setMaximumWidth(100);
+
+    this->l_copyleft_ = new QLabel("Copyleft 🄯 2025 曾来. GPLv3协议.", this);
+    this->l_copyleft_->setFont(font_common);
+    this->l_copyleft_->setAlignment(Qt::AlignCenter);
+
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_form_ = new QFormLayout(this);
+    this->lyt_btn_ = new QHBoxLayout(this);
+
+    // this->lyt_main_->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    this->lyt_main_->addWidget(this->l_title_);
+    this->lyt_main_->addWidget(this->l_logo_, 0, Qt::AlignCenter);
+    this->lyt_form_->addRow(this->l_username_, this->combo_username_);
+    this->lyt_form_->addRow(this->l_key_, this->e_key_);
+    this->lyt_form_->setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    this->lyt_form_->setLabelAlignment(Qt::AlignRight); // 标签对齐方式
+    this->lyt_main_->addLayout(this->lyt_form_);
+    this->lyt_btn_->setSpacing(10); // 设置固定间距
+    lyt_btn_->addStretch();
+    this->lyt_btn_->addWidget(this->btn_login_);
+    this->lyt_btn_->addWidget(this->btn_signup_);
+    lyt_btn_->addStretch();
+    this->lyt_main_->addLayout(this->lyt_btn_);
+    this->lyt_main_->addWidget(this->l_copyleft_);
+
+    connect(this->btn_login_, &QPushButton::clicked, this, &LoginDlg::on_btn_login_clicked);
+    connect(this->btn_signup_, &QPushButton::clicked, this, &LoginDlg::on_btn_signup_clicked);
 }
 
 void LoginDlg::refreshComboBoxUserId() const {
-    ui->comboBoxUserId->clear();
+    this->combo_username_->clear();
     std::string msg;
     std::vector<std::string> usernames;
 
@@ -34,32 +98,15 @@ void LoginDlg::refreshComboBoxUserId() const {
 
     // 添加到组件中
     for (const std::string& str : usernames) {
-        ui->comboBoxUserId->addItem(QString::fromStdString(str));
+        this->combo_username_->addItem(QString::fromStdString(str));
     }
 }
 
-void LoginDlg::displayLogo(const int ax, const int ay, const int maxHeight) {
-    const QPixmap pixmap(":/icon/logo.png");
-    if (!pixmap.isNull()) {
-        int width = pixmap.width() * maxHeight / pixmap.height();
-        if (width > 100) {
-            width = 100;
-        }
-        logoLabel->setFixedSize(width, maxHeight);
-        // 使用平滑转换模式
-        logoLabel->setPixmap(pixmap.scaled(logoLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        logoLabel->move(ax, ay);
-    }
-    else {
-        qDebug() << "Failed to load logo from resource.";
-    }
-}
-
-void LoginDlg::on_pBtnLogin_clicked() {
+void LoginDlg::on_btn_login_clicked() {
     auto user = zinpass::models::SystemUser(); // 用户
     // 获取用户名和输入框的内容
-    const QString in_username = ui->comboBoxUserId->currentText();
-    const QString in_password = ui->lineEditPwd->text();
+    const QString in_username = this->combo_username_->currentText();
+    const QString in_password = this->e_key_->text();
     // const QString in_captcha_code = ui->lineEditCaptcha->text();
 
     // 执行登录操作
@@ -98,7 +145,7 @@ void LoginDlg::on_pBtnLogin_clicked() {
 
 }
 
-void LoginDlg::on_pBtnSignup_clicked() {
+void LoginDlg::on_btn_signup_clicked() {
     SignupDlg signupDlg(this);
     signupDlg.exec();
     refreshComboBoxUserId();

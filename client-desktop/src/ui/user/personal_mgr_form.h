@@ -21,6 +21,7 @@ private slots:
     void on_btn_refresh_clicked();  // refresh the personal information
     void on_btn_save_clicked();     // save the personal information
     void on_btn_ch_pwd_clicked();   // change password
+    void on_btn_cancel_acc_clicked();  // cancel account
 
 private:
     void setup_ui();
@@ -48,6 +49,7 @@ private:
     QPushButton* btn_refresh_;
     QPushButton* btn_save_;
     QPushButton* btn_ch_pwd_;
+    QPushButton* btn_cancel_acc_;
 
     QTextEdit* e_info_;
 
