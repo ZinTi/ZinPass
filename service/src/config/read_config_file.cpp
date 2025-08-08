@@ -1,4 +1,4 @@
-#include "config/read_configuration_file.h"
+#include "config/read_config_file.h"
 #include <fstream>
 #include <string>
 #include <algorithm>
@@ -12,14 +12,15 @@
 
 namespace zinpass::config {
 
-    ReadConfigurationFile::ReadConfigurationFile() {
-        this->database_path = "";
+    ReadConfigFile::ReadConfigFile() {
+        this->database_path_ = "";
+        this->run_log_path_ = "";
     }
-    ReadConfigurationFile::~ReadConfigurationFile() {
+    ReadConfigFile::~ReadConfigFile() {
 
     }
 
-    void ReadConfigurationFile::read_config_dbpath_from_file() {
+    void ReadConfigFile::read_config_from_file() {
         // 获取可执行文件路径
         std::string exe_dir;
         char buffer[1024] = {0};
@@ -60,7 +61,8 @@ namespace zinpass::config {
     }
 
     // 读取配置文件
-    bool found = false;
+    bool found_database = false;
+    bool found_log = false;
     std::ifstream config_file(config_path);
     std::string line;
 
@@ -75,54 +77,63 @@ namespace zinpass::config {
         if (line.empty())
             continue;
 
+        // 解析键值对
         size_t eq_pos = line.find('=');
-        if (eq_pos == std::string::npos)
-            continue;
+        if (eq_pos == std::string::npos) continue;
 
         std::string key = line.substr(0, eq_pos);
         trim(key);
-        if (key != "database")
-            continue;
-
         std::string value = line.substr(eq_pos + 1);
         trim(value);
 
         // 解析带引号的值
+        std::string clean_value;
         if (!value.empty()) {
-            char quote = value.front();
-            if (quote == '"' || quote == '\'') {
-                size_t end_quote = value.find(quote, 1);
+            if (value.front() == '"' || value.front() == '\'') {
+                size_t end_quote = value.find(value.front(), 1);
                 if (end_quote != std::string::npos) {
-                    database_path = value.substr(1, end_quote - 1);
-                    found = true;
-                    break;
+                    clean_value = value.substr(1, end_quote - 1);
+                } else { // 引号不匹配时使用整个值
+                    clean_value = value.substr(1); // 去掉开头的引号
                 }
+            } else {
+                clean_value = value;
             }
-            else {
-                database_path = value;
-                found = true;
-                break;
-            }
+        } else {
+            clean_value = value; // 空值处理
+        }
+
+        // 存储配置值
+        if (key == "database") {    // 数据库配置
+            database_path_ = clean_value;
+            found_database = true;
+        } else if (key == "log") {  // 日志配置
+            run_log_path_ = clean_value;
+            found_log = true;
         }
     }
 
     // 设置默认路径
-    if (!found) {
-        database_path = exe_dir + "/zinpass.db";
-    }
+    if (!found_database) database_path_ = exe_dir + "/zinpass.db";  // 默认数据库路径
+    if (!found_log) run_log_path_ = exe_dir + "/app.log";           // 默认运行日志路径
 
-    // 统一路径分隔符（可选）
+    // 统一路径分隔符（日志路径处理）
 #ifdef _WIN32
-    std::replace(database_path.begin(), database_path.end(), '/', '\\');
+    std::replace(database_path_.begin(), database_path_.end(), '/', '\\');
+    std::replace(run_log_path_.begin(), run_log_path_.end(), '/', '\\');
 #else
-            std::replace(database_path.begin(), database_path.end(), '\\', '/');
+    std::replace(database_path_.begin(), database_path_.end(), '\\', '/');
+    std::replace(run_log_path_.begin(), run_log_path_.end(), '\\', '/');
 #endif
 }
 
-std::string ReadConfigurationFile::get_db_path(){
-    return database_path;
+std::string ReadConfigFile::get_db_path(){
+    return database_path_;
 }
 
+std::string ReadConfigFile::get_run_log_path() {
+    return run_log_path_;
+}
 
 }
 

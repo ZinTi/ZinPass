@@ -38,7 +38,7 @@ namespace zinpass::models {
 
         std::vector<unsigned char> encrypted_pwd,
         std::vector<unsigned char> iv,
-        const short phone_id,
+        const int phone_id,
         const std::string& email_id,
         const short category_id)
         :
@@ -120,7 +120,7 @@ namespace zinpass::models {
 
     void Account::setEncryptedPwd(const std::vector<unsigned char>& encrypted_pwd){ this->encrypted_pwd_ = encrypted_pwd; }
     void Account::setIv(const std::vector<unsigned char>& iv){ this->iv_ = iv; }
-    void Account::setPhoneId(const short phone_id) { this->phone_id_ = phone_id; }
+    void Account::setPhoneId(const int phone_id) { this->phone_id_ = phone_id; }
     void Account::setEmailId(const std::string& email_id) { this->email_id_ = email_id; }
     void Account::setCategoryId(const short category_id) { this->category_id_ = category_id; }
 }

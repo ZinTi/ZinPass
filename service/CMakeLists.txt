@@ -46,7 +46,7 @@ set(PROJECT_SOURCES
 
         # 2. 服务配置-config
         src/config/about.cpp
-        src/config/read_configuration_file.cpp
+        src/config/read_config_file.cpp
         src/config/state_manager.cpp
 
         # 3. 业务逻辑层-mgr
@@ -118,6 +118,7 @@ add_executable(zinpass_service
 # 设置输出文件名
 set_target_properties(zinpass_service PROPERTIES
         OUTPUT_NAME "${EXECUTABLE_NAME}"
+        LINK_FLAGS "-static -Wl,-s"
 )
 
 # 包含头文件目录（在add_executable、add_library之后）

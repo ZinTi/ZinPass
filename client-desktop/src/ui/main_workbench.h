@@ -1,5 +1,5 @@
-#ifndef MAINWORKBENCH_H
-#define MAINWORKBENCH_H
+#ifndef MAIN_WORKBENCH_H
+#define MAIN_WORKBENCH_H
 
 #include <QMainWindow>
 #include <QStackedWidget>
@@ -10,6 +10,8 @@
 #include "data_owner_form.h" // 管理数据所有权
 #include "output_form.h"
 #include "input_form.h"
+#include "log_run_form.h"
+#include "log_handle_form.h"
 #include "personal_mgr_form.h" // 管理个人账号
 #include "cancel_personal_user_form.h" // 注销账号
 
@@ -51,8 +53,8 @@ private:
     OutputForm* m_outputForm; // 数据导出
     InputForm* m_inputForm; // 数据导入
 
-    // LogForm_1* m_logForm1; // 登录日志
-    // LogForm_2* m_logForm2; // 操作日志
+    LogRunForm* log_run_form_; // 运行日志
+    LogHandleForm* log_handle_form_; // 操作日志
 
     PersonalMgrForm* m_personalMgrForm; // 编辑个人资料
     CancelPersonalUserForm* m_cancelPersonalUserForm; // 注销账号

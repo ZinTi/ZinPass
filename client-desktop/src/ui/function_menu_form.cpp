@@ -37,7 +37,7 @@ void FunctionMenuForm::on_pBtnOut_clicked(){
 void FunctionMenuForm::on_pBtnIn_clicked(){
     emit buttonClicked(6);
 }
-void FunctionMenuForm::on_pBtnLogLogin_clicked(){
+void FunctionMenuForm::on_pBtnLogRun_clicked(){
     emit buttonClicked(7);
 }
 void FunctionMenuForm::on_pBtnLogHandle_clicked(){

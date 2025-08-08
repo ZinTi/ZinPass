@@ -138,6 +138,9 @@ set(PROJECT_SOURCES
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp
         src/ui/input_form.cpp
+        # (6.9) 日志管理
+        src/ui/log_run_form.cpp
+        src/ui/log_handle_form.cpp
 
         # 7、RPC 层
         # (7.1) 接口
@@ -192,7 +195,7 @@ set_target_properties(client-desktop PROPERTIES
         WIN32_EXECUTABLE TRUE                               # Win32 应用，而非 console 应用
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin    # 设置可执行文件的输出路径
         OUTPUT_NAME "${EXECUTABLE_NAME}"                    # 设置输出文件名
-        # LINK_FLAGS "-static -Wl,-s"
+        LINK_FLAGS "-static -Wl,-s"
 )
 
 # 静态编译专用配置

@@ -45,6 +45,18 @@ public:
     void set_main_database_path(const std::string &path);
 
     /**
+     * @brief 获取运行日志文件路径配置
+     * @return 运行日志文件路径
+     */
+    std::string get_run_log_path() const;
+
+    /**
+     * @brief 设置运行日志文件路径配置
+     * @param path 运行日志文件路径
+     */
+    void set_run_log_path(const std::string &path);
+
+    /**
      * 获取当前进程可执行文件路径
      * @return 路径
      */
@@ -58,6 +70,7 @@ private:
     std::string server_address_;            // 监听地址+端口
 
     std::string main_database_path_;        // 主数据库路径
+    std::string run_log_path_;              // 运行日志路径
 };
 
 } // zinpass::config

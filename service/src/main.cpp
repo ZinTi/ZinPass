@@ -2,7 +2,7 @@
 #include <thread>
 #include <chrono>
 #include <filesystem>
-#include "config/read_configuration_file.h"
+#include "config/read_config_file.h"
 #include "repo/init_database.h"
 #include "utils/log_manager.h"
 #include "config/state_manager.h"
@@ -31,9 +31,9 @@ int WINAPI WinMain(
 int main()
 #endif
 {
+    init();
     utils::LogManager::AddLog("Main thread - Service/Daemon started");
     std::atomic<bool> is_running(true);     // 局部原子控制标志
-    init();
 
     // 创建两个 gRPC 服务实例
     service::gRPCControlService control_interface(is_running, GRPC_CTRL_SVC_AP);                        // gRPC 实例1 - 管理控制
@@ -63,9 +63,11 @@ int main()
 
 void init() {
     // 1. 读取配置文件
-    auto* config = new config::ReadConfigurationFile;
-    config->read_config_dbpath_from_file();   // 从配置文件读取数据库配置
-    config::StateManager::instance().set_main_database_path(config->get_db_path());  // 保存配置到 StateManager 单实例中
+    auto* config = new config::ReadConfigFile;
+    config->read_config_from_file();   // 从配置文件读取数据库配置、运行日志配置等
+    // 保存配置到 StateManager 单实例中
+    config::StateManager::instance().set_main_database_path(config->get_db_path());
+    config::StateManager::instance().set_run_log_path(config->get_run_log_path());  // 在此之前因未读取日志配置，所以不要使用 LogManager 类
     delete config;
 
     // 2. 数据库不存在则创建并初始化

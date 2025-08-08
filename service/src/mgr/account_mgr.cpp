@@ -155,7 +155,7 @@ AccountManager::Return<bool> AccountManager::add_account(
 
     // 3. 将 phone -> phone_id , 将 email -> email_id , 将 category -> category_id， 获取时间
     int phone_id = -1;
-    std::string email_id = "";
+    std::string email_id;
     short category_id = -1;
 
     if (phone != "无" && phone != "空" && phone != "NULL") {
@@ -386,49 +386,6 @@ bool AccountManager::re_encrypt_password(
     return true;
 }
 
-/*
-AccountManager::Return<int> AccountManager::re_encrypt_password_all(const std::string& sys_user_id, const std::string& old_main_key, const std::string& new_main_key) {
-    // 0. 检查输入数据的合法性、定义变量
-    if(sys_user_id.empty() || old_main_key.empty() || new_main_key.empty()) {
-        return {0, "参数不得为空"};
-    }
-    const std::string now = utils::DateTime::getCurrentDateTime();
-    const repo::AccountDAO account_dao;
-    int total = 0;
-    int success = 0;
-
-    // 1. 遍历查询所有 username 的 account 记录的 encrypted_pwd 和 iv
-    for (const auto& [id,old_ec_pwd, old_iv] : account_dao.findEncryptedPwdAndIv(sys_user_id)) {
-        total++;
-
-        // 2. 使用 old_main_key 解密
-        std::string plaintext_pwd;                 // 解密后的明文密码
-        const std::vector<unsigned char> old_real_key = utils::PwdUtils::hexStringToKey(utils::PwdUtils::calculateMD5(old_main_key));
-        if (const bool ret_decrypt = utils::PwdUtils::decryptTextByAES128CTR(old_ec_pwd, old_iv, old_real_key, plaintext_pwd);
-            !ret_decrypt) {
-            return {0, "发生错误，解密失败"};
-            }
-
-        // 3. 使用 new_main_key 加密
-        const std::vector<unsigned char> new_real_key = utils::PwdUtils::hexStringToKey(utils::PwdUtils::calculateMD5(new_main_key));
-        std::vector<unsigned char> new_ec_pwd;
-        std::vector<unsigned char> new_iv;
-        if (const bool ret_encrypt = utils::PwdUtils::encryptTextByAES128CTR(plaintext_pwd, new_real_key, new_ec_pwd, new_iv);
-            !ret_encrypt) {
-            return {0, "发生错误，加密失败"};
-            }
-        utils::PwdUtils::encryptTextByAES128CTR(plaintext_pwd, new_real_key, new_ec_pwd, new_iv);
-
-        // 4. 更新数据库中的 encrypted_pwd 和 iv
-        if (const repo::DaoStatus ret_update = account_dao.update_password(id, sys_user_id, new_ec_pwd, new_iv, now);
-            repo::DaoStatus::Success == ret_update) { success++; }
-    }
-    // 5. 记录成功和失败的记录的 account_id
-
-    // 6. 返回结果
-    return {success, "执行完毕"};
-}*/
-
 std::tuple<int, int, std::vector<std::string>> AccountManager::re_encrypt_password_all(const std::string& sys_user_id, const std::string& old_main_key, const std::string& new_main_key) {
     // 0. 检查输入数据的合法性、定义变量
     if(sys_user_id.empty() || old_main_key.empty() || new_main_key.empty()) {
@@ -464,60 +421,6 @@ std::tuple<int, int, std::vector<std::string>> AccountManager::re_encrypt_passwo
     return {total_count, success_count, failed_list};
 }
 
-/*
-AccountManager::Return<bool> AccountManager::update_account(
-    const std::string& account_id,
-    const std::string& username,
-    const std::string& nickname,
-    const std::string& pwd,
-    const std::string& subAccount,
-    const std::string& phone,
-    const std::string& email,
-    const std::string& postscript,
-    const std::string& platform,
-    const std::string& provider,
-    const std::string& url,
-    const std::string& hotline)
-{
-    bool ret;
-    std::vector<AccountDAO::KeyValuePair> data;
-    // 设置需要更新的数据
-    //updateData[AccountDAO::ColumnType::id] = account_id;
-    data.push_back({AccountDAO::ColumnType::username, username});
-    data.push_back({AccountDAO::ColumnType::nickname, nickname});
-    if (!pwd.empty()) {
-        data.push_back({AccountDAO::ColumnType::password, pwd});
-    }
-    data.push_back({AccountDAO::ColumnType::subAccount, subAccount});
-    short phoneId;
-    std::string emailId;
-    std::string phoneMsg, emailMsg;
-    MobilePhoneDAO phoneDAO;
-    AccountDAO emailDAO;
-    if (phoneDAO.phoneNumberToId(phoneMsg, phone, &phoneId)) {
-        data.push_back({AccountDAO::ColumnType::phoneId, phoneId});
-    }
-    if (emailId = emailDAO.getIdByEmailAddress(email) && !emailId.empty()) {
-        data.push_back({AccountDAO::ColumnType::emailId, emailId});
-    }
-    data.push_back({AccountDAO::ColumnType::postscript, postscript});
-    data.push_back({AccountDAO::ColumnType::platformName, platform});
-    data.push_back({AccountDAO::ColumnType::providerName, provider});
-    data.push_back({AccountDAO::ColumnType::URL, url});
-    data.push_back({AccountDAO::ColumnType::hotline, hotline});
-    data.push_back({AccountDAO::ColumnType::owner, phoneId});
-    data.push_back({AccountDAO::ColumnType::updatedTime, getCurrentDateTime()});
-    //
-    AccountDAO account_dao;
-    if (account_dao.update(message, data, account_id)) {
-        message =  "更新成功：" + message;
-        ret = true;
-    } else {
-        message = "更新失败：" + message;
-        ret = false;
-    }
-    return ret;
-}*/
 
 AccountManager::Return<bool> AccountManager::delete_account(const std::string& account_id) {
     const repo::AccountDAO account_dao;

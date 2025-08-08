@@ -23,7 +23,7 @@ protected:
 private:
     std::vector<unsigned char> encrypted_pwd_;    // 加密后的密码值
     std::vector<unsigned char> iv_;              // 初始化向量IV
-    short phone_id_;                              // 手机号主键
+    int phone_id_;                              // 手机号主键
     std::string email_id_;                              // 邮箱号主键
     short category_id_;                           // 类别号主键
 
@@ -46,7 +46,7 @@ public:
 
         std::vector<unsigned char> encrypted_pwd,
         std::vector<unsigned char> iv,
-        short phone_id,
+        int phone_id,
         const std::string& email_id,
         short category_id
         );
@@ -88,7 +88,7 @@ public:
 
     void setEncryptedPwd(const std::vector<unsigned char>& encrypted_pwd);
     void setIv(const std::vector<unsigned char>& iv);
-    void setPhoneId(short phone_id);
+    void setPhoneId(int phone_id);
     void setEmailId(const std::string& email_id);
     void setCategoryId(short category_id);
 };

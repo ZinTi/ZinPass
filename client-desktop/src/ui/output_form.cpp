@@ -1,5 +1,4 @@
 #include "output_form.h"
-#include <QVBoxLayout>
 
 OutputForm::OutputForm(QWidget *parent) : QWidget(parent){
     setup_ui();
@@ -8,6 +7,9 @@ OutputForm::OutputForm(QWidget *parent) : QWidget(parent){
 OutputForm::~OutputForm(){
     if(this->edit_info_){
         delete this->edit_info_;
+    }
+    if(this->lyt_main_) {
+        delete this->lyt_main_;
     }
 }
 
@@ -19,6 +21,6 @@ void OutputForm::setup_ui(){
         );
     this->edit_info_->setReadOnly(true);
 
-    QVBoxLayout* lyt_main = new QVBoxLayout(this);
-    lyt_main->addWidget(this->edit_info_);
+    this->lyt_main_ = new QVBoxLayout(this);
+    lyt_main_->addWidget(this->edit_info_);
 }

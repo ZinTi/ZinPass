@@ -45,6 +45,16 @@ namespace zinpass::config {
         main_database_path_ = path;
     }
 
+    std::string StateManager::get_run_log_path() const {
+        std::lock_guard<std::mutex> lock(config_mutex_);
+        return run_log_path_;
+    }
+
+    void StateManager::set_run_log_path(const std::string &path) {
+        std::lock_guard<std::mutex> lock(config_mutex_);
+        run_log_path_ = path;
+    }
+
     std::string StateManager::get_executable_path() {
 #ifdef _WIN32
         // Windows 动态处理长路径

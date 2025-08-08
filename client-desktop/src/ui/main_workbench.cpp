@@ -3,7 +3,6 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 
-
 MainWorkbench::MainWorkbench(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWorkbench) {
     ui->setupUi(this);
 
@@ -63,7 +62,7 @@ MainWorkbench::~MainWorkbench() {
 
 }
 
-void MainWorkbench::handleButtonClick(int index){
+void MainWorkbench::handleButtonClick(const int index){
     // 设置当前显示的widget页面
     if(index>=1 && index<=4){
         m_stackedWidget->setCurrentIndex(0);
@@ -149,7 +148,10 @@ void MainWorkbench::ioMgrPageInit(){
     m_pageIO->addTab(m_inputForm, QString("数据导入"));
 }
 void MainWorkbench::logMgrPageInit(){
-
+    log_run_form_ = new LogRunForm(m_pageLog);
+    m_pageLog->addTab(log_run_form_, QString("运行日志"));
+    log_handle_form_ = new LogHandleForm(m_pageLog);
+    m_pageLog->addTab(log_handle_form_, QString("操作日志"));
 }
 void MainWorkbench::personalMgrPageInit(){
     m_personalMgrForm = new PersonalMgrForm(m_pagePersonal);

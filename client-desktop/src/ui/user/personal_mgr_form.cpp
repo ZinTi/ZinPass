@@ -9,27 +9,27 @@ PersonalMgrForm::PersonalMgrForm(QWidget *parent) : QWidget(parent){
 }
 
 PersonalMgrForm::~PersonalMgrForm(){
-    if (this->box_info_ != nullptr) {
+    if (this->box_info_) {
         delete this->box_info_;
     }
-    if (this->box_pwd_ != nullptr) {
+    if (this->box_pwd_) {
         delete this->box_pwd_;
     }
 
     // layout
-    if (this->lyt_main_ != nullptr) {
+    if (this->lyt_main_) {
         delete this->lyt_main_;
     }
-    if (this->lyt_bottom_ != nullptr) {
+    if (this->lyt_bottom_) {
         delete this->lyt_bottom_;
     }
-    if (this->lyt_base_info_ != nullptr) {
+    if (this->lyt_base_info_) {
         delete this->lyt_base_info_;
     }
-    if (this->lyt_pwd_ != nullptr) {
+    if (this->lyt_pwd_) {
         delete this->lyt_pwd_;
     }
-    if (this->lyt_btn_ != nullptr) {
+    if (this->lyt_btn_) {
         delete this->lyt_btn_;
     }
 }

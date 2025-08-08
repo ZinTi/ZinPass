@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+
+#include "config/state_manager.h"
 #include "utils/date_time.h"
 
 namespace zinpass::utils {
@@ -46,7 +48,8 @@ void LogManager::AddLogImpl(const std::string& message) {
 }
 
 void LogManager::LogWorker() {
-    std::ofstream log_file("app.log", std::ios::app);
+    const std::string run_log_path = config::StateManager::instance().get_run_log_path();   // 获取运行日志路径
+    std::ofstream log_file(run_log_path, std::ios::app);
     if (!log_file.is_open()) {
         // std::cerr << "Failed to open log file!" << std::endl;
         return;

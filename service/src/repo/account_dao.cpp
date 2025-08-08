@@ -295,41 +295,6 @@ DaoStatus AccountDAO::findEncryptedPwdAndIv(const std::string& id, const std::st
     return DaoStatus::Success;
 }
 
-/*
-std::vector<EncryptedData> AccountDAO::findEncryptedPwdAndIv(const std::string& sys_user_id) const {
-    std::vector<EncryptedData> data_list;
-    sqlite3* conn = pool_.get_connection();
-
-    sqlite3_stmt* stmt = nullptr;
-    const std::string sql("SELECT id, encrypted_pwd, iv FROM view_pwd WHERE sys_user_id =?");
-    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql.c_str(), -1, &stmt, nullptr)) {
-        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ]") + std::string(sqlite3_errmsg(conn)));
-        sqlite3_finalize(stmt);
-        pool_.release_connection(conn);
-        return std::vector<EncryptedData>();
-    }
-    sqlite3_bind_text(stmt, 1, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
-    SQLDebug::log_sql(stmt, true);
-    while (SQLITE_ROW == sqlite3_step(stmt)) {
-        EncryptedData data;
-        data.account_id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-
-        const int blobSizeEncryptedPwd = sqlite3_column_bytes(stmt, 1);
-        const auto* blobPtrEncryptedPwd = static_cast<const unsigned char*>(sqlite3_column_blob(stmt, 0));
-        data.encrypted_pwd.assign(blobPtrEncryptedPwd, blobPtrEncryptedPwd + blobSizeEncryptedPwd);
-
-        const int blobSizeIV = sqlite3_column_bytes(stmt, 2);
-        const auto* blobPtrIV = static_cast<const unsigned char*>(sqlite3_column_blob(stmt, 1));
-        data.iv.assign(blobPtrIV, blobPtrIV + blobSizeIV);
-
-        data_list.push_back(data);
-    }
-
-    sqlite3_finalize(stmt);
-    pool_.release_connection(conn);
-    return data_list;
-}*/
-
 std::vector<std::string> AccountDAO::list_id(const std::string& sys_user_id) const {
     std::vector<std::string> data_list;
     sqlite3* conn = pool_.get_connection();

@@ -163,7 +163,7 @@
     <attribute name="label">
      <string>日志信息</string>
     </attribute>
-    <widget class="QPushButton" name="pBtnLogLogin">
+    <widget class="QPushButton" name="pBtnLogRun">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -173,7 +173,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>登录日志</string>
+      <string>运行日志</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pBtnLogHandle">

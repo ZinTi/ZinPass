@@ -1,5 +1,5 @@
-#ifndef FUNCTIONMENUFORM_H
-#define FUNCTIONMENUFORM_H
+#ifndef FUNCTION_MENU_FORM_H
+#define FUNCTION_MENU_FORM_H
 
 #include <QWidget>
 #include <QPushButton>
@@ -28,7 +28,7 @@ private slots:
     void on_pBtnOwner_clicked();
     void on_pBtnOut_clicked();
     void on_pBtnIn_clicked();
-    void on_pBtnLogLogin_clicked();
+    void on_pBtnLogRun_clicked();
     void on_pBtnLogHandle_clicked();
     void on_pBtnEditPersonal_clicked();
     void on_pBtnCancelUser_clicked();
@@ -41,4 +41,4 @@ private:
     void displayMascot(int ax, int ay, int maxHeight);
 };
 
-#endif // FUNCTIONMENUFORM_H
+#endif // FUNCTION_MENU_FORM_H
