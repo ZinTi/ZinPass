@@ -3,13 +3,13 @@
 #include <chrono>
 #include <filesystem>
 #include "config/read_configuration_file.h"
-#include "repository/init_database.h"
+#include "repo/init_database.h"
 #include "utils/log_manager.h"
 #include "config/state_manager.h"
 #include "mod_session/session_mgr.h"
-#include "repository/connection_pool.h"
-#include "service/grpc_client_service.h"
-#include "service/grpc_control_service.h"
+#include "repo/connection_pool.h"
+#include "rpc/grpc_client_service.h"
+#include "rpc/grpc_control_service.h"
 
 #define GRPC_CLIENT_SVC_AP      "0.0.0.0:50051"
 #define GRPC_CTRL_SVC_AP        "127.0.0.1:50052"
@@ -63,21 +63,21 @@ int main()
 
 void init() {
     // 1. 读取配置文件
-    config::ReadConfigurationFile* config = new config::ReadConfigurationFile;
+    auto* config = new config::ReadConfigurationFile;
     config->read_config_dbpath_from_file();   // 从配置文件读取数据库配置
     config::StateManager::instance().set_main_database_path(config->get_db_path());  // 保存配置到 StateManager 单实例中
     delete config;
 
     // 2. 数据库不存在则创建并初始化
     const std::string db_path = config::StateManager::instance().get_main_database_path();
-    if (false == std::filesystem::exists(db_path)) {
+    if (!std::filesystem::exists(db_path)) {
         utils::LogManager::AddLog("[MESSAGE] Database file not found. Creating and initializing...");
-        if (const repository::InitDatabase initDb(db_path); 0 == initDb.init()) {
+        if (const repo::InitDatabase initDb(db_path); 0 == initDb.init()) {
             utils::LogManager::AddLog("[MESSAGE] Initial database success.");
         }
     }
     // 3. 初始化连接池单例
-    repository::ConnectionPool::initialize(db_path, 5);
+    repo::ConnectionPool::initialize(db_path, 5);
 
     // 4. 配置服务器地址和端口
     config::StateManager::instance().set_server_address(GRPC_CLIENT_SVC_AP);
@@ -85,12 +85,11 @@ void init() {
 
 }
 
-
 // 增加线程池
 // 改为条件变量方式
 [[noreturn]] void periodic_task_worker() {
-    constexpr int seconds = 600;   // 10min 清理一次无效 session
     while (true) {
+        constexpr int seconds = 600;
         std::this_thread::sleep_for(std::chrono::seconds(seconds));
         // 自动清理内存中的无效 session 记录等操作
         auto& session_mgr = mod_session::SessionMgr::get_instance();

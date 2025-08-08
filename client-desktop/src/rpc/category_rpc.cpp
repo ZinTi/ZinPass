@@ -7,10 +7,10 @@ namespace zinpass::rpc{
 
     CategoryRPCReturn<std::vector<std::string>> CategoryRPC::list_account_categories(const std::string& session_id){
         // 1. construct request
-        account::v1::ListNameOfCategoriesRequest request;
+        account::v1::ListNameOfCategoriesReq request;
         request.set_session_id(session_id);
         // 2. construct response
-        account::v1::ListNameOfCategoriesResponse response;
+        account::v1::ListNameOfCategoriesResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status

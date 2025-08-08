@@ -1,9 +1,9 @@
-#ifndef DATAOWNERFORM_H
-#define DATAOWNERFORM_H
+#ifndef DATA_OWNER_FORM_H
+#define DATA_OWNER_FORM_H
 
 #include <QWidget>
 
-class DataOwnerForm : public QWidget
+class DataOwnerForm final : public QWidget
 {
     Q_OBJECT
 
@@ -15,4 +15,4 @@ private:
 
 };
 
-#endif // DATAOWNERFORM_H
+#endif

@@ -10,9 +10,9 @@
 #include <map>
 #include <unordered_map>
 #include <vector>
-#include "repository/common/dao_status.h"
+#include "repo/common/dao_status.h"
 #include "session.h"
-#include "repository/connection_pool.h"
+#include "repo/connection_pool.h"
 extern "C" {
     #include <sqlite3.h>
 }
@@ -30,7 +30,7 @@ public:
      * @param session 查询到的 session 信息
      * @return 执行结果
      */
-    repository::DaoStatus find_by_id(const std::string& id, mod_session::Session&session) const;
+    repo::DaoStatus find_by_id(const std::string& id, mod_session::Session&session) const;
 
     /**
      * @brief 查询所有 session 数据的 id 和 过期时间
@@ -43,21 +43,21 @@ public:
      * @param session 新增的 session 信息
      * @return 执行结果
      */
-    repository::DaoStatus add(const mod_session::Session& session) const;
+    repo::DaoStatus add(const mod_session::Session& session) const;
 
     /**
      * @brief 更新 session
      * @param session 更新后的 session 信息
      * @return 执行结果
      */
-    repository::DaoStatus update(const mod_session::Session& session) const;
+    repo::DaoStatus update(const mod_session::Session& session) const;
 
     /**
      * @brief 删除 session
      * @param id 目标 session_id
      * @return 执行结果
      */
-    repository::DaoStatus remove(const std::string &id) const;
+    repo::DaoStatus remove(const std::string &id) const;
 
     /**
      * @brief 删除所有 session
@@ -71,10 +71,10 @@ public:
      * @param expires_date_time 过期时间
      * @return 执行结果
      */
-    repository::DaoStatus update_expiration(const std::string& id, const std::string& expires_date_time) const;
+    repo::DaoStatus update_expiration(const std::string& id, const std::string& expires_date_time) const;
 
 private:
-    repository::ConnectionPool& pool_;
+    repo::ConnectionPool& pool_;
     
 };
 

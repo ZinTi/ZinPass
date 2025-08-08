@@ -1,7 +1,4 @@
 #include "account_filter_form.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFormLayout>
 #include "state_manager.h"
 // RPC 封装
 #include "account_rpc.h"
@@ -30,6 +27,22 @@ AccountFilterForm::~AccountFilterForm(){
     if(this->btn_drop_down_more_){ delete this->btn_drop_down_more_; }
     if(this->popup_window_) { delete this->popup_window_; }
     if(this->box_filter_) { delete this->box_filter_; }
+
+    if (this->lyt_main_) {
+        delete this->lyt_main_;
+    }
+    if (this->lyt_gbox_) {
+        delete this->lyt_gbox_;
+    }
+    if (this->lyt_form_left_) {
+        delete this->lyt_form_left_;
+    }
+    if (this->lyt_form_right_) {
+        delete this->lyt_form_right_;
+    }
+    if (this->lyt_btn_) {
+        delete this->lyt_btn_;
+    }
 }
 
 
@@ -60,7 +73,7 @@ void AccountFilterForm::setup_ui(){
     this->edit_postscript_->setPlaceholderText("备注");
 
     // 统一设置控件高度
-    const int fixed_height = 24;
+    constexpr int fixed_height = 24;
     this->edit_provider_name_->setFixedHeight(fixed_height);
     this->edit_platform_name_->setFixedHeight(fixed_height);
     this->edit_username_->setFixedHeight(fixed_height);
@@ -73,45 +86,45 @@ void AccountFilterForm::setup_ui(){
 
 void AccountFilterForm::setup_layout(){
     // 主布局
-    QHBoxLayout* layout_main = new QHBoxLayout(this);
-    QHBoxLayout* layout_groupbox = new QHBoxLayout(this);
+    this->lyt_main_ = new QHBoxLayout(this);
+    this->lyt_gbox_ = new QHBoxLayout(this);
 
     // 表单布局
-    QFormLayout* layout_form_left = new QFormLayout;
-    layout_form_left->addRow("服务商", this->edit_provider_name_);
-    layout_form_left->addRow("平台名", this->edit_platform_name_);
-    layout_form_left->addRow("用户名", this->edit_username_);
-    layout_form_left->addRow("昵称", this->edit_nickname_);
-    //layout_form_left->setSpacing(6);
+    this->lyt_form_left_ = new QFormLayout(this);
+    lyt_form_left_->addRow("服务商", this->edit_provider_name_);
+    lyt_form_left_->addRow("平台名", this->edit_platform_name_);
+    lyt_form_left_->addRow("用户名", this->edit_username_);
+    lyt_form_left_->addRow("昵称", this->edit_nickname_);
+    //lyt_form_left_->setSpacing(6);
 
-    QFormLayout* layout_form_right = new QFormLayout;
-    layout_form_right->addRow("电话", this->combo_phone_);
-    layout_form_right->addRow("邮箱", this->combo_email_);
-    layout_form_right->addRow("类别", this->combo_category_);
-    layout_form_right->addRow("备注", this->edit_postscript_);
-    //layout_form_right->setSpacing(6);
+    this->lyt_form_right_ = new QFormLayout(this);
+    lyt_form_right_->addRow("电话", this->combo_phone_);
+    lyt_form_right_->addRow("邮箱", this->combo_email_);
+    lyt_form_right_->addRow("类别", this->combo_category_);
+    lyt_form_right_->addRow("备注", this->edit_postscript_);
+    //lyt_form_right_->setSpacing(6);
 
     // 按钮布局
-    QVBoxLayout* layout_btn = new QVBoxLayout;
-    layout_btn->addWidget(this->btn_refresh_);
-    layout_btn->addWidget(this->btn_submit_);
-    layout_btn->addWidget(this->btn_drop_down_more_);
-    layout_btn->addStretch(); // 拉伸
+    this->lyt_btn_ = new QVBoxLayout(this);
+    lyt_btn_->addWidget(this->btn_refresh_);
+    lyt_btn_->addWidget(this->btn_submit_);
+    lyt_btn_->addWidget(this->btn_drop_down_more_);
+    lyt_btn_->addStretch(); // 拉伸
 
     // 表单对齐方式
-    layout_form_left->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
-    layout_form_right->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
-    // layout_btn->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    lyt_form_left_->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
+    lyt_form_right_->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
+    // lyt_btn_->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     // 组合布局
-    layout_groupbox->addLayout(layout_form_left);
-    layout_groupbox->addSpacing(8);
-    layout_groupbox->addLayout(layout_form_right);
-    layout_groupbox->addSpacing(8);
-    layout_groupbox->addLayout(layout_btn);
-    // layout_groupbox->setContentsMargins(20, 20, 20, 20);
-    this->box_filter_->setLayout(layout_groupbox);
-    layout_main->addWidget(this->box_filter_);
+    lyt_gbox_->addLayout(lyt_form_left_);
+    lyt_gbox_->addSpacing(8);
+    lyt_gbox_->addLayout(lyt_form_right_);
+    lyt_gbox_->addSpacing(8);
+    lyt_gbox_->addLayout(lyt_btn_);
+    // lyt_gbox_->setContentsMargins(20, 20, 20, 20);
+    this->box_filter_->setLayout(lyt_gbox_);
+    this->lyt_main_->addWidget(this->box_filter_);
 
     // 连接信号槽
     connect(this->btn_refresh_, &QPushButton::clicked, this, &AccountFilterForm::on_btn_refresh_clicked);
@@ -176,7 +189,7 @@ void AccountFilterForm::initial_input_widgets() const {
     }
 }
 
-void AccountFilterForm::on_btn_drop_down_more_clicked(){
+void AccountFilterForm::on_btn_drop_down_more_clicked() const {
     if (this->popup_window_->isHidden()) {
         QPoint pos = mapToGlobal(this->btn_drop_down_more_->pos());
         pos.setY(pos.y() + this->btn_drop_down_more_->height());
@@ -189,8 +202,7 @@ void AccountFilterForm::on_btn_drop_down_more_clicked(){
     }
 }
 
-
-void AccountFilterForm::on_btn_refresh_clicked() {
+void AccountFilterForm::on_btn_refresh_clicked() const {
     initial_input_widgets();     // 初始化控件
     this->edit_provider_name_->clear();
     this->edit_platform_name_->clear();

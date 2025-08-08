@@ -6,7 +6,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
-class SearchBox : public QWidget
+class SearchBox final : public QWidget
 {
     Q_OBJECT
 public:
@@ -20,7 +20,7 @@ private slots:
     void on_search_button_clicked_();
 
 private:
-    QHBoxLayout *layout_;
+    QHBoxLayout *lyt_;
     QLineEdit *line_edit_;
     QPushButton *search_button_;
 };

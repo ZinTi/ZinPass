@@ -15,7 +15,7 @@
 #include <QWidgetAction>
 
 
-class ComponentsMenuWidget : public QWidget{
+class ComponentsMenuWidget final : public QWidget{
 public:
     explicit ComponentsMenuWidget(QWidget *parent = nullptr);
     ~ComponentsMenuWidget();
@@ -35,7 +35,7 @@ private:
 };
 
 
-class PwdGenDlg : public QDialog{
+class PwdGenDlg final : public QDialog{
 public:
     explicit PwdGenDlg(QWidget *parent = nullptr);
     ~PwdGenDlg();

@@ -7,8 +7,8 @@ namespace zinpass::mod_session {
 
     bool SessionPersistence::add(const mod_session::Session &session) {
         const mod_session::SessionDAO session_dao;
-        if (const repository::DaoStatus ret = session_dao.add(session);
-            repository::DaoStatus::Success != ret) {
+        if (const repo::DaoStatus ret = session_dao.add(session);
+            repo::DaoStatus::Success != ret) {
             return false;
             }
         return true;
@@ -16,7 +16,7 @@ namespace zinpass::mod_session {
 
     bool SessionPersistence::remove(const std::string& session_id){
         if (const mod_session::SessionDAO session_dao;
-            repository::DaoStatus::Success != session_dao.remove(session_id)) {
+            repo::DaoStatus::Success != session_dao.remove(session_id)) {
             return false;
         }
         return true;

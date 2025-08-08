@@ -50,12 +50,12 @@ void StateManager::setLogLevel(int level) {
 }
 
 //----- 独立计数器方法 -----
-int StateManager::getRequestCount() const {
+int StateManager::getReqCount() const {
     std::lock_guard<std::mutex> lock(counterMutex_);
     return requestCount_;
 }
 
-void StateManager::incrementRequestCount() {
+void StateManager::incrementReqCount() {
     std::lock_guard<std::mutex> lock(counterMutex_);
     ++requestCount_;
 }

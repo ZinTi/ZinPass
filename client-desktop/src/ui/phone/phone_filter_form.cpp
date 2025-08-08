@@ -39,30 +39,30 @@ void PhoneFilterForm::setup_ui(){
     this->btn_submit_->setFixedSize(QSize(fixed_width,fixed_height));
 
     // 主布局
-    QHBoxLayout* layout_main = new QHBoxLayout(this);
-    QHBoxLayout* layout_groupbox = new QHBoxLayout(this);
+    QHBoxLayout* lyt_main = new QHBoxLayout(this);
+    QHBoxLayout* lyt_gbox = new QHBoxLayout(this);
 
     // 表单布局
-    QFormLayout* layout_form_condition = new QFormLayout;
-    layout_form_condition->addRow("运营商", this->combo_telecom_);
-    layout_form_condition->addRow("手机号", this->combo_phone_);
+    QFormLayout* lyt_form_condition = new QFormLayout;
+    lyt_form_condition->addRow("运营商", this->combo_telecom_);
+    lyt_form_condition->addRow("手机号", this->combo_phone_);
 
     // 按钮布局
-    QVBoxLayout* layout_btn = new QVBoxLayout;
-    layout_btn->addWidget(this->btn_refresh_);
-    layout_btn->addWidget(this->btn_submit_);
-    layout_btn->addStretch(); // 拉伸
+    QVBoxLayout* lyt_btn = new QVBoxLayout;
+    lyt_btn->addWidget(this->btn_refresh_);
+    lyt_btn->addWidget(this->btn_submit_);
+    lyt_btn->addStretch(); // 拉伸
 
     // 表单对齐方式
-    layout_form_condition->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
+    lyt_form_condition->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     // 组合布局
-    layout_groupbox->addLayout(layout_form_condition);
-    layout_groupbox->addSpacing(8);
-    layout_groupbox->addLayout(layout_btn);
-    // layout_groupbox->setContentsMargins(20, 20, 20, 20);
-    this->box_filter_->setLayout(layout_groupbox);
-    layout_main->addWidget(this->box_filter_);
+    lyt_gbox->addLayout(lyt_form_condition);
+    lyt_gbox->addSpacing(8);
+    lyt_gbox->addLayout(lyt_btn);
+    // lyt_gbox->setContentsMargins(20, 20, 20, 20);
+    this->box_filter_->setLayout(lyt_gbox);
+    lyt_main->addWidget(this->box_filter_);
 
     // 连接信号槽
     connect(this->btn_refresh_, &QPushButton::clicked, this, &PhoneFilterForm::on_btn_refresh_clicked);

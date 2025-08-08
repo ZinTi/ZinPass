@@ -1,5 +1,6 @@
 #include "account_mgr_form.h"
 #include <QMessageBox>
+
 #include "dialog_exposed_pwd.h"
 #include "is_input_valid.h"
 #include "dialog_auth.h"
@@ -29,6 +30,16 @@ AccountMgrForm::~AccountMgrForm(){
     }
     if(this->dialog_detail_and_edit_){
         delete this->dialog_detail_and_edit_;
+    }
+
+    if (this->lyt_main_) {
+        delete this->lyt_main_;
+    }
+    if (this->lyt_display_and_filter_) {
+        delete this->lyt_display_and_filter_;
+    }
+    if (this->lyt_bottom_btn_) {
+        delete this->lyt_bottom_btn_;
     }
 }
 
@@ -63,26 +74,26 @@ void AccountMgrForm::setup_ui(){
     //const std::string& dest_account_id = this->table_model_->data(index).toLongLong();
 
     // 创建布局
-    QVBoxLayout* layout_main = new QVBoxLayout(this);
-    QHBoxLayout* layout_display_and_filter = new QHBoxLayout;
-    QHBoxLayout* layout_bottom_button = new QHBoxLayout;
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_display_and_filter_ = new QHBoxLayout;
+    this->lyt_bottom_btn_ = new QHBoxLayout;
 
     // 组合布局
-    layout_display_and_filter->addWidget(this->coord_viewer_);
-    layout_display_and_filter->addWidget(this->filter_form_);
+    lyt_display_and_filter_->addWidget(this->coord_viewer_);
+    lyt_display_and_filter_->addWidget(this->filter_form_);
 
-    layout_bottom_button->addWidget(this->btn_data_owner_);
-    layout_bottom_button->addSpacing(30);
-    layout_bottom_button->addWidget(this->btn_read_passwd_);
-    layout_bottom_button->addWidget(this->btn_add_account_);
-    layout_bottom_button->addWidget(this->btn_detail_and_edit_);
-    layout_bottom_button->addSpacing(30);
-    layout_bottom_button->addWidget(this->btn_passwd_generator_);
+    lyt_bottom_btn_->addWidget(this->btn_data_owner_);
+    lyt_bottom_btn_->addSpacing(30);
+    lyt_bottom_btn_->addWidget(this->btn_read_passwd_);
+    lyt_bottom_btn_->addWidget(this->btn_add_account_);
+    lyt_bottom_btn_->addWidget(this->btn_detail_and_edit_);
+    lyt_bottom_btn_->addSpacing(30);
+    lyt_bottom_btn_->addWidget(this->btn_passwd_generator_);
 
-    layout_main->addWidget(this->search_box_);
-    layout_main->addLayout(layout_display_and_filter);
-    layout_main->addWidget(this->table_view_);
-    layout_main->addLayout(layout_bottom_button);
+    lyt_main_->addWidget(this->search_box_);
+    lyt_main_->addLayout(lyt_display_and_filter_);
+    lyt_main_->addWidget(this->table_view_);
+    lyt_main_->addLayout(lyt_bottom_btn_);
 
     // 连接信号槽
     connect(this->search_box_, &SearchBox::search_triggered, this,
@@ -201,9 +212,9 @@ void AccountMgrForm::list_accounts(){
 void AccountMgrForm::on_btn_read_passwd_clicked() {
     const auto row_count = this->table_model_->rowCount();
     if (this->row_of_table_view_ < row_count) {
-        QStandardItem* item_comlumn0 = this->table_model_->item(this->row_of_table_view_, 0);
-        if (item_comlumn0) {
-            QVariant data = item_comlumn0->data(Qt::DisplayRole);
+        const QStandardItem* item_column0 = this->table_model_->item(this->row_of_table_view_, 0);
+        if (item_column0) {
+            const QVariant data = item_column0->data(Qt::DisplayRole);
             const std::string account_id = data.toString().toStdString();
 
             DialogExposedPwd dialog_exposed_pwd(account_id, this);
@@ -219,16 +230,16 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
 }
 
 
-void AccountMgrForm::on_btn_add_account_clicked() {
+void AccountMgrForm::on_btn_add_account_clicked() const {
     this->dialog_add_account_->exec();
 }
 
 void AccountMgrForm::on_btn_detail_and_edit_clicked() {
     const auto row_count = this->table_model_->rowCount();
     if(this->row_of_table_view_ < row_count){
-        QStandardItem* item_comlumn0 = this->table_model_->item(this->row_of_table_view_, 0);
-        if (item_comlumn0) {
-            QVariant data = item_comlumn0->data(Qt::DisplayRole);
+        const QStandardItem* item_column0 = this->table_model_->item(this->row_of_table_view_, 0);
+        if (item_column0) {
+            const QVariant data = item_column0->data(Qt::DisplayRole);
             const std::string account_id = data.toString().toStdString();
             this->dialog_detail_and_edit_ = new DialogEditAccount(account_id, this);
             this->dialog_detail_and_edit_->setWindowTitle(QString("详情和编辑(%1)").arg(account_id));
@@ -287,7 +298,7 @@ void AccountMgrForm::on_btn_remove_account_clicked() {
 }
 
 // 随机密码生成器-toolBtn
-void AccountMgrForm::on_btn_passwd_generator_clicked(){
+void AccountMgrForm::on_btn_passwd_generator_clicked() const {
     this->passwd_generator_->exec();
 }
 
@@ -297,8 +308,8 @@ void AccountMgrForm::on_table_view_item_clicked(const QModelIndex &index){
     this->row_of_table_view_ = index.row();
     this->column_of_table_view_ = index.column();
 
-    QModelIndex index_of_first_column = index.sibling(this->row_of_table_view_, 0);  // 同一行，第0列
-    QString value_of_first_column = index.model()->data(index_of_first_column).toString();
+    const QModelIndex index_of_first_column = index.sibling(this->row_of_table_view_, 0);  // 同一行，第0列
+    const QString value_of_first_column = index.model()->data(index_of_first_column).toString();
 
     this->coord_viewer_->setTextColor(QColor::fromRgbF(0, 255, 0, 1.0));
     this->coord_viewer_->setText(QString("已选中ID: %1").arg(value_of_first_column));

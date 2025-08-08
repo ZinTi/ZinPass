@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QTextEdit>
 
-class InputForm : public QWidget
+class InputForm final : public QWidget
 {
     Q_OBJECT
 

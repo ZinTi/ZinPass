@@ -4,12 +4,12 @@
 #include <QDialog>
 #include <QLineEdit>
 
-class DialogAuth : public QDialog {
+class DialogAuth final : public QDialog {
 public:
     DialogAuth(QWidget* parent = nullptr);
     ~DialogAuth();
 
-    QString get_input_main_password() const;
+    QString get_input_main_key() const;
 
 private slots:
     void on_btn_okay_clicked();
@@ -19,7 +19,7 @@ private:
     QPushButton* btn_okay_;
     QPushButton* btn_cancel_;
 
-    QString main_password_;
+    QString main_key_;
 };
 
 #endif // DIALOG_AUTH_H

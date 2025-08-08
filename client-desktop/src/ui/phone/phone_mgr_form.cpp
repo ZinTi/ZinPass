@@ -39,23 +39,23 @@ void PhoneMgrForm::setup_ui(){
     this->btn_clear_ = new QPushButton("清屏", this);
 
     // 创建布局
-    QVBoxLayout* layout_main = new QVBoxLayout(this);
-    QHBoxLayout* layout_top = new QHBoxLayout;
-    QVBoxLayout* layout_button = new QVBoxLayout;
+    QVBoxLayout* lyt_main = new QVBoxLayout(this);
+    QHBoxLayout* lyt_top = new QHBoxLayout;
+    QVBoxLayout* lyt_btn = new QVBoxLayout;
 
     // 组合布局
-    layout_main->addWidget(this->search_box_);
-    layout_main->addLayout(layout_top);
-    layout_main->addWidget(this->table_view_);
-    layout_main->addWidget(this->phone_detail_frame_);
+    lyt_main->addWidget(this->search_box_);
+    lyt_main->addLayout(lyt_top);
+    lyt_main->addWidget(this->table_view_);
+    lyt_main->addWidget(this->phone_detail_frame_);
 
-    layout_top->addWidget(this->display_);
-    layout_top->addLayout(layout_button);
-    layout_top->addWidget(this->filter_form_);
+    lyt_top->addWidget(this->display_);
+    lyt_top->addLayout(lyt_btn);
+    lyt_top->addWidget(this->filter_form_);
 
-    layout_button->setAlignment(Qt::AlignCenter);
-    layout_button->addWidget(this->btn_add_);
-    layout_button->addWidget(this->btn_clear_);
+    lyt_btn->setAlignment(Qt::AlignCenter);
+    lyt_btn->addWidget(this->btn_add_);
+    lyt_btn->addWidget(this->btn_clear_);
 
     connect(this->search_box_, &SearchBox::search_triggered, this,
         [](const QString &keyword_){
@@ -137,7 +137,7 @@ void PhoneMgrForm::on_btn_add_clicked(){
     dialog_add_phone.exec();
 }
 
-void PhoneMgrForm::on_btn_clear_clicked(){
+void PhoneMgrForm::on_btn_clear_clicked() const {
     this->display_->clear();
 }
 

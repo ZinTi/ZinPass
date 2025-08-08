@@ -7,12 +7,12 @@ namespace zinpass::rpc{
 
     std::map<std::string, std::string> AuthRPC::login(const std::string& username, const std::string& password, const std::string& captcha_input){
         // 1. Construct request
-        user::v1::CreateSessionRequest request;
+        user::v1::CreateSessionReq request;
         request.set_username(username);
-        request.set_password(password);
+        request.set_main_key(password);
         request.set_captcha_input(captcha_input);
         // 2. Construct response
-        user::v1::CreateSessionResponse response;
+        user::v1::CreateSessionResp response;
         // 3. Create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -33,10 +33,10 @@ namespace zinpass::rpc{
 
     std::string AuthRPC::logout(const std::string& session_id){
         // 1. Construct request
-        user::v1::DeleteSessionRequest request;
+        user::v1::DeleteSessionReq request;
         request.set_session_id(session_id);
         // 2. Construct response
-        user::v1::DeleteSessionResponse response;
+        user::v1::DeleteSessionResp response;
         // 3. Create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -47,7 +47,7 @@ namespace zinpass::rpc{
         return response.message();
     }
 
-    std::map<std::string, std::string> AuthRPC::change_main_password(const std::string& session_id, const std::string& old_password, const std::string& new_password, const std::string& captcha_input){
+    std::map<std::string, std::string> AuthRPC::change_main_key(const std::string& session_id, const std::string& old_password, const std::string& new_password, const std::string& captcha_input){
         // 1. Construct request
 
         // 2. Construct response

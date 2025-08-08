@@ -22,12 +22,12 @@ public:
 
 private slots:
     void on_btn_refresh_clicked();  // 刷新
-    void on_btn_clear_clicked();    // 清空
+    void on_btn_clear_clicked() const;    // 清空
     void on_btn_submit_clicked();   // 提交
 
 private:
     void setup_ui();
-    void initial_input_widgets();
+    void initial_input_widgets() const;
 
     QGroupBox* group_box_platform_;
     QLineEdit* edit_provider_name_;
@@ -49,7 +49,7 @@ private:
     QGroupBox* group_box_other_;
     QPlainTextEdit* edit_postscript_;
 
-    QLineEdit* edit_main_password_;     // 主密码
+    QLineEdit* edit_main_key_;     // 主密钥
 
     QPushButton* btn_refresh_;  // 刷新
     QPushButton* btn_clear_;    // 清空输入

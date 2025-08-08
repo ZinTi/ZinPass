@@ -14,7 +14,7 @@
 #include <QMouseEvent>
 
 // 自定义弹出窗口类
-class PopupFilterWindow : public QWidget{
+class PopupFilterWindow final : public QWidget{
     Q_OBJECT
 public:
     explicit PopupFilterWindow(QWidget *parent = nullptr);

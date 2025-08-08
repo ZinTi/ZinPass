@@ -7,7 +7,7 @@ namespace Ui {
 class CheckPwdSecurityForm;
 }
 
-class CheckPwdSecurityForm : public QWidget
+class CheckPwdSecurityForm final : public QWidget
 {
     Q_OBJECT
 

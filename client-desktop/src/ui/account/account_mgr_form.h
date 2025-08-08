@@ -1,16 +1,16 @@
-#ifndef ACCOUNTMGRFORM_H
-#define ACCOUNTMGRFORM_H
+#ifndef ACCOUNT_MGR_FORM_H
+#define ACCOUNT_MGR_FORM_H
 
 #include <QWidget>
+#include <QTextEdit>
+#include <QPushButton>
+#include <QToolButton>
 #include <QTableWidget>
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
-#include <QTextEdit>
-#include <QPushButton>
-#include <QToolButton>
 
 #include "search_box.h"
 #include "account_filter_form.h"
@@ -19,19 +19,19 @@
 #include "dialog_edit_account.h"
 // #include "popup_filter_window.h"
 
-class AccountMgrForm : public QWidget{
+class AccountMgrForm final : public QWidget{
     Q_OBJECT
 
 public:
     explicit AccountMgrForm(QWidget *parent = nullptr);
-    ~AccountMgrForm();
+    ~AccountMgrForm() override;
 
 private slots:
     void on_btn_read_passwd_clicked(); // 查询和显示明文密码
-    void on_btn_add_account_clicked(); // 增加密码记录
+    void on_btn_add_account_clicked() const; // 增加密码记录
     void on_btn_detail_and_edit_clicked(); // 更新记录
-    void on_btn_remove_account_clicked(); // 删除密码记录
-    void on_btn_passwd_generator_clicked(); // 随机密码生成器-toolBtn
+    void on_btn_remove_account_clicked();  // 删除密码记录
+    void on_btn_passwd_generator_clicked() const; // 随机密码生成器-toolBtn
     void on_table_view_item_clicked(const QModelIndex &index);
 
     void list_accounts();    // 查询accounts
@@ -56,6 +56,11 @@ private:
 
     int row_of_table_view_ = 0; // 聚焦行
     int column_of_table_view_ = 0;  // 聚焦列
+
+    // 布局
+    QVBoxLayout* lyt_main_;
+    QHBoxLayout* lyt_display_and_filter_;
+    QHBoxLayout* lyt_bottom_btn_;
 };
 
 #endif

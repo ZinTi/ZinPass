@@ -32,14 +32,14 @@ namespace zinpass::rpc{
         std::string logout(const std::string& session_id);
 
         /**
-         * @brief change_main_password
+         * @brief change_main_key
          * @param session_id
          * @param old_password
          * @param new_password
          * @param captcha_input
          * @return
          */
-        std::map<std::string, std::string> change_main_password(const std::string& session_id, const std::string& old_password, const std::string& new_password, const std::string& captcha_input);
+        std::map<std::string, std::string> change_main_key(const std::string& session_id, const std::string& old_password, const std::string& new_password, const std::string& captcha_input);
 
     private:
         // AuthService服务的存根

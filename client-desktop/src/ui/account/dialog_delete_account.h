@@ -6,7 +6,7 @@
 #include <QPushButton>
 #include <string>
 
-class DialogDeleteAccount : public QDialog {
+class DialogDeleteAccount final : public QDialog {
     Q_OBJECT
 
 public:
@@ -14,7 +14,7 @@ public:
     ~DialogDeleteAccount();
 
     void set_account_id(const std::string& account_id);
-    std::string get_input_main_password() const;
+    std::string get_input_main_key() const;
 
 private slots:
     void on_btn_okay_clicked();
@@ -25,7 +25,7 @@ private:
     QPushButton* btn_cancel_;
 
     std::string account_id_;
-    std::string main_password_;
+    std::string main_key_;
 
     void setup_ui();
 };

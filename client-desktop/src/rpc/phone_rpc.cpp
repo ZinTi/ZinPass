@@ -15,7 +15,7 @@ namespace zinpass::rpc{
         const std::string& service_password,
         const std::string& join_time,
         const std::string& postscript){
-        account::v1::CreatePhoneRequest request;
+        account::v1::CreatePhoneReq request;
         request.set_session_id(session_id);
         account::v1::Phone* phone = new account::v1::Phone;
         phone->set_telecom_operator(telecom_operator);
@@ -27,7 +27,7 @@ namespace zinpass::rpc{
         phone->set_join_time(join_time);
         phone->set_postscript(postscript);
         request.set_allocated_phone(phone);
-        account::v1::CreatePhoneResponse response;
+        account::v1::CreatePhoneResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->CreatePhone(&context, request, &response);
         return {response.result(), response.message()};
@@ -35,10 +35,10 @@ namespace zinpass::rpc{
 
     PhoneRPC::Return<std::vector<std::string>> PhoneRPC::list_phone_numbers(const std::string& session_id){
         // 1. construct request
-        account::v1::ListPhoneNumbersRequest request;
+        account::v1::ListPhoneNumbersReq request;
         request.set_session_id(session_id);
         // 2. construct response
-        account::v1::ListPhoneNumbersResponse response;
+        account::v1::ListPhoneNumbersResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -56,12 +56,12 @@ namespace zinpass::rpc{
 
     PhoneRPC::Return<std::vector<zinpass::models::MobilePhone>> PhoneRPC::list_phones(const std::string& session_id, const std::string& telecom, const std::string& phone_number){
         // 1. construct request
-        account::v1::ListPhoneRequest request;
+        account::v1::ListPhoneReq request;
         request.set_session_id(session_id);
         request.set_telecom(telecom);
         request.set_phone_number(phone_number);
         // 2. construct response
-        account::v1::ListPhoneResponse response;
+        account::v1::ListPhoneResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -94,11 +94,11 @@ namespace zinpass::rpc{
 
     PhoneRPC::Return<zinpass::models::MobilePhone> PhoneRPC::find_phone_by_id(const std::string& session_id, const int phone_id){
         // 1. construct request
-        account::v1::FindPhoneByIdRequest request;
+        account::v1::FindPhoneByIdReq request;
         request.set_session_id(session_id);
         request.set_phone_id(phone_id);
         // 2. construct response
-        account::v1::FindPhoneByIdResponse response;
+        account::v1::FindPhoneByIdResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -138,7 +138,7 @@ namespace zinpass::rpc{
         const std::string& join_time,
         const std::string& postscript)
     {
-        account::v1::UpdatePhoneRequest request;
+        account::v1::UpdatePhoneReq request;
         request.set_session_id(session_id);
         request.set_phone_id(phone_id);
         account::v1::Phone* phone = new account::v1::Phone;
@@ -151,7 +151,7 @@ namespace zinpass::rpc{
         phone->set_phone_area(phone_area);
         phone->set_postscript(postscript);
         request.set_allocated_phone(phone);
-        account::v1::UpdatePhoneResponse response;
+        account::v1::UpdatePhoneResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->UpdatePhone(&context, request, &response);
         return {response.result(), response.message()};
@@ -159,10 +159,10 @@ namespace zinpass::rpc{
 
     PhoneRPC::Return<bool> PhoneRPC::delete_phone_by_id(const std::string& session_id, const int phone_id)
     {
-        account::v1::DeletePhoneRequest request;
+        account::v1::DeletePhoneReq request;
         request.set_session_id(session_id);
         request.set_phone_id(phone_id);
-        account::v1::DeletePhoneResponse response;
+        account::v1::DeletePhoneResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->DeletePhone(&context, request, &response);
         return {response.result(), response.message()};

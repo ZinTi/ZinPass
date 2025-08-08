@@ -19,6 +19,6 @@ void OutputForm::setup_ui(){
         );
     this->edit_info_->setReadOnly(true);
 
-    QVBoxLayout* layout_main = new QVBoxLayout(this);
-    layout_main->addWidget(this->edit_info_);
+    QVBoxLayout* lyt_main = new QVBoxLayout(this);
+    lyt_main->addWidget(this->edit_info_);
 }

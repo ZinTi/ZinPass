@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class CancelPersonalUserForm : public QWidget
+class CancelPersonalUserForm final : public QWidget
 {
     Q_OBJECT
 

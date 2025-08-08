@@ -9,10 +9,13 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QToolButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QFormLayout>
 #include <QGroupBox>
 #include "popup_filter_window.h"
 
-class AccountFilterForm : public QWidget{
+class AccountFilterForm final : public QWidget{
     Q_OBJECT
 
 public:
@@ -25,8 +28,8 @@ signals:
     void form_submitted();
 
 private slots:
-    void on_btn_refresh_clicked();          // 处理刷新按键点击事件
-    void on_btn_drop_down_more_clicked();   // 处理下拉按键点击事件
+    void on_btn_refresh_clicked() const;          // 处理刷新按键点击事件
+    void on_btn_drop_down_more_clicked() const;   // 处理下拉按键点击事件
 
 private:
     void setup_ui();
@@ -50,6 +53,14 @@ private:
     // 2. 基本控件 + 自定义控件
     QToolButton* btn_drop_down_more_;    // 下拉按钮
     PopupFilterWindow* popup_window_;    // 下拉弹窗
+
+    // 3. 布局
+    QHBoxLayout* lyt_main_;          // 主布局
+    QHBoxLayout* lyt_gbox_;          // 筛选框布局
+    QFormLayout* lyt_form_left_;     // 左侧表单布局
+    QFormLayout* lyt_form_right_;    // 右侧表单布局
+    QVBoxLayout* lyt_btn_;           // 按钮布局
+
 };
 
 #endif // ACCOUNT_FILTER_FORM_H

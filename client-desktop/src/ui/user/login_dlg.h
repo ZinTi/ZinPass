@@ -12,7 +12,7 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-class LoginDlg : public QDialog {
+class LoginDlg final : public QDialog {
     Q_OBJECT
 
 public:

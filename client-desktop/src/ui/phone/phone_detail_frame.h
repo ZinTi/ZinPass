@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include "mobile_phone.h"
 
-class PhoneDetailFrame : public QFrame
+class PhoneDetailFrame final : public QFrame
 {
     Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
 
     void render_phone_to_ui();
     zinpass::models::MobilePhone get_phone() const;
-    void fetch_phone_by_id(int phone_id);
+    void fetch_phone_by_id(int id);
 
 signals:
     void form_submitted();

@@ -17,7 +17,7 @@ namespace Ui {
 class MainWorkbench;
 }
 
-class MainWorkbench : public QMainWindow {
+class MainWorkbench final : public QMainWindow {
     Q_OBJECT
 
 public:

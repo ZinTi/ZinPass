@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
-
 project(client-desktop VERSION 0.0.3 LANGUAGES CXX)
+
+# 设置平台相关变量
+if(WIN32)
+    set(EXECUTABLE_NAME "zinpass")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(EXECUTABLE_NAME "zinpass")
+else()
+    set(EXECUTABLE_NAME "zinpass")
+endif()
 
 # 设置 Qt 库路径（mingw64静态库）
 set(CMAKE_PREFIX_PATH
@@ -101,7 +109,6 @@ set(PROJECT_SOURCES
         src/ui/user/signup_dlg.cpp
         src/ui/user/signup_dlg.ui
         src/ui/user/personal_mgr_form.cpp
-        src/ui/user/personal_mgr_form.ui
         src/ui/user/cancel_personal_user_form.cpp
         # (6.3) 主工作台
         src/ui/main_workbench.cpp
@@ -159,6 +166,11 @@ set(PROJECT_SOURCES
 
 add_executable(client-desktop
         ${PROJECT_SOURCES}
+)
+
+# 设置输出文件名
+set_target_properties(client-desktop PROPERTIES
+        OUTPUT_NAME "${EXECUTABLE_NAME}"
 )
 
 # 链接 Qt6 和 OpenSSL、Windows 系统库

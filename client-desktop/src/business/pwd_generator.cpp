@@ -2,7 +2,7 @@
 #include <random>
 #include <chrono>
 
-PwdGenerator::PwdGenerator(PwdComponentsType components, int length, int count){
+PwdGenerator::PwdGenerator(PwdComponentsType components, const int length, const int count){
     this->components = components;
     this->length = length;
     this->count = count;

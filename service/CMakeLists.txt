@@ -3,11 +3,11 @@ project(zinpass_service VERSION 0.0.3 LANGUAGES CXX)
 
 # 设置平台相关变量
 if(WIN32)
-    set(EXECUTABLE_NAME "ZinPassSvc")    # Windows下生成 ZinPassSvc.exe
+    set(EXECUTABLE_NAME "zinpasssvc")    # Windows下生成 zinpasssvc.exe
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(EXECUTABLE_NAME "zinpassd")      # Linux下生成 zinpassd
 else()
-    set(EXECUTABLE_NAME "zinpass_service") # 其他平台保留默认名称
+    set(EXECUTABLE_NAME "zinpassd") # 其他平台保留默认名称
 endif()
 
 # 设置依赖库搜索路径（完整路径、环境变量或缓存变量）
@@ -49,25 +49,25 @@ set(PROJECT_SOURCES
         src/config/read_configuration_file.cpp
         src/config/state_manager.cpp
 
-        # 3. 业务逻辑层-business
-        src/business/user_manager.cpp
+        # 3. 业务逻辑层-mgr
+        src/mgr/user_mgr.cpp
         src/mod_session/session_persistence.cpp
         src/mod_session/session_mgr.cpp
-        src/business/telecom_operator_manager.cpp
-        src/business/mobile_phone_manager.cpp
-        src/business/account_manager.cpp
-        src/business/authentication.cpp
+        src/mgr/telecom_operator_mgr.cpp
+        src/mgr/phone_mgr.cpp
+        src/mgr/account_mgr.cpp
+        src/mgr/authentication.cpp
 
-        # 4. 数据访问层-repository
-        src/repository/connection_pool.cpp
-        src/repository/common/sql_debug.cpp
-        src/repository/init_database.cpp # 初始化 Database
-        src/repository/system_user_dao.cpp
+        # 4. 数据访问层-repo
+        src/repo/connection_pool.cpp
+        src/repo/common/sql_debug.cpp
+        src/repo/init_database.cpp # 初始化 Database
+        src/repo/user_dao.cpp
         src/mod_session/session_dao.cpp
-        src/repository/telecom_operator_dao.cpp
-        src/repository/mobile_phone_dao.cpp
-        src/repository/category_dao.cpp
-        src/repository/account_dao.cpp
+        src/repo/telecom_operator_dao.cpp
+        src/repo/phone_dao.cpp
+        src/repo/category_dao.cpp
+        src/repo/account_dao.cpp
 
         # 5. 领域模型（与proto解耦）-models
         src/models/system_user.cpp
@@ -76,17 +76,17 @@ set(PROJECT_SOURCES
         src/models/account.cpp
         src/models/view_account.cpp
 
-        # 6. gRPC 服务实现层-service
-        src/service/grpc_client_service.cpp
-        src/service/grpc_control_service.cpp
-        src/service/hello_service.cpp       # 测试 RPC 是否连通
-        src/service/user/user_service.cpp
-        src/service/user/auth_service.cpp
-        src/service/phone/telecom_service.cpp
-        src/service/phone/phone_service.cpp
-        src/service/account/account_service.cpp
-        src/service/account/category_service.cpp
-        src/service/status/status_service.cpp
+        # 6. gRPC 服务实现层-rpc
+        src/rpc/grpc_client_service.cpp
+        src/rpc/grpc_control_service.cpp
+        src/rpc/hello_service.cpp       # 测试 RPC 是否连通
+        src/rpc/user/user_service.cpp
+        src/rpc/user/auth_service.cpp
+        src/rpc/phone/telecom_service.cpp
+        src/rpc/phone/phone_service.cpp
+        src/rpc/account/account_service.cpp
+        src/rpc/account/category_service.cpp
+        src/rpc/status/status_service.cpp
 
         # generated
         generate/common/v1/common.pb.cc

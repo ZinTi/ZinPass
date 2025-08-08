@@ -5,16 +5,16 @@ package account.v1;
 // import "common/v1/common.proto"; // 导入公共定义（分页、错误等）
 
 service AccountService{
-    rpc ListEmailAddresses(ListEmailAddressesRequest) returns (ListEmailAddressesResponse);     // 列出所有可选的邮箱地址（邮箱类别的账号）
+    rpc ListEmailAddresses(ListEmailAddressesReq) returns (ListEmailAddressesResp);     // 列出所有可选的邮箱地址（邮箱类别的账号）
 
-    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);        // 创建账号
-    rpc ListAccountById(ListAccountByIdRequest) returns (ListAccountByIdResponse);  // 根据 session_id 和 account_id 查询账号
-    rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);           // 根据 session_id 查询账号
-    rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountResponse);        // 更新账号
-    rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse);        // 删除账号
+    rpc CreateAccount(CreateAccountReq) returns (CreateAccountResp);        // 创建账号
+    rpc ListAccountById(ListAccountByIdReq) returns (ListAccountByIdResp);  // 根据 session_id 和 account_id 查询账号
+    rpc ListAccounts(ListAccountsReq) returns (ListAccountsResp);           // 根据 session_id 查询账号
+    rpc UpdateAccount(UpdateAccountReq) returns (UpdateAccountResp);        // 更新账号
+    rpc DeleteAccount(DeleteAccountReq) returns (DeleteAccountResp);        // 删除账号
 
-    rpc FetchPassword(FetchPasswordRequest) returns (FetchPasswordResponse);        // 获取密码
-    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);     // 修改密码
+    rpc FetchPassword(FetchPasswordReq) returns (FetchPasswordResp);        // 获取密码
+    rpc ChangePassword(ChangePasswordReq) returns (ChangePasswordResp);     // 仅修改密码
 }
 
 message ViewAccount{
@@ -48,102 +48,103 @@ message Account{
     string category = 11;
 }
 
-message ListEmailAddressesRequest{
+message ListEmailAddressesReq{
     string session_id = 1;
 }
 
-message ListEmailAddressesResponse{
+message ListEmailAddressesResp{
     repeated string email_addresses = 1;
     string message = 2;
 }
 
-message CreateAccountRequest{
+message CreateAccountReq{
     string session_id = 1;
     Account account = 2;
     string password = 3;
-    string main_password = 4;
+    string main_key = 4;
 }
 
-message CreateAccountResponse{
+message CreateAccountResp{
     bool result = 1;
     string message = 2;
 }
 
-message ListAccountByIdRequest{
+message ListAccountByIdReq{
     string session_id = 1;
     string account_id = 2;
 }
 
-message ListAccountByIdResponse{
+message ListAccountByIdResp{
     ViewAccount account = 1;
     string message = 2;
 }
 
 /*
-message ListAccountsRequest{
+message ListAccountsReq{
     string session_id = 1;
     common.v1.Filter filter = 2;
     int32 page_size = 3;
 }
 
-message ListAccountsResponse{
+message ListAccountsResp{
     repeated Account accounts = 1;
     string message = 2;
 }*/
 
-message ListAccountsRequest{
+message ListAccountsReq{
     string session_id = 1;
     Account conditions = 2;
     int32 page_size = 3;
 }
 
-message ListAccountsResponse{
+message ListAccountsResp{
     repeated ViewAccount accounts = 1;
     string message = 2;
 }
 
-message UpdateAccountRequest{
+message UpdateAccountReq{
     string session_id = 1;
     string account_id = 2;
     Account account = 3;
-    string account_password = 4;
-    string main_password = 5;
+    string password = 4;
+    string main_key = 5;
 }
 
-message UpdateAccountResponse{
+message UpdateAccountResp{
     bool result = 1;
     string message = 2;
 }
 
-message DeleteAccountRequest{
+message DeleteAccountReq{
     string session_id = 1;
     string account_id = 2;
-    string main_password = 3;
+    string main_key = 3;
 }
 
-message DeleteAccountResponse{
+message DeleteAccountResp{
     bool result = 1;
     string message = 2;
 }
 
-message FetchPasswordRequest{
+message FetchPasswordReq{
     string session_id = 1;
     string account_id = 2;
-    string main_password = 3;
+    string main_key = 3;
 }
 
-message FetchPasswordResponse{
+message FetchPasswordResp{
     string password = 1;
     string message = 2;
 }
 
-message ChangePasswordRequest{
+message ChangePasswordReq{
     string session_id = 1;
     string account_id = 2;
-    string main_password = 3;
-    string new_password = 4;
+    string main_key = 3;
+    string password = 4;
 }
 
-message ChangePasswordResponse{
-    string message = 1;
+message ChangePasswordResp{
+    bool result = 1;
+    string message = 2;
 }

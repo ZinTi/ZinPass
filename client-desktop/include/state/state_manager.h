@@ -1,5 +1,5 @@
-#ifndef STATEMANAGER_H
-#define STATEMANAGER_H
+#ifndef STATE_MANAGER_H
+#define STATE_MANAGER_H
 
 #include <mutex>
 #include <string>
@@ -66,8 +66,8 @@ public:
     void setLogLevel(int level);
 
     // ========== 独立高频访问状态（单独锁）==========
-    int getRequestCount() const;
-    void incrementRequestCount();
+    int getReqCount() const;
+    void incrementReqCount();
 
 private:
     StateManager() = default;
@@ -89,4 +89,4 @@ private:
 
 }
 
-#endif //STATEMANAGER_H
+#endif //STATE_MANAGER_H

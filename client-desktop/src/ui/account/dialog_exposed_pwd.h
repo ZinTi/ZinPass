@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QTimer>
 
-class DialogExposedPwd : public QDialog{
+class DialogExposedPwd final : public QDialog{
     Q_OBJECT
 
 public:
@@ -33,7 +33,7 @@ private:
     QPushButton* current_btn_;
 
     QTextEdit* edit_display_;
-    QLineEdit* edit_main_password_;
+    QLineEdit* edit_main_key_;
     QPushButton* btn_read_;
     QPushButton* btn_copy_;
     QPushButton* btn_read_and_copy_;

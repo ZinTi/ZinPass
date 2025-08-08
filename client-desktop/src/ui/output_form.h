@@ -1,10 +1,10 @@
-#ifndef OUTPUTFORM_H
-#define OUTPUTFORM_H
+#ifndef OUTPUT_FORM_H
+#define OUTPUT_FORM_H
 
 #include <QWidget>
 #include <QTextEdit>
 
-class OutputForm : public QWidget
+class OutputForm final : public QWidget
 {
     Q_OBJECT
 
@@ -18,4 +18,4 @@ private:
     QTextEdit* edit_info_;
 };
 
-#endif // OUTPUTFORM_H
+#endif

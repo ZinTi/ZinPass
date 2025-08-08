@@ -43,7 +43,7 @@ public:
      * @param hotline
      * @param category
      * @param password
-     * @param main_password
+     * @param main_key
      * @return
      */
     Return<bool> add_account(
@@ -60,7 +60,7 @@ public:
         const std::string& hotline,
         const std::string& category,
         const std::string& password,
-        const std::string& main_password);
+        const std::string& main_key);
 
     /**
      * @brief list_account_by_id
@@ -119,7 +119,7 @@ public:
      * @param hotline
      * @param category
      * @param account_password
-     * @param main_password
+     * @param main_key
      * @return result + message
      */
     Return<bool> update_account(
@@ -137,25 +137,25 @@ public:
         const std::string& hotline,
         const std::string& category,
         const std::string& account_password,
-        const std::string& main_password);
+        const std::string& main_key);
 
     /**
      * @brief remove_account
      * @param session_id
      * @param account_id
-     * @param main_password
+     * @param main_key
      * @return
      */
-    Return<bool> remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_password);
+    Return<bool> remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_key);
 
     /**
      * @brief fetch_password
      * @param session_id
      * @param account_id
-     * @param main_password
+     * @param main_key
      * @return plaintext + message
      */
-    Return<std::string> fetch_password(const std::string& session_id, const std::string& account_id, const std::string& main_password);
+    Return<std::string> fetch_password(const std::string& session_id, const std::string& account_id, const std::string& main_key);
 
 
 private:

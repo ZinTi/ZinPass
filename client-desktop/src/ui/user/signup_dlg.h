@@ -7,7 +7,7 @@ namespace Ui {
 class SignupDlg;
 }
 
-class SignupDlg : public QDialog
+class SignupDlg final : public QDialog
 {
     Q_OBJECT
 

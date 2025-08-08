@@ -6,10 +6,10 @@ namespace zinpass::rpc{
 
     AccountRPC::Return<std::vector<std::string>> AccountRPC::list_email_addresses(const std::string& session_id){
         // 1. construct request
-        account::v1::ListEmailAddressesRequest request;
+        account::v1::ListEmailAddressesReq request;
         request.set_session_id(session_id);
         // 2. construct response
-        account::v1::ListEmailAddressesResponse response;
+        account::v1::ListEmailAddressesResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -39,12 +39,12 @@ namespace zinpass::rpc{
         const std::string& hotline,
         const std::string& category,
         const std::string& password,
-        const std::string& main_password)
+        const std::string& main_key)
     {
-        account::v1::CreateAccountRequest request;
+        account::v1::CreateAccountReq request;
         request.set_session_id(session_id);
         request.set_password(password);
-        request.set_main_password(main_password);
+        request.set_main_key(main_key);
         account::v1::Account* new_value = new account::v1::Account;
         new_value->set_provider_name(provider_name);
         new_value->set_platform_name(platform_name);
@@ -58,7 +58,7 @@ namespace zinpass::rpc{
         new_value->set_hotline(hotline);
         new_value->set_category(category);
         request.set_allocated_account(new_value);
-        account::v1::CreateAccountResponse response;
+        account::v1::CreateAccountResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->CreateAccount(&context, request, &response);
         return {response.result(), response.message()};
@@ -70,12 +70,12 @@ namespace zinpass::rpc{
         common::v1::Filter* filter,
         int32_t page_size){
         // 1. constructor request
-        account::v1::ListAccountsRequest request;
+        account::v1::ListAccountsReq request;
         request.set_session_id(session_id);
         request.set_allocated_filter(filter);
         request.set_page_size(page_size);
         // 2. constuctor response
-        account::v1::ListAccountsResponse response;
+        account::v1::ListAccountsResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -92,10 +92,10 @@ namespace zinpass::rpc{
     }*/
 
     AccountRPC::Return<zinpass::models::ViewAccount> AccountRPC::list_account_by_id(const std::string& session_id, const std::string& account_id){
-        account::v1::ListAccountByIdRequest request;
+        account::v1::ListAccountByIdReq request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
-        account::v1::ListAccountByIdResponse response;
+        account::v1::ListAccountByIdResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->ListAccountById(&context, request, &response);
         if(!status.ok()){
@@ -135,7 +135,7 @@ namespace zinpass::rpc{
         const std::string& category,
         int32_t page_size){
         // 1. constructor request
-        account::v1::ListAccountsRequest request;
+        account::v1::ListAccountsReq request;
         request.set_session_id(session_id);
         account::v1::Account* conditions = new account::v1::Account();  // 由RPC释放
         conditions->set_provider_name(provider_name);
@@ -152,7 +152,7 @@ namespace zinpass::rpc{
         request.set_allocated_conditions(conditions);
         request.set_page_size(page_size);
         // 2. constuctor response
-        account::v1::ListAccountsResponse response;
+        account::v1::ListAccountsResp response;
         // 3. create client context
         grpc::ClientContext context;
         // 4. Initiate RPC call and fetch status
@@ -198,13 +198,13 @@ namespace zinpass::rpc{
         const std::string& hotline,
         const std::string& category,
         const std::string& account_password,
-        const std::string& main_password)
+        const std::string& main_key)
     {
-        account::v1::UpdateAccountRequest request;
+        account::v1::UpdateAccountReq request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
-        request.set_account_password(account_password);
-        request.set_main_password(main_password);
+        request.set_password(account_password);
+        request.set_main_key(main_key);
         account::v1::Account* new_value = new account::v1::Account;
         new_value->set_provider_name(provider_name);
         new_value->set_platform_name(platform_name);
@@ -218,29 +218,29 @@ namespace zinpass::rpc{
         new_value->set_hotline(hotline);
         new_value->set_category(category);
         request.set_allocated_account(new_value);
-        account::v1::UpdateAccountResponse response;
+        account::v1::UpdateAccountResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->UpdateAccount(&context, request, &response);
         return {response.result(), response.message()};
     }
 
-    AccountRPC::Return<bool> AccountRPC::remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_password){
-        account::v1::DeleteAccountRequest request;
+    AccountRPC::Return<bool> AccountRPC::remove_account(const std::string& session_id, const std::string& account_id, const std::string& main_key){
+        account::v1::DeleteAccountReq request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
-        request.set_main_password(main_password);
-        account::v1::DeleteAccountResponse response;
+        request.set_main_key(main_key);
+        account::v1::DeleteAccountResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->DeleteAccount(&context, request, &response);
         return {response.result(), response.message()};
     }
 
-    AccountRPC::Return<std::string> AccountRPC::fetch_password(const std::string& session_id, const std::string& account_id,const std::string& main_password){
-        account::v1::FetchPasswordRequest request;
+    AccountRPC::Return<std::string> AccountRPC::fetch_password(const std::string& session_id, const std::string& account_id,const std::string& main_key){
+        account::v1::FetchPasswordReq request;
         request.set_session_id(session_id);
         request.set_account_id(account_id);
-        request.set_main_password(main_password);
-        account::v1::FetchPasswordResponse response;
+        request.set_main_key(main_key);
+        account::v1::FetchPasswordResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->FetchPassword(&context, request, &response);
         return {response.password(), response.message()};

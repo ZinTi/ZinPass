@@ -9,7 +9,7 @@ namespace Ui {
 class FunctionMenuForm;
 }
 
-class FunctionMenuForm : public QWidget
+class FunctionMenuForm final : public QWidget
 {
     Q_OBJECT
 

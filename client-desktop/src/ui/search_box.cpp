@@ -5,8 +5,8 @@ SearchBox::SearchBox(QWidget *parent_)
     : QWidget(parent_)
 {
     // 初始化布局
-    layout_ = new QHBoxLayout(this);
-    layout_->setContentsMargins(0, 0, 0, 0);
+    lyt_ = new QHBoxLayout(this);
+    lyt_->setContentsMargins(0, 0, 0, 0);
 
            // 创建输入框
     line_edit_ = new QLineEdit(this);
@@ -19,8 +19,8 @@ SearchBox::SearchBox(QWidget *parent_)
     search_button_->setToolTip("Search");
 
            // 添加部件到布局
-    layout_->addWidget(line_edit_);
-    layout_->addWidget(search_button_);
+    lyt_->addWidget(line_edit_);
+    lyt_->addWidget(search_button_);
 
            // 连接信号槽
     connect(search_button_, &QPushButton::clicked,
@@ -36,8 +36,8 @@ SearchBox::~SearchBox()
 
 void SearchBox::on_search_button_clicked_()
 {
-    const QString keyword_ = line_edit_->text().trimmed();
-    if (!keyword_.isEmpty()) {
+    if (const QString keyword_ = line_edit_->text().trimmed();
+        !keyword_.isEmpty()) {
         emit search_triggered(keyword_);
     }
 }

@@ -11,7 +11,7 @@
 #include <QToolButton>
 #include <QGroupBox>
 
-class PhoneFilterForm : public QWidget{
+class PhoneFilterForm final : public QWidget{
     Q_OBJECT
 
 public:

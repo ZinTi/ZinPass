@@ -3,12 +3,12 @@ syntax = "proto3";
 package account.v1;
 
 service PhoneService {
-    rpc CreatePhone(CreatePhoneRequest) returns (CreatePhoneResponse);
-    rpc ListPhoneNumbers(ListPhoneNumbersRequest) returns (ListPhoneNumbersResponse);
-    rpc ListPhone(ListPhoneRequest) returns (ListPhoneResponse);
-    rpc FindPhoneById(FindPhoneByIdRequest) returns (FindPhoneByIdResponse);
-    rpc UpdatePhone(UpdatePhoneRequest) returns (UpdatePhoneResponse);
-    rpc DeletePhone(DeletePhoneRequest) returns (DeletePhoneResponse);
+    rpc CreatePhone(CreatePhoneReq) returns (CreatePhoneResp);
+    rpc ListPhoneNumbers(ListPhoneNumbersReq) returns (ListPhoneNumbersResp);
+    rpc ListPhone(ListPhoneReq) returns (ListPhoneResp);
+    rpc FindPhoneById(FindPhoneByIdReq) returns (FindPhoneByIdResp);
+    rpc UpdatePhone(UpdatePhoneReq) returns (UpdatePhoneResp);
+    rpc DeletePhone(DeletePhoneReq) returns (DeletePhoneResp);
 }
 
 message Phone{
@@ -26,63 +26,63 @@ message Phone{
     string updated_time = 12;
 }
 
-message CreatePhoneRequest{
+message CreatePhoneReq{
     string session_id = 1;
     Phone phone = 2;    // 新账号信息
 }
 
-message CreatePhoneResponse{
+message CreatePhoneResp{
     bool result = 1;
     string message = 2;
 }
 
-message ListPhoneNumbersRequest{
+message ListPhoneNumbersReq{
     string session_id = 1;
 }
 
-message ListPhoneNumbersResponse{
+message ListPhoneNumbersResp{
     repeated string phone_numbers = 1;
     string message = 2;
 }
 
-message ListPhoneRequest{
+message ListPhoneReq{
     string session_id = 1;
     string telecom = 2;         // 筛选条件1
     string phone_number = 3;    // 筛选条件2
 }
 
-message ListPhoneResponse{
+message ListPhoneResp{
     repeated Phone phone_numbers = 1;
     string message = 2;
 }
 
-message FindPhoneByIdRequest{
+message FindPhoneByIdReq{
     string session_id = 1;
     int32 phone_id = 2;
 }
 
-message FindPhoneByIdResponse{
+message FindPhoneByIdResp{
     Phone phone_number = 1;
     string message = 2;
 }
 
-message UpdatePhoneRequest{
+message UpdatePhoneReq{
     string session_id = 1;
     int32 phone_id = 2;
     Phone phone = 3;
 }
 
-message UpdatePhoneResponse{
+message UpdatePhoneResp{
     bool result = 1;
     string message = 2;
 }
 
-message DeletePhoneRequest{
+message DeletePhoneReq{
     string session_id = 1;
     int32 phone_id = 2;
 }
 
-message DeletePhoneResponse{
+message DeletePhoneResp{
     bool result = 1;
     string message = 2;
 }

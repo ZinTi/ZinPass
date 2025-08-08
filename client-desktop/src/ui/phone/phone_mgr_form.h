@@ -16,7 +16,7 @@
 #include "phone_filter_form.h"
 #include "phone_detail_frame.h"
 
-class PhoneMgrForm : public QWidget{
+class PhoneMgrForm final : public QWidget{
     Q_OBJECT
 
 public:
@@ -26,7 +26,7 @@ public:
 private slots:
     void on_table_view_item_clicked(const QModelIndex &index);  // 点击表格项
     void on_btn_add_clicked();
-    void on_btn_clear_clicked();
+    void on_btn_clear_clicked() const;
 
     void list_phones();
 

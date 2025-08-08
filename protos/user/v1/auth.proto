@@ -5,27 +5,27 @@ package user.v1;
 //import "common/v1/common.proto";
 
 service AuthService {
-    rpc AuthUser(AuthUserRequest) returns (AuthUserResponse);                       // 验证身份
-    rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);        // 创建会话（登录）
-    rpc UpdateSession(UpdateSessionRequest) returns (UpdateSessionResponse);        // 更新会话
-    rpc DeleteSession(DeleteSessionRequest) returns (DeleteSessionResponse);        // 删除会话（登出）
+    rpc AuthUser(AuthUserReq) returns (AuthUserResp);                       // 验证身份
+    rpc CreateSession(CreateSessionReq) returns (CreateSessionResp);        // 创建会话（登录）
+    rpc UpdateSession(UpdateSessionReq) returns (UpdateSessionResp);        // 更新会话
+    rpc DeleteSession(DeleteSessionReq) returns (DeleteSessionResp);        // 删除会话（登出）
 }
 
-message AuthUserRequest {
-
-}
-
-message AuthUserResponse {
+message AuthUserReq {
 
 }
 
-message CreateSessionRequest {
+message AuthUserResp {
+
+}
+
+message CreateSessionReq {
     string username = 1;
-    string password = 2;
+    string main_key = 2;
     string captcha_input = 3;
 }
 
-message CreateSessionResponse {
+message CreateSessionResp {
     string session_id = 1;
     string user_id = 2;
     string username = 3;
@@ -34,18 +34,18 @@ message CreateSessionResponse {
     string message = 16;
 }
 
-message UpdateSessionRequest {
+message UpdateSessionReq {
 
 }
 
-message UpdateSessionResponse {
+message UpdateSessionResp {
 
 }
 
-message DeleteSessionRequest {
+message DeleteSessionReq {
     string session_id = 1;
 }
 
-message DeleteSessionResponse {
+message DeleteSessionResp {
     string message = 1;
 }

@@ -7,17 +7,19 @@
 #include <QDateTimeEdit>
 #include <QComboBox>
 #include <QPushButton>
+#include <QFormLayout>
+#include <QVBoxLayout>
 
-class DialogAddPhone : public QDialog {
+class DialogAddPhone final : public QDialog {
     Q_OBJECT
 
 public:
     explicit DialogAddPhone(QWidget* parent = nullptr);
-    ~DialogAddPhone();
+    ~DialogAddPhone() override;
 
 private slots:
-    void on_btn_refresh_clicked();
-    void on_btn_clear_clicked();
+    void on_btn_refresh_clicked() const;
+    void on_btn_clear_clicked() const;
     void on_btn_submit_clicked();
 
 private:
@@ -30,14 +32,19 @@ private:
     QDateTimeEdit* edit_join_time_;
     QLineEdit* edit_phone_area_;
     QTextEdit* edit_postscript_;
-    QLineEdit* edit_main_password_;
+    QLineEdit* edit_main_key_;
 
     QPushButton* btn_refresh_;
     QPushButton* btn_clear_;
     QPushButton* btn_submit_;
 
+    // 布局
+    QVBoxLayout* lyt_main_;
+    QFormLayout* lyt_form_;
+    QHBoxLayout* lyt_btn_;
+
     void setup_ui();
-    void initial_edit_widget();
+    void initial_edit_widget() const;
 
 };
 

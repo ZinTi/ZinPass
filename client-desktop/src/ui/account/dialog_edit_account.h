@@ -12,7 +12,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 
-class DialogEditAccount : public QDialog {
+class DialogEditAccount final : public QDialog {
     Q_OBJECT
 
 public:
@@ -29,7 +29,7 @@ private slots:
     void on_btn_delete_clicked();
     void on_btn_submit_clicked();
 
-    void update_edit_main_password_state();
+    void update_edit_main_key_state();
 
 private:
     std::string account_id_;
@@ -58,7 +58,7 @@ private:
     QGroupBox* group_box_other_;
     QPlainTextEdit* edit_postscript_;
 
-    QLineEdit* edit_main_password_;
+    QLineEdit* edit_main_key_;
 
     QPushButton* btn_refresh_;
     QPushButton* btn_read_passwd_;

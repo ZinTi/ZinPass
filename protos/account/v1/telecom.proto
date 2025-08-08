@@ -3,14 +3,14 @@ syntax = "proto3";
 package account.v1;
 
 service TelecomService{
-    rpc ListTelecomOperator(ListTelecomOperatorRequest) returns (ListTelecomOperatorResponse);
+    rpc ListTelecomOperator(ListTelecomOperatorReq) returns (ListTelecomOperatorResp);
 }
 
-message ListTelecomOperatorRequest{
+message ListTelecomOperatorReq{
     string session_id = 1;
 }
 
-message ListTelecomOperatorResponse{
+message ListTelecomOperatorResp{
    repeated string telecoms = 1;
    string message = 2;
 }

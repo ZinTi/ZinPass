@@ -8,7 +8,7 @@
 #include <QSpinBox>
 #include <QRadioButton>
 
-class PwdGeneratorDlg : public QDialog{
+class PwdGeneratorDlg final : public QDialog{
 
 public:
     explicit PwdGeneratorDlg(QWidget *parent = nullptr);
