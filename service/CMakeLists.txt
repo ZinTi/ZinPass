@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(zinpass_service VERSION 0.0.3 LANGUAGES CXX)
+project(zinpass_service VERSION 0.0.4 LANGUAGES CXX)
 
 # 设置平台相关变量
 if(WIN32)

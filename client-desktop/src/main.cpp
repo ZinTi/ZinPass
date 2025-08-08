@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     if (login_dlg.exec() == QDialog::Accepted) {
         // 登录成功执行其他处理
         MainWorkbench mainWorkbench;
-        mainWorkbench.setWindowTitle("工作台 ZinPass v0.0.3");
+        mainWorkbench.setWindowTitle("工作台 ZinPass v0.0.4");
         // mainWorkbench.setStyleSheet("background-color: #8b008b;");
         mainWorkbench.show();
         return app.exec();

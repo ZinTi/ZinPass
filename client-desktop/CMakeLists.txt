@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(client-desktop VERSION 0.0.3 LANGUAGES CXX)
+project(client-desktop VERSION 0.0.4 LANGUAGES CXX)
 
 # 设置平台相关变量
 if(WIN32)
@@ -168,11 +168,6 @@ add_executable(client-desktop
         ${PROJECT_SOURCES}
 )
 
-# 设置输出文件名
-set_target_properties(client-desktop PROPERTIES
-        OUTPUT_NAME "${EXECUTABLE_NAME}"
-)
-
 # 链接 Qt6 和 OpenSSL、Windows 系统库
 target_link_libraries(client-desktop PRIVATE
         Qt6::Core
@@ -194,9 +189,10 @@ target_link_libraries(client-desktop PRIVATE
 
 # 设置Win32应用、优化二进制体积、静态编译c++运行时库、线程库、设置可执行文件输出路径
 set_target_properties(client-desktop PROPERTIES
-        WIN32_EXECUTABLE TRUE  # Win32 应用，而非 console 应用
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin # 设置可执行文件的输出路径
-        LINK_FLAGS "-static -Wl,-s"
+        WIN32_EXECUTABLE TRUE                               # Win32 应用，而非 console 应用
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin    # 设置可执行文件的输出路径
+        OUTPUT_NAME "${EXECUTABLE_NAME}"                    # 设置输出文件名
+        # LINK_FLAGS "-static -Wl,-s"
 )
 
 # 静态编译专用配置

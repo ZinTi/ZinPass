@@ -8,7 +8,7 @@
     #define PROJECT_NAME        "zinpassd"
 #endif
 
-#define PROJECT_VERSION     "0.0.3"
+#define PROJECT_VERSION     "0.0.4"
 #define PROJECT_LICENSE     "GPLv3"
 #define PROJECT_YEARS       "2025"
 #define PROJECT_AUTHOR      "Mr. ZENG Lai (Zin)"
