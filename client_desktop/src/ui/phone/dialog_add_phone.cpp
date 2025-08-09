@@ -11,51 +11,6 @@ DialogAddPhone::DialogAddPhone(QWidget* parent) : QDialog(parent) {
 }
 
 DialogAddPhone::~DialogAddPhone() {
-    if (this->edit_phone_) {
-        delete this->edit_phone_;
-    }
-    if (this->combo_tele_operator_) {
-        delete this->combo_tele_operator_;
-    }
-    if (this->edit_service_password_) {
-        delete this->edit_service_password_;
-    }
-    if (this->edit_pin_) {
-        delete this->edit_pin_;
-    }
-    if (this->edit_puk_) {
-        delete this->edit_puk_;
-    }
-    if (this->edit_join_time_) {
-        delete this->edit_join_time_;
-    }
-    if (this->edit_phone_area_) {
-        delete this->edit_phone_area_;
-    }
-    if (this->edit_postscript_) {
-        delete this->edit_postscript_;
-    }
-    if (this->edit_main_key_) {
-        delete this->edit_main_key_;
-    }
-    if (this->btn_refresh_) {
-        delete this->btn_refresh_;
-    }
-    if (this->btn_clear_) {
-        delete this->btn_clear_;
-    }
-    if (this->btn_submit_) {
-        delete this->btn_submit_;
-    }
-    if (this->lyt_main_) {
-        delete this->lyt_main_;
-    }
-    if (this->lyt_form_) {
-        delete this->lyt_form_;
-    }
-    if (this->lyt_btn_) {
-        delete this->lyt_btn_;
-    }
 }
 
 void DialogAddPhone::setup_ui(){

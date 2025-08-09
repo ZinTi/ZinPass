@@ -1,7 +1,4 @@
 #include "phone_filter_form.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFormLayout>
 #include "state_manager.h"
 // RPC 封装
 #include "telecom_rpc.h"
@@ -15,19 +12,13 @@ PhoneFilterForm::PhoneFilterForm(QWidget *parent)
 }
 
 PhoneFilterForm::~PhoneFilterForm(){
-    if(this->combo_telecom_){ delete this->combo_telecom_ ; }
-    if(this->combo_phone_){ delete this->combo_phone_ ; }
-
-    if(this->btn_refresh_){ delete this->btn_refresh_ ; }
-    if(this->btn_submit_){ delete this->btn_submit_ ; }
-    if(this->box_filter_) { delete this->box_filter_; }
 }
 
 
 void PhoneFilterForm::setup_ui(){
     // 创建控件
-    const int fixed_height = 24;    // 统一高度
-    const int fixed_width = 56;
+    constexpr int fixed_height = 24;    // 统一高度
+    constexpr int fixed_width = 56;
     this->box_filter_ = new QGroupBox("筛选条件", this);
     this->combo_telecom_ = new QComboBox(this);
     this->combo_telecom_->setFixedHeight(fixed_height);
@@ -39,30 +30,30 @@ void PhoneFilterForm::setup_ui(){
     this->btn_submit_->setFixedSize(QSize(fixed_width,fixed_height));
 
     // 主布局
-    QHBoxLayout* lyt_main = new QHBoxLayout(this);
-    QHBoxLayout* lyt_gbox = new QHBoxLayout(this);
+    this->lyt_main_ = new QHBoxLayout(this);
+    this->lyt_gbox_ = new QHBoxLayout(this);
 
     // 表单布局
-    QFormLayout* lyt_form_condition = new QFormLayout;
-    lyt_form_condition->addRow("运营商", this->combo_telecom_);
-    lyt_form_condition->addRow("手机号", this->combo_phone_);
+    this->lyt_form_condition_ = new QFormLayout(this);
+    this->lyt_form_condition_->addRow("运营商", this->combo_telecom_);
+    this->lyt_form_condition_->addRow("手机号", this->combo_phone_);
 
     // 按钮布局
-    QVBoxLayout* lyt_btn = new QVBoxLayout;
-    lyt_btn->addWidget(this->btn_refresh_);
-    lyt_btn->addWidget(this->btn_submit_);
-    lyt_btn->addStretch(); // 拉伸
+    this->lyt_btn_ = new QVBoxLayout(this);
+    lyt_btn_->addWidget(this->btn_refresh_);
+    lyt_btn_->addWidget(this->btn_submit_);
+    lyt_btn_->addStretch(); // 拉伸
 
     // 表单对齐方式
-    lyt_form_condition->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
+    lyt_form_condition_->setFormAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     // 组合布局
-    lyt_gbox->addLayout(lyt_form_condition);
-    lyt_gbox->addSpacing(8);
-    lyt_gbox->addLayout(lyt_btn);
-    // lyt_gbox->setContentsMargins(20, 20, 20, 20);
-    this->box_filter_->setLayout(lyt_gbox);
-    lyt_main->addWidget(this->box_filter_);
+    lyt_gbox_->addLayout(lyt_form_condition_);
+    lyt_gbox_->addSpacing(8);
+    lyt_gbox_->addLayout(lyt_btn_);
+    // lyt_gbox_->setContentsMargins(20, 20, 20, 20);
+    this->box_filter_->setLayout(lyt_gbox_);
+    lyt_main_->addWidget(this->box_filter_);
 
     // 连接信号槽
     connect(this->btn_refresh_, &QPushButton::clicked, this, &PhoneFilterForm::on_btn_refresh_clicked);
@@ -94,7 +85,7 @@ void PhoneFilterForm::initial_input_widgets() const {
     }
 }
 
-void PhoneFilterForm::on_btn_refresh_clicked() {
+void PhoneFilterForm::on_btn_refresh_clicked() const {
     initial_input_widgets();     // 初始化控件
 }
 

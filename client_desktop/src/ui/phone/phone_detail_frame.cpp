@@ -1,7 +1,5 @@
 #include "phone_detail_frame.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFormLayout>
+
 #include <QMessageBox>
 #include "state_manager.h"
 #include "phone_rpc.h"
@@ -66,35 +64,35 @@ void PhoneDetailFrame::setup_ui(){
     this->btn_delete_ = new QPushButton("删除", this);
     this->btn_delete_->setFixedWidth(60);
 
-    QHBoxLayout* lyt_main = new QHBoxLayout(this);
-    QFormLayout* lyt_form1 = new QFormLayout;
-    QFormLayout* lyt_form2 = new QFormLayout;
-    QFormLayout* lyt_form3 = new QFormLayout;
-    QVBoxLayout* lyt_btn = new QVBoxLayout;
-    lyt_main->addLayout(lyt_form1);
-    lyt_main->addLayout(lyt_form2);
-    lyt_main->addLayout(lyt_form3);
-    lyt_main->addLayout(lyt_btn);
+    this->lyt_main_ = new QHBoxLayout(this);
+    this->lyt_form1_ = new QFormLayout(this);
+    this->lyt_form2_ = new QFormLayout(this);
+    this->lyt_form3_ = new QFormLayout(this);
+    this->lyt_btn_ = new QVBoxLayout(this);
+    this->lyt_main_->addLayout(this->lyt_form1_);
+    this->lyt_main_->addLayout(this->lyt_form2_);
+    this->lyt_main_->addLayout(this->lyt_form3_);
+    this->lyt_main_->addLayout(this->lyt_btn_);
 
-    lyt_form1->addRow("ID", this->edit_id_);
-    lyt_form1->addRow("运营商", this->combo_telecom_);
-    lyt_form1->addRow("归属地", this->edit_phone_area_);
-    lyt_form1->addRow("手机号", this->edit_phone_);
+    this->lyt_form1_->addRow("ID", this->edit_id_);
+    this->lyt_form1_->addRow("运营商", this->combo_telecom_);
+    this->lyt_form1_->addRow("归属地", this->edit_phone_area_);
+    this->lyt_form1_->addRow("手机号", this->edit_phone_);
 
-    lyt_form2->addRow("PIN", this->edit_pin_);
-    lyt_form2->addRow("PUK", this->edit_puk_);
-    lyt_form2->addRow("服务密码", this->edit_service_pwd_);
-    lyt_form2->addRow("入网时间", this->edit_join_time_);
+    this->lyt_form2_->addRow("PIN", this->edit_pin_);
+    this->lyt_form2_->addRow("PUK", this->edit_puk_);
+    this->lyt_form2_->addRow("服务密码", this->edit_service_pwd_);
+    this->lyt_form2_->addRow("入网时间", this->edit_join_time_);
 
-    lyt_form3->addRow("备注", this->edit_postscript_);
-    lyt_form3->addRow("所有者", this->edit_user_id_);
-    lyt_form3->addRow("其他信息", this->edit_other_); // id + created_at + updated_at + postscript + owner_id
+    this->lyt_form3_->addRow("备注", this->edit_postscript_);
+    this->lyt_form3_->addRow("所有者", this->edit_user_id_);
+    this->lyt_form3_->addRow("其他信息", this->edit_other_); // id + created_at + updated_at + postscript + owner_id
 
-    lyt_btn->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    lyt_btn->addWidget(this->btn_refresh_);
-    lyt_btn->addWidget(this->btn_edit_);
-    lyt_btn->addWidget(this->btn_submit_);
-    lyt_btn->addWidget(this->btn_delete_);
+    this->lyt_btn_->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    this->lyt_btn_->addWidget(this->btn_refresh_);
+    this->lyt_btn_->addWidget(this->btn_edit_);
+    this->lyt_btn_->addWidget(this->btn_submit_);
+    this->lyt_btn_->addWidget(this->btn_delete_);
 
     initial_input_widgets();
 

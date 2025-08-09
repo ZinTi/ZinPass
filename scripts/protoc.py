@@ -8,7 +8,7 @@ PROJECT_ROOT = "A:/myproj/zinpass"
 protos_src_base_dir = PROJECT_ROOT + "/protos"
 target_dir_service = PROJECT_ROOT + "/service/generate"                 # 后台服务/守护进程目标目录
 target_dir_control = PROJECT_ROOT + "/control/generate"                 # 管理控制客户端目标目录
-target_dir_client = PROJECT_ROOT + "/client-desktop/generate/grpc"      # 桌面客户端目标目录
+target_dir_client = PROJECT_ROOT + "/client_desktop/generate/grpc"      # 桌面客户端目标目录
 # 若目标目录不存在则创建（自动处理多级目录）
 try:
     os.makedirs(target_dir_service, exist_ok=True)
@@ -23,7 +23,7 @@ except OSError as e:
 try:
     os.makedirs(target_dir_client, exist_ok=True)
 except OSError as e:
-    print(f"创建 client-desktop 目标目录失败：{e}")
+    print(f"创建 client_desktop 目标目录失败：{e}")
 
 # protoc path
 protoc_path = GRPC_INSTALL_DIR + "/bin/protoc.exe"
@@ -100,7 +100,7 @@ print("标准输出:", result_control.stdout)
 print("错误输出:", result_control.stderr)
 print("Proto files (Server) generated to " + target_dir_control)
 
-# 3. client-desktop 执行命令并捕获结果
+# 3. client_desktop 执行命令并捕获结果
 result_desktop = subprocess.run(
     [protoc_path] + arguments_client,
     capture_output=True,  # 捕获输出内容

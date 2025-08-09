@@ -106,7 +106,6 @@ set(PROJECT_SOURCES
         # (6.2) 系统登录界面、系统用户注册界面
         src/ui/user/login_dlg.cpp
         src/ui/user/signup_dlg.cpp
-        src/ui/user/signup_dlg.ui
         src/ui/user/personal_mgr_form.cpp
         src/ui/user/preferences_form.cpp
         src/ui/user/settings_dlg.cpp

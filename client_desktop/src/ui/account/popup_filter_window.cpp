@@ -2,85 +2,79 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QFormLayout>
+
 
 PopupFilterWindow::PopupFilterWindow(QWidget* parent) : QWidget(parent, Qt::Popup) {
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    this->m_title = new QLabel(this);
-    this->m_title->setText(QString("更多筛选条件"));
-    this->m_title->setStyleSheet("color: yellow; font-size: 10pt;");
-    this->m_title->setAlignment(Qt::AlignCenter);
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->l_title_ = new QLabel(this);
+    this->l_title_->setText(QString("更多筛选条件"));
+    this->l_title_->setStyleSheet("color: yellow; font-size: 10pt;");
+    this->l_title_->setAlignment(Qt::AlignCenter);
 
-    QHBoxLayout* hLayoutBtn = new QHBoxLayout;
-    this->m_pBtnReset = new QPushButton("清空", this); // 清空筛选条件的Btn
-    this->m_pBtnReset->setMaximumWidth(120); // 设置最大宽度
-    hLayoutBtn->addWidget(this->m_pBtnReset, 0, Qt::AlignHCenter);
+    this->lyt_btn_ = new QHBoxLayout(this);
+    this->btn_reset_ = new QPushButton("清空", this); // 清空筛选条件的Btn
+    this->btn_reset_->setMaximumWidth(120); // 设置最大宽度
+    this->lyt_btn_->addWidget(this->btn_reset_, 0, Qt::AlignHCenter);
 
-    mainLayout->addWidget(this->m_title); // 添加 title
+    this->lyt_main_->addWidget(this->l_title_); // 添加 title
 
     // 创建筛选控件
-    QLabel* labelUrl = new QLabel("网址", this);
-    QLineEdit* editUrl = new QLineEdit();
-    editUrl->setEnabled(false);
+    this->l_url_ = new QLabel("网址", this);
+    this->e_url_ = new QLineEdit(this);
+    this->e_url_->setEnabled(false);
 
-    QLabel* labelHotline = new QLabel("客服热线", this);
-    QLineEdit* editHotline = new QLineEdit();
-    editHotline->setEnabled(false);
+    this->l_hotline_ = new QLabel("客服热线", this);
+    this->e_hotline_ = new QLineEdit(this);
+    this->e_hotline_->setEnabled(false);
 
-    QLabel* labelSubAccount = new QLabel("子账号", this);
-    QLineEdit* editSubAccount = new QLineEdit();
-    editSubAccount->setEnabled(false);
+    this->l_sub_acc_ = new QLabel("子账号", this);
+    this->e_sub_acc_ = new QLineEdit(this);
+    this->e_sub_acc_->setEnabled(false);
 
-    QLabel* labelCDTRange = new QLabel("创建时间范围", this);
-    QDateTimeEdit* editCDTRangeStart = new QDateTimeEdit(this);
-    editCDTRangeStart->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    editCDTRangeStart->setCalendarPopup(true);
-    editCDTRangeStart->setEnabled(false);
-    QDateTimeEdit* editCDTRangeEnd = new QDateTimeEdit(this);
-    editCDTRangeEnd->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    editCDTRangeEnd->setCalendarPopup(true);
-    editCDTRangeEnd->setEnabled(false);
+    this->l_cdt_range_ = new QLabel("创建时间范围", this);
+    this->e_cdt_range_start_ = new QDateTimeEdit(this);
+    this->e_cdt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    this->e_cdt_range_start_->setCalendarPopup(true);
+    this->e_cdt_range_start_->setEnabled(false);
+    this->e_cdt_range_end_ = new QDateTimeEdit(this);
+    this->e_cdt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    this->e_cdt_range_end_->setCalendarPopup(true);
+    this->e_cdt_range_end_->setEnabled(false);
 
-    QLabel* labelUDTRange = new QLabel("修改时间范围", this);
-    QDateTimeEdit* editUDTRangeStart = new QDateTimeEdit(this);
-    editUDTRangeStart->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    editUDTRangeStart->setCalendarPopup(true);
-    editUDTRangeStart->setEnabled(false);
-    QDateTimeEdit* editUDTRangeEnd = new QDateTimeEdit(this);
-    editUDTRangeEnd->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
-    editUDTRangeEnd->setCalendarPopup(true);
-    editUDTRangeEnd->setEnabled(false);
-    editUDTRangeEnd->setDateTime(QDateTime::currentDateTime()); // 设置当前时间
+    this->l_udt_range_ = new QLabel("修改时间范围", this);
+    this->e_udt_range_start_ = new QDateTimeEdit(this);
+    this->e_udt_range_start_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    this->e_udt_range_start_->setCalendarPopup(true);
+    this->e_udt_range_start_->setEnabled(false);
+    this->e_udt_range_end_ = new QDateTimeEdit(this);
+    this->e_udt_range_end_->setDisplayFormat(QString("yyyy-MM-dd HH:mm:ss"));
+    this->e_udt_range_end_->setCalendarPopup(true);
+    this->e_udt_range_end_->setEnabled(false);
+    this->e_udt_range_end_->setDateTime(QDateTime::currentDateTime()); // 设置当前时间
 
     // 日期输入框布局
-    QVBoxLayout* layoutCDTRange = new QVBoxLayout;
-    layoutCDTRange->addWidget(editCDTRangeStart);
-    layoutCDTRange->addWidget(editCDTRangeEnd);
-    QVBoxLayout* layoutUDTRange = new QVBoxLayout;
-    layoutUDTRange->addWidget(editUDTRangeStart);
-    layoutUDTRange->addWidget(editUDTRangeEnd);
+    this->lyt_cdt_range_ = new QVBoxLayout(this);
+    this->lyt_cdt_range_->addWidget(this->e_cdt_range_start_);
+    this->lyt_cdt_range_->addWidget(this->e_cdt_range_end_);
+    this->lyt_udt_range_ = new QVBoxLayout(this);
+    this->lyt_udt_range_->addWidget(this->e_udt_range_start_);
+    this->lyt_udt_range_->addWidget(this->e_udt_range_end_);
 
     // 使用 QFormLayout 布局筛选控件
-    QFormLayout* formLayout = new QFormLayout();
-    formLayout->addRow(labelUrl, editUrl);
-    formLayout->addRow(labelHotline, editHotline);
-    formLayout->addRow(labelSubAccount, editSubAccount);
-    formLayout->addRow(labelCDTRange, layoutCDTRange);
-    formLayout->addRow(labelUDTRange, layoutUDTRange);
+    this->lyt_filter_ = new QFormLayout(this);
+    this->lyt_filter_->addRow(this->l_url_, this->e_url_);
+    this->lyt_filter_->addRow(this->l_hotline_, this->e_hotline_);
+    this->lyt_filter_->addRow(this->l_sub_acc_, this->e_sub_acc_);
+    this->lyt_filter_->addRow(this->l_cdt_range_, this->lyt_cdt_range_);
+    this->lyt_filter_->addRow(this->l_udt_range_, this->lyt_udt_range_);
 
-    mainLayout->addLayout(formLayout); // 添加 formLayout
-    mainLayout->addLayout(hLayoutBtn); // 添加包含 m_pBtnReset 的水平布局容器
+    this->lyt_main_->addLayout(this->lyt_filter_); // 添加 this->lyt_filter_
+    this->lyt_main_->addLayout(this->lyt_btn_); // 添加包含 btn_reset_ 的水平布局容器
 
-    setLayout(mainLayout);
+    setLayout(this->lyt_main_);
 }
 
 PopupFilterWindow::~PopupFilterWindow(){
-    if(this->m_title){
-        delete this->m_title;
-    }
-    if(this->m_pBtnReset){
-        delete this->m_pBtnReset;
-    }
 }
 
 bool PopupFilterWindow::event(QEvent* event) {

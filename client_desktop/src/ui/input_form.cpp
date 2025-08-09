@@ -1,14 +1,10 @@
 #include "input_form.h"
-#include <QVBoxLayout>
 
 InputForm::InputForm(QWidget *parent) : QWidget(parent){
     setup_ui();
 }
 
 InputForm::~InputForm(){
-    if(this->edit_info_){
-        delete this->edit_info_;
-    }
 }
 
 void InputForm::setup_ui(){
@@ -19,6 +15,6 @@ void InputForm::setup_ui(){
         );
     this->edit_info_->setReadOnly(true);
 
-    QVBoxLayout* lyt_main = new QVBoxLayout(this);
-    lyt_main->addWidget(this->edit_info_);
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_main_->addWidget(this->edit_info_);
 }

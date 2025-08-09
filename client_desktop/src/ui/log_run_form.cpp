@@ -6,18 +6,6 @@ LogRunForm::LogRunForm(QWidget *parent) : QWidget(parent) {
 }
 
 LogRunForm::~LogRunForm() {
-    if (this->e_main_key_) {
-        delete this->e_main_key_;
-    }
-    if (this->btn_load_) {
-        delete this->btn_load_;
-    }
-    if (this->btn_save_) {
-        delete this->btn_save_;
-    }
-    if (this->e_app_log_) {
-        delete this->e_app_log_;
-    }
 }
 
 void LogRunForm::setup_ui() {
@@ -39,6 +27,5 @@ void LogRunForm::setup_ui() {
 
     this->lyt_main_->addLayout(this->lyt_ctl_);
     this->lyt_main_->addWidget(this->e_app_log_);
-
 
 }

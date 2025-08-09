@@ -5,18 +5,20 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QComboBox>
-#include <QGroupBox>
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QToolButton>
 #include <QGroupBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QFormLayout>
 
 class PhoneFilterForm final : public QWidget{
     Q_OBJECT
 
 public:
     explicit PhoneFilterForm(QWidget *parent = nullptr);
-    ~PhoneFilterForm();
+    ~PhoneFilterForm() override;
 
     QMap<QString, QVariant> get_form_data() const;
 
@@ -24,7 +26,7 @@ signals:
     void form_submitted();
 
 private slots:
-    void on_btn_refresh_clicked();          // 处理刷新按键点击事件
+    void on_btn_refresh_clicked() const;          // 处理刷新按键点击事件
 
 private:
     void setup_ui();
@@ -39,6 +41,11 @@ private:
 
     // std::vector<std::string> telecom_operators_;    // 电信运营商可选项
     // std::vector<std::string> phone_numbers_;        // 手机号可选项
+
+    QHBoxLayout* lyt_main_;
+    QHBoxLayout* lyt_gbox_;
+    QFormLayout* lyt_form_condition_;
+    QVBoxLayout* lyt_btn_;
 
 };
 

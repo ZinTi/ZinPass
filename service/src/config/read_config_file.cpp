@@ -50,7 +50,7 @@ namespace zinpass::config {
 #endif
 
     // 构建配置文件路径
-    std::string config_path = exe_dir + "/zinpass.config";
+    std::string config_path = exe_dir + "/service.config";
 
     // 创建文件（如果不存在）
     std::ifstream test_file(config_path);
@@ -115,7 +115,7 @@ namespace zinpass::config {
 
     // 设置默认路径
     if (!found_database) database_path_ = exe_dir + "/zinpass.db";  // 默认数据库路径
-    if (!found_log) run_log_path_ = exe_dir + "/app.log";           // 默认运行日志路径
+    if (!found_log) run_log_path_ = exe_dir + "/service.log";           // 默认运行日志路径
 
     // 统一路径分隔符（日志路径处理）
 #ifdef _WIN32

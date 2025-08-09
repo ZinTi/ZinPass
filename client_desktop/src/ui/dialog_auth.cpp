@@ -1,8 +1,6 @@
 #include "dialog_auth.h"
 #include <QApplication>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
+
 #include <QMessageBox>
 // #include "authentication.h"
 
@@ -11,40 +9,30 @@ DialogAuth::DialogAuth(QWidget* parent) : QDialog(parent) {
     setFixedSize(200, 120);
 
     // 垂直布局管理器
-    auto* lyt_main = new QVBoxLayout(this);
+    this->lyt_main_ = new QVBoxLayout(this);
 
     // 密码标签和输入框
-    auto* lyt_pwd = new QHBoxLayout();
-    auto* l_password = new QLabel("主密钥", this);
+    this->lyt_pwd_ = new QHBoxLayout(this);
+    this->l_password_ = new QLabel("主密钥", this);
     this->edit_password_ = new QLineEdit(this);
     this->edit_password_->setEchoMode(QLineEdit::Password);
-    lyt_pwd->addWidget(l_password);
-    lyt_pwd->addWidget(this->edit_password_);
-    lyt_main->addLayout(lyt_pwd);
+    lyt_pwd_->addWidget(l_password_);
+    lyt_pwd_->addWidget(this->edit_password_);
+    lyt_main_->addLayout(lyt_pwd_);
 
     // 按钮布局
-    auto* lyt_btn = new QHBoxLayout();
+    this->lyt_btn_ = new QHBoxLayout(this);
     this->btn_okay_ = new QPushButton("确定", this);
     this->btn_cancel_ = new QPushButton("取消", this);
-    lyt_btn->addWidget(this->btn_okay_);
-    lyt_btn->addWidget(this->btn_cancel_);
-    lyt_main->addLayout(lyt_btn);
+    lyt_btn_->addWidget(this->btn_okay_);
+    lyt_btn_->addWidget(this->btn_cancel_);
+    lyt_main_->addLayout(lyt_btn_);
 
-    // 连接按钮的点击信号到槽函数
     connect(this->btn_okay_, &QPushButton::clicked, this, &DialogAuth::on_btn_okay_clicked);
     connect(this->btn_cancel_, &QPushButton::clicked, this, &QDialog::reject);
 }
 
 DialogAuth::~DialogAuth(){
-    if(this->edit_password_){
-        delete this->edit_password_;
-    }
-    if(this->btn_okay_){
-        delete this->btn_okay_;
-    }
-    if(this->btn_cancel_){
-        delete this->btn_cancel_;
-    }
 }
 
 void DialogAuth::on_btn_okay_clicked() {

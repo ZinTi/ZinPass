@@ -1,8 +1,9 @@
-#ifndef INPUTFORM_H
-#define INPUTFORM_H
+#ifndef INPUT_FORM_H
+#define INPUT_FORM_H
 
 #include <QWidget>
 #include <QTextEdit>
+#include <QVBoxLayout>
 
 class InputForm final : public QWidget
 {
@@ -10,12 +11,14 @@ class InputForm final : public QWidget
 
 public:
     explicit InputForm(QWidget *parent = nullptr);
-    ~InputForm();
+    ~InputForm() override;
 
 private:
     void setup_ui();
 
     QTextEdit* edit_info_;
+
+    QVBoxLayout* lyt_main_;
 };
 
-#endif // INPUTFORM_H
+#endif // INPUT_FORM_H

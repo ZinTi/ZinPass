@@ -21,25 +21,11 @@ AccountMgrForm::~AccountMgrForm(){
     if(this->table_model_){
         delete this->table_model_;
     }
-    /*
-    if(this->table_view_){
-        delete this->table_view_;
-    }*/
     if(this->dialog_add_account_){
         delete this->dialog_add_account_;
     }
     if(this->dialog_detail_and_edit_){
         delete this->dialog_detail_and_edit_;
-    }
-
-    if (this->lyt_main_) {
-        delete this->lyt_main_;
-    }
-    if (this->lyt_display_and_filter_) {
-        delete this->lyt_display_and_filter_;
-    }
-    if (this->lyt_bottom_btn_) {
-        delete this->lyt_bottom_btn_;
     }
 }
 
@@ -75,8 +61,8 @@ void AccountMgrForm::setup_ui(){
 
     // 创建布局
     this->lyt_main_ = new QVBoxLayout(this);
-    this->lyt_display_and_filter_ = new QHBoxLayout;
-    this->lyt_bottom_btn_ = new QHBoxLayout;
+    this->lyt_display_and_filter_ = new QHBoxLayout(this);
+    this->lyt_bottom_btn_ = new QHBoxLayout(this);
 
     // 组合布局
     lyt_display_and_filter_->addWidget(this->coord_viewer_);

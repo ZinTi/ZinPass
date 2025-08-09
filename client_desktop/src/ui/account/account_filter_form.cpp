@@ -5,8 +5,7 @@
 #include "phone_rpc.h"
 #include "category_rpc.h"
 
-AccountFilterForm::AccountFilterForm(QWidget *parent)
-    : QWidget(parent){
+AccountFilterForm::AccountFilterForm(QWidget *parent) : QWidget(parent){
     setup_ui();
     setup_layout();
     initial_input_widgets(); // 初始化输入控件
@@ -14,35 +13,8 @@ AccountFilterForm::AccountFilterForm(QWidget *parent)
 }
 
 AccountFilterForm::~AccountFilterForm(){
-    if(this->edit_provider_name_){delete this->edit_provider_name_;}
-    if(this->edit_platform_name_){ delete this->edit_platform_name_ ; }
-    if(this->edit_username_){ delete this->edit_username_ ; }
-    if(this->edit_nickname_){ delete this->edit_nickname_ ; }
-    if(this->combo_phone_){ delete this->combo_phone_ ; }
-    if(this->combo_email_){ delete this->combo_email_ ; }
-    if(this->combo_category_){ delete this->combo_category_ ; }
-    if(this->edit_postscript_){ delete this->edit_postscript_ ; }
-    if(this->btn_refresh_){ delete this->btn_refresh_ ; }
-    if(this->btn_submit_){ delete this->btn_submit_ ; }
-    if(this->btn_drop_down_more_){ delete this->btn_drop_down_more_; }
     if(this->popup_window_) { delete this->popup_window_; }
     if(this->box_filter_) { delete this->box_filter_; }
-
-    if (this->lyt_main_) {
-        delete this->lyt_main_;
-    }
-    if (this->lyt_gbox_) {
-        delete this->lyt_gbox_;
-    }
-    if (this->lyt_form_left_) {
-        delete this->lyt_form_left_;
-    }
-    if (this->lyt_form_right_) {
-        delete this->lyt_form_right_;
-    }
-    if (this->lyt_btn_) {
-        delete this->lyt_btn_;
-    }
 }
 
 

@@ -14,11 +14,6 @@ LoginDlg::LoginDlg(QWidget* parent) : QDialog(parent) {
 }
 
 LoginDlg::~LoginDlg() {
-    delete l_logo_;
-
-    if (this->settings_dlg_) {
-        delete this->settings_dlg_;
-    }
 }
 
 void LoginDlg::setup_ui() {

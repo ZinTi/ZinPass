@@ -7,6 +7,9 @@
 #include <QComboBox>
 #include <QDateTimeEdit>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
 #include "mobile_phone.h"
 
 class PhoneDetailFrame final : public QFrame
@@ -15,7 +18,7 @@ class PhoneDetailFrame final : public QFrame
 
 public:
     explicit PhoneDetailFrame(QFrame *parent = nullptr);
-    ~PhoneDetailFrame();
+    ~PhoneDetailFrame() override;
 
     void render_phone_to_ui();
     zinpass::models::MobilePhone get_phone() const;
@@ -52,6 +55,12 @@ private:
     QPushButton* btn_edit_;
     QPushButton* btn_submit_;
     QPushButton* btn_delete_;
+
+    QHBoxLayout* lyt_main_;
+    QFormLayout* lyt_form1_;
+    QFormLayout* lyt_form2_;
+    QFormLayout* lyt_form3_;
+    QVBoxLayout* lyt_btn_;
 
     zinpass::models::MobilePhone* phone_;
 };

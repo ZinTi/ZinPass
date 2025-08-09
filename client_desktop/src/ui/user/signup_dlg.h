@@ -1,11 +1,14 @@
-#ifndef SIGNUPDIALOG_H
-#define SIGNUPDIALOG_H
+#ifndef SIGNUP_DLG_H
+#define SIGNUP_DLG_H
 
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QDialog>
-
-namespace Ui {
-class SignupDlg;
-}
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
+#include <QGroupBox>
 
 class SignupDlg final : public QDialog{
     Q_OBJECT
@@ -19,8 +22,28 @@ private slots:
     void on_btn_clear_clicked() const; // 处理清空按钮点击事件的槽函数
 
 private:
-    Ui::SignupDlg *ui;
+    void setup_ui();
+
+    QLabel* l_title_;
+    QLabel* l_username_;
+    QLabel* l_passwd1_;
+    QLabel* l_passwd2_;
+    QLabel* l_nickname_;
+    QLineEdit* e_username_;
+    QLineEdit* e_passwd1_;
+    QLineEdit* e_passwd2_;
+    QLineEdit* e_nickname_;
+
+    QPushButton* btn_clear_;
+    QPushButton* btn_submit_;
+
+    QGroupBox* group_necessary_;
+    QGroupBox* group_other_;
+    QVBoxLayout* lyt_main_;
+    QFormLayout* lyt_necessary_;
+    QFormLayout* lyt_other_;
+    QHBoxLayout* lyt_btn_;
 
 };
 
-#endif // SIGNUPDIALOG_H
+#endif
