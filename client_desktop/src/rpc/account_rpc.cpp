@@ -45,7 +45,7 @@ namespace zinpass::rpc{
         request.set_session_id(session_id);
         request.set_password(password);
         request.set_main_key(main_key);
-        account::v1::Account* new_value = new account::v1::Account;
+        auto* new_value = new account::v1::Account;
         new_value->set_provider_name(provider_name);
         new_value->set_platform_name(platform_name);
         new_value->set_username(username);
@@ -133,11 +133,11 @@ namespace zinpass::rpc{
         const std::string& url,
         const std::string& hotline,
         const std::string& category,
-        int32_t page_size){
+        const int32_t page_size){
         // 1. constructor request
         account::v1::ListAccountsReq request;
         request.set_session_id(session_id);
-        account::v1::Account* conditions = new account::v1::Account();  // 由RPC释放
+        auto* conditions = new account::v1::Account();  // 由RPC释放
         conditions->set_provider_name(provider_name);
         conditions->set_platform_name(platform_name);
         conditions->set_username(username);
@@ -205,7 +205,7 @@ namespace zinpass::rpc{
         request.set_account_id(account_id);
         request.set_password(account_password);
         request.set_main_key(main_key);
-        account::v1::Account* new_value = new account::v1::Account;
+        auto* new_value = new account::v1::Account;
         new_value->set_provider_name(provider_name);
         new_value->set_platform_name(platform_name);
         new_value->set_username(username);

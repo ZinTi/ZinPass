@@ -11,7 +11,7 @@ class DialogDeleteAccount final : public QDialog {
 
 public:
     explicit DialogDeleteAccount(const std::string& account_id, QWidget* parent = nullptr);
-    ~DialogDeleteAccount();
+    ~DialogDeleteAccount() override;
 
     void set_account_id(const std::string& account_id);
     std::string get_input_main_key() const;

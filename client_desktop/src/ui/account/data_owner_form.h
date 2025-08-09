@@ -9,7 +9,7 @@ class DataOwnerForm final : public QWidget
 
 public:
     explicit DataOwnerForm(QWidget *parent = nullptr);
-    ~DataOwnerForm();
+    ~DataOwnerForm() override;
 
 private:
 

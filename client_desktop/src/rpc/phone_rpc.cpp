@@ -17,7 +17,7 @@ namespace zinpass::rpc{
         const std::string& postscript){
         account::v1::CreatePhoneReq request;
         request.set_session_id(session_id);
-        account::v1::Phone* phone = new account::v1::Phone;
+        auto* phone = new account::v1::Phone;
         phone->set_telecom_operator(telecom_operator);
         phone->set_phone_area(phone_area);
         phone->set_phone_number(phone_number);
@@ -141,7 +141,7 @@ namespace zinpass::rpc{
         account::v1::UpdatePhoneReq request;
         request.set_session_id(session_id);
         request.set_phone_id(phone_id);
-        account::v1::Phone* phone = new account::v1::Phone;
+        auto* phone = new account::v1::Phone;
         phone->set_phone_number(phone_number);
         phone->set_telecom_operator(telecom_operator);
         phone->set_service_pwd(service_password);

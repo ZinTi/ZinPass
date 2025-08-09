@@ -11,7 +11,7 @@ class SearchBox final : public QWidget
     Q_OBJECT
 public:
     explicit SearchBox(QWidget *parent_ = nullptr);
-    ~SearchBox();
+    ~SearchBox() override;
 
 signals:
     void search_triggered(const QString &keyword_);

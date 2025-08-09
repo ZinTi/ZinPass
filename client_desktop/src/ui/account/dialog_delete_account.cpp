@@ -5,7 +5,7 @@
 #include "state_manager.h"
 #include "account_rpc.h"
 
-DialogDeleteAccount::DialogDeleteAccount(const std::string& account_id, QWidget* parent) : account_id_(account_id), QDialog(parent) {
+DialogDeleteAccount::DialogDeleteAccount(const std::string& account_id, QWidget* parent) : QDialog(parent), account_id_(account_id) {
     setup_ui();
 }
 

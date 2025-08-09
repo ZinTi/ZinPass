@@ -9,7 +9,7 @@ class PreferencesForm final : public QWidget
 
 public:
     explicit PreferencesForm(QWidget *parent = nullptr);
-    ~PreferencesForm();
+    ~PreferencesForm() override;
 
 private:
 };

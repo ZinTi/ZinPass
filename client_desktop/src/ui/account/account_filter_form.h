@@ -20,7 +20,7 @@ class AccountFilterForm final : public QWidget{
 
 public:
     explicit AccountFilterForm(QWidget *parent = nullptr);
-    ~AccountFilterForm();
+    ~AccountFilterForm() override;
 
     QMap<QString, QVariant> get_form_data() const;
 

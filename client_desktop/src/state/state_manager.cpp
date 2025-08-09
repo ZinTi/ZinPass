@@ -44,7 +44,7 @@ int StateManager::getLogLevel() const {
     return logLevel_;
 }
 
-void StateManager::setLogLevel(int level) {
+void StateManager::setLogLevel(const int level) {
     std::lock_guard<std::mutex> lock(configMutex_);
     logLevel_ = level;
 }

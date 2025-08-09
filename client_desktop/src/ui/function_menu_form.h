@@ -14,7 +14,7 @@ class FunctionMenuForm final : public QWidget
 
 public:
     explicit FunctionMenuForm(QWidget* parent = nullptr);
-    ~FunctionMenuForm();
+    ~FunctionMenuForm() override;
 
 signals:
     // 自定义信号，携带按钮索引，用于通知主窗口或查看器显示内容

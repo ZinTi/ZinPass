@@ -8,16 +8,15 @@
 #include <QClipboard>
 #include "pwd_generator.h"
 
-ComponentsMenuWidget::ComponentsMenuWidget(QWidget *parent) : QWidget(parent)
-{
+ComponentsMenuWidget::ComponentsMenuWidget(QWidget *parent) : QWidget(parent){
     m_pBtnComponentsMenu = new QPushButton("使用字符", this);
 
     // 创建菜单
     m_componentsMenu = new QMenu(this);
 
     // 创建一个包含四个QCheckBox的QWidget、创建四个QCheckBox并添加到布局中
-    QWidget *checkBoxWidget = new QWidget();
-    QVBoxLayout *vLayoutCheckBox = new QVBoxLayout(checkBoxWidget);
+    this->chk_box_widget_ = new QWidget(this);
+    this->lyt_chk_box_ = new QVBoxLayout(this->chk_box_widget_);
 
     m_checkBoxDigits.setText("数字（0-9）");
     m_checkBoxLowercase.setText("小写字母（a-z）");
@@ -28,24 +27,24 @@ ComponentsMenuWidget::ComponentsMenuWidget(QWidget *parent) : QWidget(parent)
     m_checkBoxUppercase.setChecked(true);
     m_checkBoxSymbols.setChecked(true);
 
-    vLayoutCheckBox->addWidget(&m_checkBoxDigits);
-    vLayoutCheckBox->addWidget(&m_checkBoxLowercase);
-    vLayoutCheckBox->addWidget(&m_checkBoxUppercase);
-    vLayoutCheckBox->addWidget(&m_checkBoxSymbols);
+    this->lyt_chk_box_->addWidget(&m_checkBoxDigits);
+    this->lyt_chk_box_->addWidget(&m_checkBoxLowercase);
+    this->lyt_chk_box_->addWidget(&m_checkBoxUppercase);
+    this->lyt_chk_box_->addWidget(&m_checkBoxSymbols);
 
     // 创建QWidgetAction并将包含QCheckBox的QWidget添加到其中
-    QWidgetAction *widgetAction = new QWidgetAction(m_componentsMenu);
-    widgetAction->setDefaultWidget(checkBoxWidget);
+    this->widget_action_ = new QWidgetAction(m_componentsMenu);
+    this->widget_action_->setDefaultWidget(this->chk_box_widget_);
 
     // 将QWidgetAction添加到菜单中
-    m_componentsMenu->addAction(widgetAction);
+    m_componentsMenu->addAction(this->widget_action_);
 
     // 为按钮绑定菜单
     m_pBtnComponentsMenu->setMenu(m_componentsMenu);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(m_pBtnComponentsMenu);
-    setLayout(mainLayout);
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_main_->addWidget(m_pBtnComponentsMenu);
+    setLayout(this->lyt_main_);
 }
 
 ComponentsMenuWidget::~ComponentsMenuWidget(){
@@ -149,10 +148,10 @@ PwdGenDlg::~PwdGenDlg(){
 
 
 void PwdGenDlg::on_pBtnBegin_clicked(){
-    bool inDigits = m_componentsMenuWidget->isDigitsChecked();
-    bool inLowercase = m_componentsMenuWidget->isLowercaseChecked();
-    bool inUppercase = m_componentsMenuWidget->isUppercaseChecked();
-    bool inSymbols = m_componentsMenuWidget->isSymbolsChecked();
+    const bool inDigits = m_componentsMenuWidget->isDigitsChecked();
+    const bool inLowercase = m_componentsMenuWidget->isLowercaseChecked();
+    const bool inUppercase = m_componentsMenuWidget->isUppercaseChecked();
+    const bool inSymbols = m_componentsMenuWidget->isSymbolsChecked();
 
     if(false == (inDigits || inLowercase || inUppercase || inSymbols)){
         m_msgDisplay.setTextColor(QColor::fromRgb(255, 0, 0));
@@ -160,24 +159,24 @@ void PwdGenDlg::on_pBtnBegin_clicked(){
         return;
     }
 
-    int inLength = m_editLength.value();
-    int inNum = m_editNum.value();
+    const int inLength = m_editLength.value();
+    const int inNum = m_editNum.value();
 
-    bool inColorful = m_setColorful.isChecked();
+    const bool inColorful = m_setColorful.isChecked();
 
-    std::vector<std::string> newPwds;
+    std::vector<std::string> new_passwds;
 
-    PwdComponentsType components(inDigits, inUppercase, inLowercase, inSymbols);
+    const PwdComponentsType components(inDigits, inUppercase, inLowercase, inSymbols);
     PwdGenerator pwdG(components, inLength, inNum);
-    if(pwdG.getGwd(newPwds)){
+    if(pwdG.getGwd(new_passwds)){
         m_msgDisplay.setTextColor(QColor::fromRgb(0, 255, 0));
         m_msgDisplay.setText(QString("生成成功"));
         m_pwdDisplay.clear();
         if(inColorful){
             // 显示彩色字符：数字显示绿色、小写英文字母黄色、大写英文字母蓝色、其他字符紫色
-            for (const std::string& pwd : newPwds) {
+            for (const std::string& pwd : new_passwds) {
                 QTextCursor cursor = m_pwdDisplay.textCursor();
-                for (char c : pwd) {
+                for (const char c : pwd) {
                     QTextCharFormat format;
                     if (std::isdigit(c)) {
                         format.setForeground(QColor::fromRgb(50, 205, 50)); // 亮绿色
@@ -195,7 +194,7 @@ void PwdGenDlg::on_pBtnBegin_clicked(){
         }else{
             // 显示单色字符
             m_pwdDisplay.setTextColor(QColor::fromRgb(255, 100, 100));
-            for(std::string pwd : newPwds){
+            for(std::string pwd : new_passwds){
                 m_pwdDisplay.append(QString::fromStdString(pwd));
             }
         }

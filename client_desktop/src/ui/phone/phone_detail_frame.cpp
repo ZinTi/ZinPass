@@ -126,7 +126,7 @@ void PhoneDetailFrame::initial_input_widgets(){
     this->btn_delete_->setEnabled( false );   // 默认“删除” disable，填充数据后“删除” enable
 }
 
-void PhoneDetailFrame::set_input_read_only(bool enable){
+void PhoneDetailFrame::set_input_read_only(const bool enable){
     this->combo_telecom_->setEnabled( !enable );
     this->edit_phone_area_->setReadOnly(enable);
     this->edit_phone_->setReadOnly(enable);

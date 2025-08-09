@@ -1,5 +1,5 @@
-#ifndef PHONEMGRFORM_H
-#define PHONEMGRFORM_H
+#ifndef PHONE_MGR_FORM_H
+#define PHONE_MGR_FORM_H
 
 #include <QTableWidgetItem>
 #include <QWidget>
@@ -21,7 +21,7 @@ class PhoneMgrForm final : public QWidget{
 
 public:
     explicit PhoneMgrForm(QWidget *parent = nullptr);
-    ~PhoneMgrForm();
+    ~PhoneMgrForm() override;
 
 private slots:
     void on_table_view_item_clicked(const QModelIndex &index);  // 点击表格项
@@ -31,7 +31,6 @@ private slots:
     void list_phones();
 
 private:
-    // 私有方法
     void setup_ui();
 
     // 控件 UI
@@ -46,9 +45,13 @@ private:
 
     PhoneDetailFrame* phone_detail_frame_;
 
+    QVBoxLayout* lyt_main_;
+    QHBoxLayout* lyt_top_;
+    QVBoxLayout* lyt_btn_;
+
     // 数据成员变量
     int row_of_table_view_ = 0; // 聚焦行
     int column_of_table_view_ = 0;  // 聚焦列
 };
 
-#endif // PHONEMGRFORM_H
+#endif // PHONE_MGR_FORM_H

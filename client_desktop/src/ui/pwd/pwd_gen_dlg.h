@@ -18,7 +18,7 @@
 class ComponentsMenuWidget final : public QWidget{
 public:
     explicit ComponentsMenuWidget(QWidget *parent = nullptr);
-    ~ComponentsMenuWidget();
+    ~ComponentsMenuWidget() override;
 
     bool isDigitsChecked() const;
     bool isLowercaseChecked() const;
@@ -32,13 +32,19 @@ private:
     QCheckBox m_checkBoxLowercase;
     QCheckBox m_checkBoxUppercase;
     QCheckBox m_checkBoxSymbols;
+
+    QWidgetAction* widget_action_;
+    QWidget* chk_box_widget_;
+    
+    QVBoxLayout* lyt_main_;
+    QVBoxLayout* lyt_chk_box_;
 };
 
 
 class PwdGenDlg final : public QDialog{
 public:
     explicit PwdGenDlg(QWidget *parent = nullptr);
-    ~PwdGenDlg();
+    ~PwdGenDlg() override;
 
 private slots:
     void on_pBtnBegin_clicked(); // 生成密码

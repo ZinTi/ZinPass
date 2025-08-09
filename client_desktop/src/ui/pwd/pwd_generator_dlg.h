@@ -7,17 +7,22 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QRadioButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
+#include <QMenu>
+#include <QWidgetAction>
 
 class PwdGeneratorDlg final : public QDialog{
 
 public:
     explicit PwdGeneratorDlg(QWidget *parent = nullptr);
-    ~PwdGeneratorDlg();
+    ~PwdGeneratorDlg() override;
 
 private slots:
-    void on_pBtnBegin_clicked(); // 生成密码
-    void on_pBtnCopyResult_clicked(); // 复制结果
-    void on_pBtnClearDisplay_clicked(); // 清空
+    void on_pBtnBegin_clicked() const; // 生成密码
+    void on_pBtnCopyResult_clicked() const; // 复制结果
+    void on_pBtnClearDisplay_clicked() const; // 清空
     void on_pBtnSaveAs_clicked(); // 另存为
 
     void on_pBtnCliMode_clicked(); // 命令行模式
@@ -50,6 +55,21 @@ private:
 
     // 显示
     QTextEdit* m_pwdDisplay;
+
+    // 
+    QMenu* menu_components_;
+    QWidget* checkBoxWidget_;
+    QWidgetAction* widgetAction_;
+
+    // 布局
+    QVBoxLayout* lyt_main_; // 主布局 从上至下三层
+    QHBoxLayout* lyt_a1_;   // 1、header
+    QHBoxLayout* lyt_a2_;   // 2、body
+    QHBoxLayout* lyt_btn_;  // 3、footer
+
+    QVBoxLayout* lyt_chk_box_;
+    QVBoxLayout* lyt_setting_;
+    QFormLayout* lyt_edit_;
 
 };
 

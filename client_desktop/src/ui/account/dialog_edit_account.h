@@ -17,7 +17,7 @@ class DialogEditAccount final : public QDialog {
 
 public:
     explicit DialogEditAccount(const std::string& account_id, QWidget* parent = nullptr);
-    ~DialogEditAccount();
+    ~DialogEditAccount() override;
 
     QMap<QString, QVariant> get_form_data() const;
 
@@ -29,14 +29,14 @@ private slots:
     void on_btn_delete_clicked();
     void on_btn_submit_clicked();
 
-    void update_edit_main_key_state();
+    void update_edit_main_key_state() const;
 
 private:
     std::string account_id_;
 
     void setup_ui();
-    void initial_input_widgets();
-    void read_only(bool enable = true);
+    void initial_input_widgets() const;
+    void read_only(bool enable = true) const;
 
     QGroupBox* group_box_platform_;
     QLineEdit* edit_provider_name_;
@@ -65,6 +65,15 @@ private:
     QPushButton* btn_edit_;
     QPushButton* btn_submit_;
     QPushButton* btn_delete_;
+
+    QVBoxLayout* lyt_main_;
+    QGridLayout* lyt_grid_; // 创建网格布局
+    QFormLayout* lyt_key_; // 创建主密钥布局
+    QHBoxLayout* lyt_action_;
+    QFormLayout* lyt_top_left_;
+    QFormLayout* lyt_top_right_;
+    QFormLayout* lyt_bottom_left_;
+    QFormLayout* lyt_bottom_right_;
 };
 
-#endif // DIALOG_EDIT_ACCOUNT_H
+#endif

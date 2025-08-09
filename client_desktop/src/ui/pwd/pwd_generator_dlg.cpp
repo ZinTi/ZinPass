@@ -1,69 +1,66 @@
 #include "pwd_generator_dlg.h"
 #include <QApplication>
 #include <QDialog>
-#include <QMenu>
 #include <QPushButton>
-#include <QVBoxLayout>
-#include <QWidgetAction>
 #include <QFormLayout>
 #include <QFileDialog>
 #include <QClipboard>
 #include "pwd_generator.h"
 
 PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
-    // 0\ 布局基本框架
-    QVBoxLayout* vLayoutMain = new QVBoxLayout(this); // 主框架 从上至下三层
-    QHBoxLayout* hLayoutA1 = new QHBoxLayout(); // 1、header
-    QHBoxLayout* hLayoutA2 = new QHBoxLayout(); // 2、body
-    QHBoxLayout* hLayoutBtn = new QHBoxLayout(); // 3、footer
-    vLayoutMain->addLayout(hLayoutA1);
-    vLayoutMain->addLayout(hLayoutA2);
-    vLayoutMain->addLayout(hLayoutBtn);
+    // 0. 布局基本框架
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_a1_ = new QHBoxLayout(this);
+    this->lyt_a2_ = new QHBoxLayout(this);
+    this->lyt_btn_ = new QHBoxLayout(this);
+    this->lyt_main_->addLayout(this->lyt_a1_);
+    this->lyt_main_->addLayout(this->lyt_a2_);
+    this->lyt_main_->addLayout(this->lyt_btn_);
 
     m_title = new QLabel(QString("随机密码生成器"));
     m_title->setAlignment(Qt::AlignHCenter);
-    hLayoutA1->addWidget(m_title);
+    this->lyt_a1_->addWidget(m_title);
 
-    // 1\ 编辑设置
+    // 1. 编辑设置
     m_componentsMenuBtn = new QPushButton("使用字符", this);
     // 创建菜单
-    QMenu *componentsMenu = new QMenu(this);
+    this->menu_components_ = new QMenu(this);
 
     // 创建一个包含四个QCheckBox的QWidget、创建四个QCheckBox并添加到布局中
-    QWidget *checkBoxWidget = new QWidget();
-    QVBoxLayout *vLayoutCheckBox = new QVBoxLayout(checkBoxWidget);
+    checkBoxWidget_ = new QWidget(this);
+    this->lyt_chk_box_ = new QVBoxLayout(checkBoxWidget_);
 
-    m_checkBoxDigits = new QCheckBox("数字（0-9）", checkBoxWidget);
-    m_checkBoxLowercase = new QCheckBox("小写字母（a-z）", checkBoxWidget);
-    m_checkBoxUppercase = new QCheckBox("大写字母（A-Z）", checkBoxWidget);
-    m_checkBoxSymbols = new QCheckBox("其他字符（~!@#$等）", checkBoxWidget);
+    m_checkBoxDigits = new QCheckBox("数字（0-9）", checkBoxWidget_);
+    m_checkBoxLowercase = new QCheckBox("小写字母（a-z）", checkBoxWidget_);
+    m_checkBoxUppercase = new QCheckBox("大写字母（A-Z）", checkBoxWidget_);
+    m_checkBoxSymbols = new QCheckBox("其他字符（~!@#$等）", checkBoxWidget_);
     m_checkBoxDigits->setChecked(true);
     m_checkBoxLowercase->setChecked(true);
     m_checkBoxUppercase->setChecked(true);
     m_checkBoxSymbols->setChecked(true);
 
-    vLayoutCheckBox->addWidget(m_checkBoxDigits);
-    vLayoutCheckBox->addWidget(m_checkBoxLowercase);
-    vLayoutCheckBox->addWidget(m_checkBoxUppercase);
-    vLayoutCheckBox->addWidget(m_checkBoxSymbols);
+    this->lyt_chk_box_->addWidget(m_checkBoxDigits);
+    this->lyt_chk_box_->addWidget(m_checkBoxLowercase);
+    this->lyt_chk_box_->addWidget(m_checkBoxUppercase);
+    this->lyt_chk_box_->addWidget(m_checkBoxSymbols);
     // 创建QWidgetAction并将包含QCheckBox的QWidget添加到其中
-    QWidgetAction *widgetAction = new QWidgetAction(componentsMenu);
-    widgetAction->setDefaultWidget(checkBoxWidget);
+    this->widgetAction_ = new QWidgetAction(this->menu_components_);
+    this->widgetAction_->setDefaultWidget(checkBoxWidget_);
 
     // 将QWidgetAction添加到菜单中
-    componentsMenu->addAction(widgetAction);
+    this->menu_components_->addAction(this->widgetAction_);
 
     // 为按钮绑定菜单
-    m_componentsMenuBtn->setMenu(componentsMenu);
+    m_componentsMenuBtn->setMenu(this->menu_components_);
 
-    QVBoxLayout* vLayoutSetting = new QVBoxLayout();
+    lyt_setting_ = new QVBoxLayout(this);
     m_msgDisplay = new QTextEdit(QString("说明：<br/>1、长度范围6-99；<br/>2、数量范围1-99；"));
     m_msgDisplay->setReadOnly(true);
     m_msgDisplay->setFixedSize(150, 100);
-    vLayoutSetting->addWidget(m_msgDisplay);
-    vLayoutSetting->addWidget(m_componentsMenuBtn);
-    QFormLayout* fLayoutEdit = new QFormLayout();
-    vLayoutSetting->addLayout(fLayoutEdit);
+    lyt_setting_->addWidget(m_msgDisplay);
+    lyt_setting_->addWidget(m_componentsMenuBtn);
+    this->lyt_edit_ = new QFormLayout(this);
+    lyt_setting_->addLayout(this->lyt_edit_);
     m_labelLength = new QLabel(QString("密码长度"));
     m_labelNum = new QLabel(QString("生成数量"));
     m_labelColorful = new QLabel(QString("使用颜色区分字符"));
@@ -73,21 +70,21 @@ PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
     m_editNum = new QSpinBox();
     m_editNum->setRange(1, 99);
     m_editNum->setValue(10);
-    m_setColorful = new QRadioButton();
-    fLayoutEdit->addRow(m_labelLength, m_editLength);
-    fLayoutEdit->addRow(m_labelNum, m_editNum);
-    fLayoutEdit->addRow(m_setColorful, m_labelColorful);
+    m_setColorful = new QRadioButton(this);
+    this->lyt_edit_->addRow(m_labelLength, m_editLength);
+    this->lyt_edit_->addRow(m_labelNum, m_editNum);
+    this->lyt_edit_->addRow(m_setColorful, m_labelColorful);
 
-    hLayoutA2->addLayout(vLayoutSetting);
+    this->lyt_a2_->addLayout(lyt_setting_);
 
 
-    // 2\ 显示
+    // 2. 显示
     m_pwdDisplay = new QTextEdit();
     m_pwdDisplay->setReadOnly(true);
     m_pwdDisplay->setPlaceholderText(QString("生成结果"));
-    hLayoutA2->addWidget(m_pwdDisplay);
+    this->lyt_a2_->addWidget(m_pwdDisplay);
 
-    // 3\ 主要控制按钮
+    // 3. 主要控制按钮
 
     m_pBtnBegin = new QPushButton(QString("生成密码"), this); // 生成密码
     m_pBtnCopyResult = new QPushButton(QString("复制结果"),this); // 复制结果
@@ -95,19 +92,19 @@ PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
     m_pBtnSaveAs = new QPushButton(QString("另存为"), this); // 另存为
     m_pBtnCliMode = new QPushButton(QString("命令行模式"), this); // 命令行模式
 
-    hLayoutBtn->addWidget(m_pBtnBegin);
-    hLayoutBtn->addWidget(m_pBtnCopyResult);
-    hLayoutBtn->addWidget(m_pBtnClearDisplay);
-    hLayoutBtn->addWidget(m_pBtnSaveAs);
-    hLayoutBtn->addWidget(m_pBtnCliMode);
+    this->lyt_btn_->addWidget(m_pBtnBegin);
+    this->lyt_btn_->addWidget(m_pBtnCopyResult);
+    this->lyt_btn_->addWidget(m_pBtnClearDisplay);
+    this->lyt_btn_->addWidget(m_pBtnSaveAs);
+    this->lyt_btn_->addWidget(m_pBtnCliMode);
 
-    // 4\ 整理对话框的布局
+    // 4. 整理对话框的布局
 
 
-    // 5\ 设置对话框属性
+    // 5. 设置对话框属性
     setWindowTitle(QString("随机密码生成器"));
 
-    // 6\ 连接信号与槽
+    // 6. 连接信号与槽
     connect(this->m_pBtnBegin, &QPushButton::clicked, this, &PwdGeneratorDlg::on_pBtnBegin_clicked);
     connect(this->m_pBtnCopyResult, &QPushButton::clicked, this, &PwdGeneratorDlg::on_pBtnCopyResult_clicked);
     connect(this->m_pBtnClearDisplay, &QPushButton::clicked, this, &PwdGeneratorDlg::on_pBtnClearDisplay_clicked);
@@ -181,7 +178,7 @@ PwdGeneratorDlg::~PwdGeneratorDlg(){
 }
 
 
-void PwdGeneratorDlg::on_pBtnBegin_clicked(){
+void PwdGeneratorDlg::on_pBtnBegin_clicked() const {
     bool inDigits = m_checkBoxDigits->isChecked();
     bool inLowercase = m_checkBoxLowercase->isChecked();
     bool inUppercase = m_checkBoxUppercase->isChecked();
@@ -237,8 +234,7 @@ void PwdGeneratorDlg::on_pBtnBegin_clicked(){
         this->m_msgDisplay->setText(QString("生成失败"));
     }
 }
-void PwdGeneratorDlg::on_pBtnCopyResult_clicked()
-{
+void PwdGeneratorDlg::on_pBtnCopyResult_clicked() const {
     // 获取 QTextEdit 中的文本
     QString text = m_pwdDisplay->toPlainText();
 
@@ -251,7 +247,7 @@ void PwdGeneratorDlg::on_pBtnCopyResult_clicked()
     this->m_msgDisplay->setText(QString("已经全部复制到剪贴板"));
 }
 
-void PwdGeneratorDlg::on_pBtnClearDisplay_clicked(){
+void PwdGeneratorDlg::on_pBtnClearDisplay_clicked() const {
     m_pwdDisplay->clear();
 }
 

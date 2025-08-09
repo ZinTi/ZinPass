@@ -79,7 +79,7 @@ PopupFilterWindow::~PopupFilterWindow(){
 
 bool PopupFilterWindow::event(QEvent* event) {
     if (event->type() == QEvent::MouseButtonPress) {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        const QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         if (!geometry().contains(mouseEvent->globalPosition().toPoint())) {
             hide();
             return true;

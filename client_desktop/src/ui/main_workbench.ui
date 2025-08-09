@@ -10,7 +10,7 @@
     <height>600</height>
    </rect>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="central_widget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>

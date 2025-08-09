@@ -1,8 +1,5 @@
 #include "dialog_exposed_pwd.h"
 #include <QMessageBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFormLayout>
 #include <QApplication>
 #include <QClipboard>
 #include "state_manager.h"
@@ -14,13 +11,12 @@ DialogExposedPwd::DialogExposedPwd(const std::string& account_id, QWidget* paren
 }
 
 DialogExposedPwd::~DialogExposedPwd() {
-
 }
 
 void DialogExposedPwd::setup_ui(){
-    QVBoxLayout* lyt_main = new QVBoxLayout(this);
-    QFormLayout* lyt_main_key = new QFormLayout;
-    QHBoxLayout* lyt_btn = new QHBoxLayout;
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_main_key_ = new QFormLayout(this);
+    this->lyt_btn_ = new QHBoxLayout(this);
     this->edit_display_ = new QTextEdit();
     this->edit_display_->setMaximumHeight(100);
     this->edit_display_->setReadOnly(true);
@@ -31,14 +27,14 @@ void DialogExposedPwd::setup_ui(){
     this->btn_copy_ = new QPushButton(QString("复制"));
     this->btn_read_and_copy_ = new QPushButton(QString("查看并复制"));
     this->btn_read_and_copy_->setDefault(true);
-    lyt_main_key->addRow(QString("密钥"), this->edit_main_key_);
-    lyt_btn->addWidget(this->btn_read_);
-    lyt_btn->addWidget(this->btn_copy_);
-    lyt_btn->addWidget(this->btn_read_and_copy_);
-    lyt_main->setContentsMargins(QMargins(22,18,22,18));
-    lyt_main->addWidget(this->edit_display_);
-    lyt_main->addLayout(lyt_main_key);
-    lyt_main->addLayout(lyt_btn);
+    this->lyt_main_key_->addRow(QString("密钥"), this->edit_main_key_);
+    this->lyt_btn_->addWidget(this->btn_read_);
+    this->lyt_btn_->addWidget(this->btn_copy_);
+    this->lyt_btn_->addWidget(this->btn_read_and_copy_);
+    this->lyt_main_->setContentsMargins(QMargins(22,18,22,18));
+    this->lyt_main_->addWidget(this->edit_display_);
+    this->lyt_main_->addLayout(this->lyt_main_key_);
+    this->lyt_main_->addLayout(this->lyt_btn_);
 
     this->timer_ = new QTimer(this);
     connect(this->timer_, &QTimer::timeout, this, &DialogExposedPwd::update_button);
@@ -104,7 +100,7 @@ void DialogExposedPwd::on_btn_read_clicked() {
     }
 }
 
-void DialogExposedPwd::on_btn_copy_clicked(){
+void DialogExposedPwd::on_btn_copy_clicked() const {
     this->edit_display_->clear();
     this->edit_display_->setTextColor(QColor::fromRgb(0, 255, 0));
     this->edit_display_->append(QString("[操作] 仅复制密码"));

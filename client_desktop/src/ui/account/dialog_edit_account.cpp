@@ -9,28 +9,26 @@
 #include "phone_rpc.h"
 #include "category_rpc.h"
 
-DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* parent) : account_id_(account_id), QDialog(parent) {
+DialogEditAccount::DialogEditAccount(const std::string& account_id, QWidget* parent) : QDialog(parent), account_id_(account_id) {
     // 创建主窗口的中心部件
     setup_ui();
     initial_input_widgets(); // 初始化输入控件
-
 }
 
 DialogEditAccount::~DialogEditAccount() {
-
 }
 
 void DialogEditAccount::setup_ui(){
     // 主布局
     // QWidget* central_widget = new QWidget(this);    // 表单中心部件
-    QVBoxLayout* lyt_main = new QVBoxLayout(this);
-    QGridLayout* lyt_grid = new QGridLayout; // 创建网格布局
-    QFormLayout* lyt_key = new QFormLayout; // 创建主密钥布局
-    QHBoxLayout* lyt_action = new QHBoxLayout;
-    lyt_main->addSpacing(30);
-    lyt_main->addLayout(lyt_grid);
-    lyt_main->addLayout(lyt_action);
-    lyt_main->addSpacing(30);
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_grid_ = new QGridLayout(this); // 创建网格布局
+    this->lyt_key_ = new QFormLayout(this); // 创建主密钥布局
+    this->lyt_action_ = new QHBoxLayout(this);
+    this->lyt_main_->addSpacing(30);
+    this->lyt_main_->addLayout(this->lyt_grid_);
+    this->lyt_main_->addLayout(this->lyt_action_);
+    this->lyt_main_->addSpacing(30);
 
     // 创建四个 GroupBox ---------------------------------------------------
     this->group_box_platform_ = new QGroupBox("平台信息", this);
@@ -39,48 +37,48 @@ void DialogEditAccount::setup_ui(){
     this->group_box_other_ = new QGroupBox("其他信息", this);
 
     // 将 GroupBox 添加到网格布局
-    lyt_grid->addWidget(this->group_box_platform_, 0, 0);    // 第一行第一列
-    lyt_grid->addWidget(this->group_box_account_, 0, 1);   // 第一行第二列
-    lyt_grid->addWidget(this->group_box_third_party_, 1, 0); // 第二行第一列
-    lyt_grid->addWidget(this->group_box_other_, 1, 1);// 第二行第二列
+    this->lyt_grid_->addWidget(this->group_box_platform_, 0, 0);    // 第一行第一列
+    this->lyt_grid_->addWidget(this->group_box_account_, 0, 1);   // 第一行第二列
+    this->lyt_grid_->addWidget(this->group_box_third_party_, 1, 0); // 第二行第一列
+    this->lyt_grid_->addWidget(this->group_box_other_, 1, 1);// 第二行第二列
 
     // 为第一个 GroupBox 添加表单布局并创建控件------------------------------
-    QFormLayout* form_lyt_top_left = new QFormLayout(this->group_box_platform_);
+    this->lyt_top_left_ = new QFormLayout(this->group_box_platform_);
     this->edit_provider_name_ = new QLineEdit(this->group_box_platform_);
     this->edit_platform_name_ = new QLineEdit(this->group_box_platform_);
     this->edit_url_ = new QLineEdit(this->group_box_platform_);
     this->combo_category_= new QComboBox(this->group_box_account_);
     this->edit_hotline_ = new QLineEdit(this->group_box_platform_);
-    form_lyt_top_left->addRow("服务商", this->edit_provider_name_);
-    form_lyt_top_left->addRow("平台名", this->edit_platform_name_);
-    form_lyt_top_left->addRow("地址", this->edit_url_);
-    form_lyt_top_left->addRow("分类", this->combo_category_);
-    form_lyt_top_left->addRow("客服热线", this->edit_hotline_);
+    this->lyt_top_left_->addRow("服务商", this->edit_provider_name_);
+    this->lyt_top_left_->addRow("平台名", this->edit_platform_name_);
+    this->lyt_top_left_->addRow("地址", this->edit_url_);
+    this->lyt_top_left_->addRow("分类", this->combo_category_);
+    this->lyt_top_left_->addRow("客服热线", this->edit_hotline_);
 
     // 为第二个 GroupBox 添加表单布局并创建控件------------------------------
-    QFormLayout* form_lyt_top_right = new QFormLayout(this->group_box_account_);
+    this->lyt_top_right_ = new QFormLayout(this->group_box_account_);
     this->edit_username_ = new QLineEdit(this->group_box_account_);
     this->edit_nickname_ = new QLineEdit(this->group_box_account_);
     this->edit_password_ = new QLineEdit(this->group_box_account_);
     this->edit_password_->setEchoMode(QLineEdit::PasswordEchoOnEdit);
     this->edit_sub_account_ = new QLineEdit(this);
-    form_lyt_top_right->addRow("用户名", this->edit_username_);
-    form_lyt_top_right->addRow("昵称", this->edit_nickname_);
-    form_lyt_top_right->addRow("密码", this->edit_password_);
-    form_lyt_top_right->addRow("子账号", this->edit_sub_account_);
+    this->lyt_top_right_->addRow("用户名", this->edit_username_);
+    this->lyt_top_right_->addRow("昵称", this->edit_nickname_);
+    this->lyt_top_right_->addRow("密码", this->edit_password_);
+    this->lyt_top_right_->addRow("子账号", this->edit_sub_account_);
 
 
     // 为第三个 GroupBox 添加表单布局并创建控件------------------------------
-    QFormLayout* form_lyt_bottom_left = new QFormLayout(this->group_box_third_party_);
+    this->lyt_bottom_left_ = new QFormLayout(this->group_box_third_party_);
     this->combo_phone_ = new QComboBox(this->group_box_third_party_);
     this->combo_email_ = new QComboBox(this->group_box_third_party_);
-    form_lyt_bottom_left->addRow("手机号", this->combo_phone_);
-    form_lyt_bottom_left->addRow("邮箱", this->combo_email_);
+    this->lyt_bottom_left_->addRow("手机号", this->combo_phone_);
+    this->lyt_bottom_left_->addRow("邮箱", this->combo_email_);
 
     // 为第四个 GroupBox 添加表单布局并创建控件------------------------------
-    QFormLayout* form_lyt_bottom_right = new QFormLayout(this->group_box_other_);
+    this->lyt_bottom_right_ = new QFormLayout(this->group_box_other_);
     this->edit_postscript_ = new QPlainTextEdit();
-    form_lyt_bottom_right->addRow("附言", this->edit_postscript_);
+    this->lyt_bottom_right_->addRow("附言", this->edit_postscript_);
 
     // 设置占位符
     this->edit_provider_name_->setPlaceholderText("平台所属组织或公司");
@@ -109,19 +107,19 @@ void DialogEditAccount::setup_ui(){
     this->edit_postscript_->setFixedHeight(72);
 
     // 设置布局伸缩比例
-    lyt_grid->setRowStretch(0, 1); // 第一行占1份比例
-    lyt_grid->setRowStretch(1, 1); // 第二行占1份比例
-    lyt_grid->setColumnStretch(0, 1); // 第一列占1份
-    lyt_grid->setColumnStretch(1, 1); // 第二列占1份
+    this->lyt_grid_->setRowStretch(0, 1); // 第一行占1份比例
+    this->lyt_grid_->setRowStretch(1, 1); // 第二行占1份比例
+    this->lyt_grid_->setColumnStretch(0, 1); // 第一列占1份
+    this->lyt_grid_->setColumnStretch(1, 1); // 第二列占1份
     // 设置间距
-    lyt_grid->setSpacing(20);
+    this->lyt_grid_->setSpacing(20);
 
     // 主密钥输入框布局
     this->edit_main_key_ = new QLineEdit(this);
     this->edit_main_key_->setPlaceholderText("主密钥");
     this->edit_main_key_->setEnabled(false);
     this->edit_main_key_->setEchoMode(QLineEdit::Password);
-    lyt_key->addRow("主密钥", this->edit_main_key_);
+    this->lyt_key_->addRow("主密钥", this->edit_main_key_);
 
     // 按钮布局
     this->btn_refresh_ = new QPushButton("刷新", this);
@@ -129,12 +127,12 @@ void DialogEditAccount::setup_ui(){
     this->btn_edit_ = new QPushButton("编辑", this);
     this->btn_submit_ = new QPushButton("提交", this);
     this->btn_delete_ = new QPushButton("删除", this);
-    lyt_action->addLayout(lyt_key);
-    lyt_action->addWidget(this->btn_refresh_);
-    lyt_action->addWidget(this->btn_read_passwd_);
-    lyt_action->addWidget(this->btn_edit_);
-    lyt_action->addWidget(this->btn_submit_);
-    lyt_action->addWidget(this->btn_delete_);
+    this->lyt_action_->addLayout(this->lyt_key_);
+    this->lyt_action_->addWidget(this->btn_refresh_);
+    this->lyt_action_->addWidget(this->btn_read_passwd_);
+    this->lyt_action_->addWidget(this->btn_edit_);
+    this->lyt_action_->addWidget(this->btn_submit_);
+    this->lyt_action_->addWidget(this->btn_delete_);
 
     // 连接信号槽
     connect(this->btn_refresh_, &QPushButton::clicked, this, &DialogEditAccount::initial_input_widgets);
@@ -150,7 +148,7 @@ void DialogEditAccount::setup_ui(){
     connect(this->edit_password_, &QLineEdit::textChanged, this, &DialogEditAccount::update_edit_main_key_state);
 }
 
-void DialogEditAccount::initial_input_widgets(){
+void DialogEditAccount::initial_input_widgets() const {
     // 1. 定义变量
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
 
@@ -201,7 +199,7 @@ void DialogEditAccount::initial_input_widgets(){
     read_only(true); // 将所有控件设置为只读
 }
 
-void DialogEditAccount::read_only(bool enable){
+void DialogEditAccount::read_only(const bool enable) const {
     this->btn_edit_->setEnabled( enable );
     this->btn_edit_->setText(enable ? "编辑" : "编辑中");
     this->btn_submit_->setEnabled( !enable );   // 默认提交按钮不可点击，点击编辑按钮后方可提交
@@ -317,8 +315,8 @@ void DialogEditAccount::on_btn_submit_clicked(){
     }
 }
 
-void DialogEditAccount::update_edit_main_key_state() {
-    bool isEditPasswordEmpty = this->edit_password_->text().trimmed().isEmpty();
+void DialogEditAccount::update_edit_main_key_state() const {
+    const bool isEditPasswordEmpty = this->edit_password_->text().trimmed().isEmpty();
 
     if (isEditPasswordEmpty) {
         this->edit_main_key_->clear();

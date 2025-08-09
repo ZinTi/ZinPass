@@ -8,8 +8,6 @@
 
 PhoneMgrForm::PhoneMgrForm(QWidget *parent) : QWidget(parent){
     setup_ui();
-
-
 }
 
 PhoneMgrForm::~PhoneMgrForm(){
@@ -39,23 +37,23 @@ void PhoneMgrForm::setup_ui(){
     this->btn_clear_ = new QPushButton("清屏", this);
 
     // 创建布局
-    QVBoxLayout* lyt_main = new QVBoxLayout(this);
-    QHBoxLayout* lyt_top = new QHBoxLayout;
-    QVBoxLayout* lyt_btn = new QVBoxLayout;
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_top_ = new QHBoxLayout(this);
+    this->lyt_btn_ = new QVBoxLayout(this);
 
     // 组合布局
-    lyt_main->addWidget(this->search_box_);
-    lyt_main->addLayout(lyt_top);
-    lyt_main->addWidget(this->table_view_);
-    lyt_main->addWidget(this->phone_detail_frame_);
+    this->lyt_main_->addWidget(this->search_box_);
+    this->lyt_main_->addLayout(this->lyt_top_);
+    this->lyt_main_->addWidget(this->table_view_);
+    this->lyt_main_->addWidget(this->phone_detail_frame_);
 
-    lyt_top->addWidget(this->display_);
-    lyt_top->addLayout(lyt_btn);
-    lyt_top->addWidget(this->filter_form_);
+    this->lyt_top_->addWidget(this->display_);
+    this->lyt_top_->addLayout(this->lyt_btn_);
+    this->lyt_top_->addWidget(this->filter_form_);
 
-    lyt_btn->setAlignment(Qt::AlignCenter);
-    lyt_btn->addWidget(this->btn_add_);
-    lyt_btn->addWidget(this->btn_clear_);
+    this->lyt_btn_->setAlignment(Qt::AlignCenter);
+    this->lyt_btn_->addWidget(this->btn_add_);
+    this->lyt_btn_->addWidget(this->btn_clear_);
 
     connect(this->search_box_, &SearchBox::search_triggered, this,
         [](const QString &keyword_){
@@ -79,16 +77,15 @@ void PhoneMgrForm::list_phones(){
     auto data = this->filter_form_->get_form_data();
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
 
-    std::string telecom_operator = (data["telecom"].toString().isEmpty() ? "" : data["telecom"].toString().toStdString());
-    std::string phone_number = (data["phone"].toString().isEmpty() ? "" : data["phone"].toString().toStdString());
-
+    const std::string telecom_operator = (data["telecom"].toString().isEmpty() ? "" : data["telecom"].toString().toStdString());
+    const std::string phone_number = (data["phone"].toString().isEmpty() ? "" : data["phone"].toString().toStdString());
 
     // 2. 如果输入数据合法则查询数据，否则结束
     const auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     zinpass::rpc::PhoneRPC phone_rpc(channel);
 
     const auto[phones, message] = phone_rpc.list_phones(session_id, telecom_operator, phone_number);
-    unsigned int num_rows = static_cast<unsigned int>(phones.size());
+    const unsigned int num_rows = static_cast<unsigned int>(phones.size());
 
     // 3. 渲染到 table view 中
     this->table_model_->setRowCount(num_rows);
@@ -147,9 +144,8 @@ void PhoneMgrForm::on_table_view_item_clicked(const QModelIndex &index) {
     this->row_of_table_view_ = index.row();
     this->column_of_table_view_ = index.column();
 
-    QModelIndex index_of_first_column = index.sibling(this->row_of_table_view_, 0);  // 同一行，第0列
-    QString value_of_first_column = index.model()->data(index_of_first_column).toString();
-
+    const QModelIndex index_of_first_column = index.sibling(this->row_of_table_view_, 0);  // 同一行，第0列
+    const QString value_of_first_column = index.model()->data(index_of_first_column).toString();
 
     this->display_->setTextColor(QColor::fromRgbF(0, 255, 0, 1.0));
     this->display_->append(

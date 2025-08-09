@@ -13,7 +13,7 @@ class CheckPwdSecurityForm final : public QWidget
 
 public:
     explicit CheckPwdSecurityForm(QWidget *parent = nullptr);
-    ~CheckPwdSecurityForm();
+    ~CheckPwdSecurityForm() override;
 
 private:
     Ui::CheckPwdSecurityForm *ui;

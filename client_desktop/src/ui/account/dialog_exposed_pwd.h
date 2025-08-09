@@ -6,6 +6,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTimer>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QFormLayout>
 
 class DialogExposedPwd final : public QDialog{
     Q_OBJECT
@@ -19,7 +22,7 @@ private slots:
     void update_button();
 
     void on_btn_read_clicked();             // 查看
-    void on_btn_copy_clicked();             // 仅复制
+    void on_btn_copy_clicked() const;             // 仅复制
     void on_btn_read_and_copy_clicked();    // 查看并复制
 
 private:
@@ -37,6 +40,10 @@ private:
     QPushButton* btn_read_;
     QPushButton* btn_copy_;
     QPushButton* btn_read_and_copy_;
+
+    QVBoxLayout* lyt_main_;
+    QFormLayout* lyt_main_key_;
+    QHBoxLayout* lyt_btn_;
 
 };
 

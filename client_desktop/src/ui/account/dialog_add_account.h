@@ -12,16 +12,15 @@
 #include <QGroupBox>
 #include <QPushButton>
 
-class DialogAddAccount : public QDialog
-{
+class DialogAddAccount final : public QDialog {
     Q_OBJECT
 
 public:
     explicit DialogAddAccount(QWidget *parent = nullptr);
-    ~DialogAddAccount();
+    ~DialogAddAccount() override;
 
 private slots:
-    void on_btn_refresh_clicked();  // 刷新
+    void on_btn_refresh_clicked() const;  // 刷新
     void on_btn_clear_clicked() const;    // 清空
     void on_btn_submit_clicked();   // 提交
 
@@ -54,6 +53,15 @@ private:
     QPushButton* btn_refresh_;  // 刷新
     QPushButton* btn_clear_;    // 清空输入
     QPushButton* btn_submit_;
+
+    QVBoxLayout* lyt_main_;
+    QGridLayout* lyt_grid_;
+    QFormLayout* lyt_form_key_;
+    QHBoxLayout* lyt_key_and_btn_;
+    QFormLayout* lyt_top_left_;
+    QFormLayout* lyt_top_right_;
+    QFormLayout* lyt_bottom_left_;
+    QFormLayout* lyt_bottom_right_;
 };
 
 #endif // DIALOG_ADD_ACCOUNT_H
