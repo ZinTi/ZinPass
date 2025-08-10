@@ -2,6 +2,7 @@
 #define PHONE_RPC_H
 
 #include <string>
+#include <tuple>
 // #include <map>
 #include <vector>
 #include <grpcpp/grpcpp.h>
@@ -57,8 +58,8 @@ public:
     /**
      * @brief list_phones
      * @param session_id
-     * @param telecoms
-     * @param phone_numbers
+     * @param telecom
+     * @param phone_number
      * @return
      */
     Return<std::vector<zinpass::models::MobilePhone>> list_phones(const std::string& session_id, const std::string& telecom, const std::string& phone_number);
@@ -70,6 +71,14 @@ public:
      * @return
      */
     Return<zinpass::models::MobilePhone> find_phone_by_id(const std::string& session_id, int phone_id);
+
+    /**
+     *
+     * @param session_id
+     * @param phone_id
+     * @return
+     */
+    int get_reference_count(const std::string& session_id, int phone_id);
 
     /**
      * @brief update_phone_by_id
@@ -99,12 +108,19 @@ public:
         );
 
     /**
-     * @brief delete_phone_by_id
-     * @param session_id
-     * @param phone_id
-     * @return
+     * @brief 删除目标手机号
+     * @param session_id 会话 id
+     * @param phone_id 手机号 id
+     * @param mode 0-1-2-3 代表不同的删除模式，数值越大越激进，删除效果越不可控
+     * 0 - 若存在子表引用行，则不删除 ;
+     * 1 - 若存在子表引用行，批量修改被引用记录的手机号为指定的手机号 ;
+     * 2 - 若存在子表引用行，将引用表的外键设置为 NULL ;
+     * 3 - 若存在子表引用行，级联删除所有子表引用记录 ;
+     * 若查询被引用记录时发生错误，则不会执行删除操作，忽略 mode 值
+     * @param replace_phone_id 指定新的手机号 id（仅在 mode=1 时有效）
+     * @return 结果 + 消息 + 子表引用行数
      */
-    Return<bool> delete_phone_by_id(const std::string& session_id, int phone_id);
+    std::tuple<bool, std::string, int> delete_phone_by_id(const std::string& session_id, int phone_id, int mode, int replace_phone_id);
 
 private:
     // PhoneService服务的存根

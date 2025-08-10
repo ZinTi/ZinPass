@@ -19,14 +19,14 @@ public:
      * @param id 查询到的id主键，如果未查询到则 id 为 -1
      * @return 成功与否
      */
-    DaoStatus categoryNameToId(const std::string& categoryName, short* id)const;
+    DaoStatus categoryNameToId(const std::string& categoryName, short* id) const;
 
     /**
      * @brief 查询类别
      * @param categories 类别
      * @return 成功与否
      */
-    DaoStatus findCategories(std::vector<std::string>& categories)const;
+    DaoStatus findCategories(std::vector<std::string>& categories) const;
 
 private:
     ConnectionPool& pool_;

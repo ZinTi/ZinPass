@@ -21,18 +21,30 @@ ConnectionPool& ConnectionPool::get_instance() {
     return *instance_;
 }
 
-ConnectionPool::ConnectionPool(const std::string& db_path, size_t pool_size)
+ConnectionPool::ConnectionPool(const std::string& db_path, const size_t pool_size)
     : db_path_(db_path), pool_size_(pool_size) {
     for (size_t i = 0; i < pool_size_; ++i) {
         sqlite3* conn = nullptr;
         // utils::LogManager::AddLog("[OK] Opening database connection");
-        int rc = sqlite3_open(db_path_.c_str(), &conn);
+        const int rc = sqlite3_open(db_path_.c_str(), &conn);
         if (rc != SQLITE_OK) {
             sqlite3_close(conn);
-            const std::string err_msg = std::string(sqlite3_errmsg(conn));
+            const std::string err_msg(sqlite3_errmsg(conn));
             utils::LogManager::AddLog(std::string("[ERROR] Failed to open database: ") + err_msg);
             throw std::runtime_error("Failed to open database: " + err_msg);
         }
+
+        // 启用外键约束
+        char* errMsg = nullptr;
+        const int pragma_rc = sqlite3_exec(conn, "PRAGMA foreign_keys = ON;", nullptr, nullptr, &errMsg);
+        if (pragma_rc != SQLITE_OK) {
+            const std::string pragma_err = errMsg ? errMsg : "Unknown error";
+            sqlite3_free(errMsg);
+            sqlite3_close(conn);
+            utils::LogManager::AddLog("[ERROR] Failed to enable foreign keys: " + pragma_err);
+            throw std::runtime_error("Failed to enable foreign keys: " + pragma_err);
+        }
+
         available_connections_.push(conn);
     }
 }

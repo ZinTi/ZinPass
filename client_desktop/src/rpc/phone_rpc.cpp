@@ -126,6 +126,16 @@ namespace zinpass::rpc{
         return {mobile_phone, response.message()};
     }
 
+    int PhoneRPC::get_reference_count(const std::string& session_id, const int phone_id) {
+        account::v1::GetReferenceCountReq request;
+        request.set_session_id(session_id);
+        request.set_id(phone_id);
+        account::v1::GetReferenceCountResp response;
+        grpc::ClientContext context;
+        grpc::Status status = stub_->GetReferenceCount(&context, request, &response);
+        return response.reference_count();
+    }
+
     PhoneRPC::Return<bool> PhoneRPC::update_phone_by_id(
         const std::string& session_id,
         const int phone_id,
@@ -157,14 +167,15 @@ namespace zinpass::rpc{
         return {response.result(), response.message()};
     }
 
-    PhoneRPC::Return<bool> PhoneRPC::delete_phone_by_id(const std::string& session_id, const int phone_id)
-    {
+    std::tuple<bool, std::string, int> PhoneRPC::delete_phone_by_id(const std::string& session_id, int phone_id, int mode, int replace_phone_id){
         account::v1::DeletePhoneReq request;
         request.set_session_id(session_id);
         request.set_phone_id(phone_id);
+        request.set_mode(mode);
+        request.set_replace_phone_id(replace_phone_id);
         account::v1::DeletePhoneResp response;
         grpc::ClientContext context;
         grpc::Status status = stub_->DeletePhone(&context, request, &response);
-        return {response.result(), response.message()};
+        return {response.result(), response.message(), response.reference_count()};
     }
 }

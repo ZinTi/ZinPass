@@ -20,7 +20,7 @@ models::MobilePhone MobilePhoneDAO::MobilePhoneFromStatement(sqlite3_stmt* stmt)
     if (SQLITE_NULL != sqlite3_column_type(stmt, 0)) {
         mobile_phone.setId(sqlite3_column_int(stmt, 0));
     }else {
-        utils::LogManager::AddLog("[WARNING] Severe Warning: The primary key of the mobile_phone record is NULL, which may indicate an error. Resolution: Assign a default value of 0 to the variable.");
+        utils::LogManager::AddLog("[WARNING] Severe Warning: The primary key of the phone record is NULL, which may indicate an error. Resolution: Assign a default value of 0 to the variable.");
         mobile_phone.setId(0);
     }
 
@@ -59,13 +59,23 @@ models::MobilePhone MobilePhoneDAO::MobilePhoneFromStatement(sqlite3_stmt* stmt)
     return mobile_phone; // 编译器会自动优化调用拷贝构造函数返回对象的副本
 }
 
-int MobilePhoneDAO::generate_id()const {
+int MobilePhoneDAO::generate_id() const {
     sqlite3* conn = pool_.get_connection();
-
     sqlite3_stmt* stmt = nullptr;
 
-    const std::string sql_find_unused = "SELECT MIN(id) AS first_unused_id FROM (SELECT t1.id + 1 AS id FROM mobile_phone t1 LEFT JOIN mobile_phone t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL AND t1.id < (SELECT MAX(id) FROM mobile_phone) UNION SELECT (SELECT MAX(id) FROM mobile_phone) + 1 AS id) AS subquery;";
-    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_find_unused.c_str(), sql_find_unused.size(), &stmt, nullptr)) {
+    // 找出 mobile_phone 表中最小未使用的 id 值（即空闲ID），最小值从 1 开始
+    const std::string sql_find_unused_id =
+        "SELECT candidate FROM (\n"
+        "    -- 检查1是否缺失\n"
+        "    SELECT 1 AS candidate WHERE NOT EXISTS (SELECT 1 FROM mobile_phone WHERE id = 1) \n"
+        "    UNION ALL\n"
+        "    -- 查找表中每个ID+1是否缺失（ID需≥1）\n"
+        "    SELECT id + 1 FROM mobile_phone WHERE (id + 1) NOT IN (SELECT id FROM mobile_phone) AND id >= 1\n"
+        "    UNION ALL\n"
+        "    -- 处理连续无空缺的情况：返回最大ID+1（表空时返回1）\n"
+        "    SELECT COALESCE((SELECT MAX(id) FROM mobile_phone), 0) + 1\n"
+        ") ORDER BY candidate LIMIT 1;";
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_find_unused_id.c_str(), static_cast<int>(sql_find_unused_id.size()), &stmt, nullptr)) {
         utils::LogManager::AddLog(std::string("Prepare failed: ") + std::string(sqlite3_errmsg(conn)));
         sqlite3_finalize(stmt);
         pool_.release_connection(conn);
@@ -107,7 +117,7 @@ DaoStatus MobilePhoneDAO::find_by_id(const int id, models::MobilePhone& mobile_p
     return DaoStatus::Success;
 }
 
-DaoStatus MobilePhoneDAO::find_by_number(const std::string& phone_number, models::MobilePhone& mobile_phone)const {
+DaoStatus MobilePhoneDAO::find_by_number(const std::string& phone_number, models::MobilePhone& mobile_phone) const {
     sqlite3* conn = pool_.get_connection();
     const std::string sql = "SELECT id,phone_number,telecom_operator,service_pwd,pin,puk,join_time,phone_area,postscript,sys_user_id,created_time,updated_time FROM mobile_phone WHERE phone_number = ?";
     sqlite3_stmt* stmt;
@@ -199,7 +209,7 @@ DaoStatus MobilePhoneDAO::find_all(
     return DaoStatus::Success;
 }
 
-DaoStatus MobilePhoneDAO::find_list(const std::string& sys_user_id, std::vector<std::string>& phone_numbers)const{
+DaoStatus MobilePhoneDAO::find_list(const std::string& sys_user_id, std::vector<std::string>& phone_numbers) const{
     sqlite3* conn = pool_.get_connection();
 
     const std::string sql = "SELECT phone_number FROM mobile_phone WHERE sys_user_id = ?";
@@ -222,7 +232,30 @@ DaoStatus MobilePhoneDAO::find_list(const std::string& sys_user_id, std::vector<
     return DaoStatus::Success;
 }
 
-DaoStatus MobilePhoneDAO::add(const models::MobilePhone& mobile_phone)const {
+int MobilePhoneDAO::get_reference_count(const int id, const std::string& sys_user_id) const {
+    sqlite3* conn = pool_.get_connection();
+    const std::string sql_count = "SELECT COUNT(*) FROM account WHERE sys_user_id = ?1 AND phone_id = ?2";
+    sqlite3_stmt* stmt = nullptr;
+    int count = -1;
+
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_count.c_str(), -1, &stmt, nullptr)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt);
+        pool_.release_connection(conn);
+        return count;
+    }
+    sqlite3_bind_text(stmt, 1, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 2, id);
+    SQLDebug::log_sql(stmt, true);
+    if (SQLITE_ROW == sqlite3_step(stmt)) {
+        count = sqlite3_column_int(stmt, 0);
+    }
+    sqlite3_finalize(stmt);
+    pool_.release_connection(conn);
+    return count;
+}
+
+DaoStatus MobilePhoneDAO::add(const models::MobilePhone& mobile_phone) const {
     sqlite3* conn = pool_.get_connection();
     const std::string sql = "INSERT INTO mobile_phone(id, phone_number, telecom_operator, service_pwd, pin, puk, join_time, phone_area, postscript, sys_user_id, created_time, updated_time) "
                             "VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)";
@@ -399,6 +432,124 @@ DaoStatus MobilePhoneDAO::remove(const int id, const std::string& sys_user_id) c
 
     utils::LogManager::AddLog(std::string("[OK] Phone removed successfully: ") + std::to_string(id));
     sqlite3_finalize(stmt);
+    pool_.release_connection(conn);
+    return DaoStatus::Success;
+}
+
+[[nodiscard]] DaoStatus MobilePhoneDAO::replace_and_remove(
+    const int id,
+    const std::string& sys_user_id,
+    const int replace_id,
+    const std::string& updated_time) const
+{
+    if (id < 0) return DaoStatus::InvalidData;
+    sqlite3* conn = pool_.get_connection();
+
+    // 1. replace
+    const std::string sql_rep = "UPDATE account SET phone_id = ?1, updated_time = ?2 WHERE sys_user_id = ?3 AND phone_id = ?4";
+    sqlite3_stmt* stmt1;
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_rep.c_str(), -1, &stmt1, nullptr)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt1);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+
+    sqlite3_bind_int(stmt1, 1, replace_id);
+    if (updated_time.empty()) sqlite3_bind_null(stmt1, 2);
+    else sqlite3_bind_text(stmt1, 2, updated_time.c_str(), static_cast<int>(updated_time.size()), SQLITE_TRANSIENT);
+    if (sys_user_id.empty()) sqlite3_bind_null(stmt1, 3);
+    else sqlite3_bind_text(stmt1, 3, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt1, 4, id);
+
+    SQLDebug::log_sql(stmt1, true);
+    if (SQLITE_DONE != sqlite3_step(stmt1)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to update record: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt1);
+        pool_.release_connection(conn);
+        return DaoStatus::GenericError;
+    }
+    utils::LogManager::AddLog(std::string("[OK] Foreign key of table account updated successfully: ") + std::to_string(id));
+    sqlite3_finalize(stmt1);
+
+    // 2. remove
+    const std::string sql_rm = "DELETE FROM mobile_phone WHERE id = ?1 AND sys_user_id = ?2";
+    sqlite3_stmt* stmt2;
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_rm.c_str(), -1, &stmt2, nullptr)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt2);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+    if (sys_user_id.empty()) sqlite3_bind_null(stmt1, 1);
+    else sqlite3_bind_text(stmt1, 1, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt1, 2, id);
+
+    SQLDebug::log_sql(stmt2, true);
+    if (SQLITE_DONE != sqlite3_step(stmt2)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to remove record: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt2);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+
+    utils::LogManager::AddLog(std::string("[OK] Phone removed successfully: ") + std::to_string(id));
+    sqlite3_finalize(stmt2);
+    pool_.release_connection(conn);
+    return DaoStatus::Success;
+}
+
+DaoStatus MobilePhoneDAO::remove_cascade(const int id, const std::string& sys_user_id) const {
+    if (id < 0) return DaoStatus::InvalidData;
+    sqlite3* conn = pool_.get_connection();
+
+    // 1. 删除子表记录
+    const std::string sql_1 = "DELETE FROM account WHERE sys_user_id = ?1 AND phone_id = ?2";
+    sqlite3_stmt* stmt1;
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_1.c_str(), -1, &stmt1, nullptr)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt1);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+    if (sys_user_id.empty()) sqlite3_bind_null(stmt1, 1);
+    else sqlite3_bind_text(stmt1, 1, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt1, 2, id);
+
+    SQLDebug::log_sql(stmt1, true);
+    if (SQLITE_DONE != sqlite3_step(stmt1)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to remove record: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt1);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+
+    utils::LogManager::AddLog(std::string("[OK] Account records removed successfully: ") + std::to_string(id));
+    sqlite3_finalize(stmt1);
+
+    // 2. 删除父表记录
+    const std::string sql_2 = "DELETE FROM mobile_phone WHERE id = ?1 AND sys_user_id = ?2";
+    sqlite3_stmt* stmt2;
+    if (SQLITE_OK != sqlite3_prepare_v2(conn, sql_2.c_str(), -1, &stmt2, nullptr)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to prepare statement: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt2);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+    sqlite3_bind_int(stmt2, 1, id);
+    if (sys_user_id.empty()) { sqlite3_bind_null(stmt2, 2); }
+    else { sqlite3_bind_text(stmt2, 2, sys_user_id.c_str(), static_cast<int>(sys_user_id.size()), SQLITE_TRANSIENT); }
+
+    SQLDebug::log_sql(stmt2, true);
+    if (SQLITE_DONE != sqlite3_step(stmt2)) {
+        utils::LogManager::AddLog(std::string("[ERROR] Failed to remove record: ") + std::string(sqlite3_errmsg(conn)));
+        sqlite3_finalize(stmt2);
+        pool_.release_connection(conn);
+        return DaoStatus::InvalidData;
+    }
+
+    utils::LogManager::AddLog(std::string("[OK] Phone removed successfully: ") + std::to_string(id));
+    sqlite3_finalize(stmt2);
     pool_.release_connection(conn);
     return DaoStatus::Success;
 }

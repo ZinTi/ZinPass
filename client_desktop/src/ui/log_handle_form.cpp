@@ -17,6 +17,7 @@ void LogHandleForm::setup_ui() {
     this->lyt_main_ = new QVBoxLayout(this);
     this->lyt_ctl_ = new QHBoxLayout(this);
 
+    this->lyt_ctl_->setAlignment(Qt::AlignRight);
     this->lyt_ctl_->addWidget(this->btn_load_);
     this->lyt_ctl_->addWidget(this->btn_clear_);
     this->lyt_main_->addLayout(this->lyt_ctl_);

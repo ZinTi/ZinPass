@@ -1,26 +1,25 @@
-ZinPass v0.0.2（当前版本）
+ZinPass v0.0.4（当前版本）
 
 一、下一版本开发计划
-1、编辑个人用户信息、变更主密码兼密钥
-2、自动定期清理不重要日志
-3、完成数据自动化同步更新，自动比对数据，完成数据备份迁移
-4、分离程序运行时日志与用户日志，用户日志保存在新数据库文件中，运行时日志保存在文本文件中
-5、增强安全性，禁止截屏录屏，开发安全剪切板，防键盘钩子，密码安全检查
-6、美化桌面客户端界面，优化操作逻辑，适配GNU/Linux桌面发行版本程序
-7、开发安卓端App、小程序端App
-8、提高性能，解决Bug，
-phone主键从0开始，修改这个问题，
-删除账号后，复用主键id会导致引用出现问题，例如一个 account 引用了 email(也是account的一种) 和 phone， 如果删除 email 或 phone 会导致原有的 email_id 和 phone_id 被以后的新记录复用。执行删除前，先检查外键约束，确保不被其他表记录引用。
+1、功能完善性：修改数据归属用户、IP和Port设置、i18n国家化多语言、yolo人脸检测功能、程序自动更新（从github上更新最新版本）
+2、完成数据自动化同步更新，自动比对数据，完成数据备份迁移功能——解密导出为SQL/CSV（UTF-8 BOM）, 导入 SQL/CSV 文件
+3、完善服务端的运行时日志与用户操作日志、客户端的运行时日志，用户操作日志保存在数据库文件中、运行时日志保存在各自的文本文件中；自动定期清理不重要日志
+4、提高安全性：禁止截屏录屏、全库加密、开发安全剪切板防键盘钩子、密码安全检查
+5、美化桌面客户端界面：增加分类图标icon、主题设置
+6、优化操作逻辑：新增随机密码生成器位置、顶部全局搜索功能、服务器端开机自启动、托盘功能、快捷键开启自动输入账号密码功能、退出系统后返回在登录对话窗口处而非直接退出、会话管理功能、会话失效提醒功能
+7、适配多平台：适配GNU/Linux桌面发行版本程序、开发安卓端App、小程序端
+8、提高性能，解决已知Bug
 
-二、开发及更新时间
-略。
 
-三、程序架构
-ZinPassSvc.exe					后台进程（Windows平台），服务名称ZinPass Service，PE格式
-zinpassd					守护进程daemon（GNU/Linux平台），服务名称zinpassd.service，ELF格式
+二、开发及维护
+略
 
-zinpassctl.exe					前台管理工具（Windows CLI）
-zinpassctl					前台管理工具（GNU/Linux CLI）
+三、程序分工
+zinpasssvc.exe			后台进程（Windows平台），服务名称ZinPass Service，PE
+zinpassd			守护进程daemon（GNU/Linux平台），服务名称zinpassd.service，ELF
 
-ZinPass.exe					客户端（Windows）
-zinpass						客户端（Linux）
+zinpassctl.exe			前台管理工具（Windows CLI）
+zinpassctl			前台管理工具（GNU/Linux CLI）
+
+zinpass.exe			客户端（Windows）
+zinpass				客户端（Linux）

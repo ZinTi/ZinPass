@@ -60,7 +60,7 @@ namespace zinpass::repo {
             "    created_time    DATETIME NOT NULL,\n"
             "    expires_time    DATETIME NOT NULL,\n"
             "    accessed_time   DATETIME NOT NULL,\n"
-            "    CONSTRAINT session_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id)\n"
+            "    CONSTRAINT session_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE ON DELETE CASCADE\n"
             ");";
         executeSQL(conn, createSession);
 
@@ -99,7 +99,7 @@ namespace zinpass::repo {
             "    sys_user_id      VARCHAR(36) NOT NULL,     -- 所属系统用户\n"
             "    created_time     DATETIME    NOT NULL,\n"
             "    updated_time     DATETIME    NOT NULL,\n"
-            "    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE\n"
+            "    CONSTRAINT mobile_phone_fk_1 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE ON DELETE CASCADE\n"
             ");";
         executeSQL(conn, createMobilePhone);
 
@@ -153,10 +153,10 @@ namespace zinpass::repo {
             "    sys_user_id   VARCHAR(36)  NOT NULL,             -- 所属系统用户\n"
             "    created_time  DATETIME     NOT NULL,\n"
             "    updated_time  DATETIME     NOT NULL,\n"
-            "    CONSTRAINT account_fk_1 FOREIGN KEY (phone_id) REFERENCES mobile_phone (id) ON UPDATE CASCADE,\n"
-            "    CONSTRAINT account_fk_2 FOREIGN KEY (email_id) REFERENCES account (id) ON UPDATE CASCADE, -- 自引用外键\n"
-            "    CONSTRAINT account_fk_3 FOREIGN KEY (category_id) REFERENCES account_category (id) ON UPDATE CASCADE,\n"
-            "    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE\n"
+            "    CONSTRAINT account_fk_1 FOREIGN KEY (phone_id) REFERENCES mobile_phone (id) ON UPDATE CASCADE ON DELETE SET NULL,\n"
+            "    CONSTRAINT account_fk_2 FOREIGN KEY (email_id) REFERENCES account (id) ON UPDATE CASCADE ON DELETE RESTRICT, -- 自引用外键\n"
+            "    CONSTRAINT account_fk_3 FOREIGN KEY (category_id) REFERENCES account_category (id) ON UPDATE CASCADE ON DELETE RESTRICT,\n"
+            "    CONSTRAINT account_fk_4 FOREIGN KEY (sys_user_id) REFERENCES system_user (id) ON UPDATE CASCADE ON DELETE CASCADE\n"
             ");";
         executeSQL(conn, createAccount);
 

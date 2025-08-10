@@ -30,7 +30,7 @@ public:
 
     /**
      * @brief 创建新的Session
-     * @param sys_user_id 用户ID
+     * @param sys_user_id 用户 id
      * @param data Session数据
      * @param expires_seconds 过期时间(秒), 默认 10 分钟
      * @return 新创建Session的ID
@@ -51,7 +51,7 @@ public:
     /**
      * @brief 更新Session字段
      * @param session_id Session ID
-     * @param sys_user_id 新的用户ID(可选)
+     * @param sys_user_id 新的用户 id(可选)
      * @param data 新的数据(可选)
      * @param expires_time 新的过期时间(可选)
      * @param accessed_time 新的访问时间(可选)

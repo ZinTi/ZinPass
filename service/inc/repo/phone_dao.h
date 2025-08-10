@@ -27,8 +27,7 @@ public:
      * @param mobile_phone 保存查询到的mobile_phone信息
      * @return 成功与否
      */
-    DaoStatus find_by_number(const std::string& phone_number, models::MobilePhone& mobile_phone)const;
-
+    DaoStatus find_by_number(const std::string& phone_number, models::MobilePhone& mobile_phone) const;
 
     /**
      * @brief 根据 phone_number 查询 phone_id
@@ -57,8 +56,15 @@ public:
      * @param phone_numbers 存放所有查询到的phone_number的容器
      * @return 成功与否
      */
-    DaoStatus find_list(const std::string& sys_user_id, std::vector<std::string>& phone_numbers)const;
+    DaoStatus find_list(const std::string& sys_user_id, std::vector<std::string>& phone_numbers) const;
 
+    /**
+     * @brief 查询被表 account 引用的次数（记录数量）
+     * @param id 删除目标的id
+     * @param sys_user_id 用户 id
+     * @return 被引用的次数，如果不存在则返回 0，失败则返回负数
+     */
+    int get_reference_count(int id, const std::string& sys_user_id) const;
 
     /**
      * @brief 新增MobilePhone记录
@@ -113,12 +119,30 @@ public:
         const std::string& updated_time) const;
 
     /**
-     * @brief 删除MobilePhone记录
-     * @param id 删除目标的id
-     * @param sys_user_id 用户ID
+     * @brief 删除 MobilePhone 记录
+     * @param id 删除目标的 id
+     * @param sys_user_id 用户 id
      * @return 成功与否
      */
     [[nodiscard]] DaoStatus remove(int id, const std::string& sys_user_id) const;
+
+    /**
+     * @brief 先将被引用记录的表的外键替换为 replace_id，再删除 id 主键对应的 MobilePhone 记录
+     * @param id 删除目标的 phone id
+     * @param sys_user_id 用户 id
+     * @param replace_id 将被引用的记录的外键替换为 replace_id
+     * @param updated_time 更新时间
+     * @return 成功与否
+     */
+    [[nodiscard]] DaoStatus replace_and_remove(int id, const std::string& sys_user_id, int replace_id, const std::string& updated_time) const;
+
+    /**
+     * @brief 删除 MobilePhone 记录、级联删除子表引用行 （子表：account）
+     * @param id 删除目标的 id
+     * @param sys_user_id 用户 id
+     * @return 成功与否
+     */
+    [[nodiscard]] DaoStatus remove_cascade(int id, const std::string& sys_user_id) const;
 
 private:
     ConnectionPool& pool_;
@@ -146,7 +170,7 @@ private:
      * @brief 生成主键
      * @return 生成的id
      */
-    [[nodiscard]] int generate_id()const;
+    [[nodiscard]] int generate_id() const;
 };
 
 }

@@ -18,6 +18,8 @@ public:
 
     grpc::Status FindPhoneById(ServerContext* context, const account::v1::FindPhoneByIdReq* request, account::v1::FindPhoneByIdResp* response) override;
 
+    grpc::Status GetReferenceCount(ServerContext* context, const account::v1::GetReferenceCountReq* request, account::v1::GetReferenceCountResp* response) override;
+
     grpc::Status UpdatePhone(ServerContext *context, const account::v1::UpdatePhoneReq *request, account::v1::UpdatePhoneResp *response) override;
 
     grpc::Status DeletePhone(ServerContext *context, const account::v1::DeletePhoneReq *request, account::v1::DeletePhoneResp *response) override;

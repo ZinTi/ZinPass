@@ -10,6 +10,9 @@ build/
 
 # 忽略以下测试文件
 data/zinpass.db
+data/zinpass.db.backup
+data/test.db
+data/test.db.backup
 
 # 忽略所有 .o 文件
 *.o

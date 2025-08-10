@@ -128,6 +128,7 @@ set(PROJECT_SOURCES
         src/ui/phone/phone_detail_frame.cpp
         src/ui/phone/dialog_add_phone.cpp
         src/ui/phone/phone_mgr_form.cpp
+        src/ui/phone/deletion_guide_dlg.cpp
         # (6.7) 密码相关页面：随机密码生成器、密码安全检查器
         src/ui/pwd/pwd_gen_dlg.cpp
         src/ui/pwd/pwd_generator_dlg.cpp

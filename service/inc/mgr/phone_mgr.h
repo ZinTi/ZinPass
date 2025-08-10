@@ -1,8 +1,9 @@
-#ifndef MOBILE_PHONE_MANAGER_H
-#define MOBILE_PHONE_MANAGER_H
+#ifndef PHONE_MGR_H
+#define PHONE_MGR_H
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include "models/mobile_phone.h"
 
 namespace zinpass::business{
@@ -45,6 +46,14 @@ public:
      * @return phone + message
      */
     static Return<models::MobilePhone> get_phone_by_id(int phone_id);
+
+    /**
+     * @brief 查询被表 account 引用的次数（记录数量）
+     * @param id 删除目标的id
+     * @param sys_user_id 用户 id
+     * @return 被引用的次数，如果不存在则返回 0，失败则返回负数
+     */
+    static int get_reference_count(int id, const std::string& sys_user_id);
 
     /**
      * @brief add_mobile_phone
@@ -97,12 +106,19 @@ public:
         const std::string& postscript);
 
     /**
-     * @brief delete_mobile_phone
+     * @brief 删除目标手机号
      * @param id 删除目标
-     * @param user_id 用户ID（如果目标所属user_id与此id不一致，则不予删除）
-     * @return 成功与否 + message
+     * @param user_id 用户 id（如果目标所属user_id与此id不一致，则不予删除）
+     * @param mode 0-1-2-3 代表不同的删除模式，数值越大越激进，删除效果越不可控
+     * 0 - 若存在子表引用行，则不删除 ;
+     * 1 - 若存在子表引用行，批量修改被引用记录的手机号为指定的手机号 ;
+     * 2 - 若存在子表引用行，将引用表的外键设置为 NULL ;
+     * 3 - 若存在子表引用行，级联删除所有子表引用记录 ;
+     * 若查询被引用记录时发生错误，则不会执行删除操作，忽略 mode 值
+     * @param replace_phone_id 指定新的手机号 id（仅在 mode=1 时有效）
+     * @return 成功与否 + message + 被引用的次数
      */
-    static Return<bool> delete_mobile_phone(int id, const std::string& user_id);
+    static std::tuple<bool, std::string, int> delete_mobile_phone(int id, const std::string& user_id, int mode, int replace_phone_id);
 };
 
 }

@@ -9,7 +9,6 @@ grpc::Status PhoneServiceImpl::CreatePhone(ServerContext *context, const account
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
@@ -37,7 +36,6 @@ grpc::Status PhoneServiceImpl::ListPhoneNumbers(ServerContext* context, const ac
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
@@ -56,7 +54,6 @@ grpc::Status PhoneServiceImpl::ListPhone(ServerContext *context, const account::
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
@@ -93,7 +90,6 @@ grpc::Status PhoneServiceImpl::FindPhoneById(ServerContext* context, const accou
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
@@ -120,12 +116,25 @@ grpc::Status PhoneServiceImpl::FindPhoneById(ServerContext* context, const accou
     return grpc::Status::OK;
 }
 
+grpc::Status PhoneServiceImpl::GetReferenceCount(ServerContext* context, const account::v1::GetReferenceCountReq* request, account::v1::GetReferenceCountResp* response) {
+    // 1. 检查 session_id 有效性
+    auto& session_mgr = mod_session::SessionMgr::get_instance();
+    const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
+    if (user_id.empty()){
+        response->set_reference_count(-1);
+        return grpc::Status::OK;
+    }
+
+    const auto ref_count = business::MobilePhoneManager::get_reference_count(request->id(), user_id);
+    response->set_reference_count(ref_count);
+    return grpc::Status::OK;
+}
+
 grpc::Status PhoneServiceImpl::UpdatePhone(ServerContext *context, const account::v1::UpdatePhoneReq *request, account::v1::UpdatePhoneResp *response) {
     // 1. 检查 session_id 有效性
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
@@ -153,15 +162,17 @@ grpc::Status PhoneServiceImpl::DeletePhone(ServerContext *context, const account
     auto& session_mgr = mod_session::SessionMgr::get_instance();
     const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
     if (user_id.empty()){
-        // std::cout << "[RPC] Invalid Session ID" << std::endl;
         response->set_message("无效会话");
         return grpc::Status::OK;
     }
 
     // 2. 删除 Phone
-    const auto[result, message] = business::MobilePhoneManager::delete_mobile_phone(request->phone_id(), user_id);
+    const int mode = request->mode();
+    const int replace_phone_id = request->replace_phone_id();
+    const auto[result, message, ref_count] = business::MobilePhoneManager::delete_mobile_phone(request->phone_id(), user_id, mode, replace_phone_id);
     response->set_result(result);
     response->set_message(message);
+    response->set_reference_count(ref_count);
     return grpc::Status::OK;
 }
 

@@ -66,7 +66,7 @@ public:
 	 * @param view_account 查询到的账号信息
 	 * @return 状态码
      */
-    DaoStatus findById(const std::string& id, models::ViewAccount& view_account)const;
+    DaoStatus findById(const std::string& id, models::ViewAccount& view_account) const;
 
     /**
      * @brief 查询账号记录
@@ -74,7 +74,7 @@ public:
 	 * @param view_accounts 查询到的账号信息
 	 * @return 状态码
 	 */
-	DaoStatus find(const std::string& sys_user_id, std::vector<models::ViewAccount>& view_accounts)const;
+	DaoStatus find(const std::string& sys_user_id, std::vector<models::ViewAccount>& view_accounts) const;
 
 	/**
 	 * @brief 查询所有符合条件的记录，使用模糊查询
@@ -100,7 +100,7 @@ public:
 		const std::string& category,
 		const std::string& postscript,
 		const std::string& sys_user_id,
-		std::vector<models::ViewAccount>& view_accounts)const;
+		std::vector<models::ViewAccount>& view_accounts) const;
 
     /**
      * @brief 根据 id 和 sys_user_id 查询账号的 密码密文 和 初始化向量值 iv
@@ -142,21 +142,21 @@ public:
      * account.id 主键不需要设置，会自动生成
      * @return 成功与否
      */
-    [[nodiscard]] DaoStatus add(const models::ViewAccount& view_account)const;
+    [[nodiscard]] DaoStatus add(const models::ViewAccount& view_account) const;
 
     /**
      * @brief （update_1_1/3）修改账号记录
      * @param view_account 修改对象（以 id 和 sys_user_id 为目标，忽略 created_time ）
      * @return 成功与否
      */
-    [[nodiscard]] DaoStatus update(const models::ViewAccount& view_account)const;
+    [[nodiscard]] DaoStatus update(const models::ViewAccount& view_account) const;
 
     /**
      * @brief （update_1_2/3）修改账号记录但不包括 encrypted_pwd 和 iv
      * @param view_account 修改对象（ 以 id 和 sys_user_id 为目标，忽略 encrypted_pwd 、 iv 、 created_time）
 	 * @return 成功与否
 	 */
-	[[nodiscard]] DaoStatus update_main_properties(const models::ViewAccount& view_account)const;
+	[[nodiscard]] DaoStatus update_main_properties(const models::ViewAccount& view_account) const;
 
 	/**
 	 * @brief （update_1_3/3）修改账号记录的密码（密文密码、初始化向量、更新时间）
@@ -173,7 +173,7 @@ public:
 		const std::vector<unsigned char>& encrypted_pwd,
 		const std::vector<unsigned char>& iv,
 		const std::string& update_time
-		)const;
+		) const;
 
 	/**
 	 * @brief （update_2_1/4）修改Account表中的平台信息（1/4）
@@ -192,7 +192,7 @@ public:
 		const std::string& url,
 		const std::string& hotline,
 		const std::string& update_time
-		)const;
+		) const;
 
     /**
      * @brief （update_2_2/4）修改Account表中的账号信息（2/4）
@@ -213,7 +213,7 @@ public:
 		const std::vector<unsigned char>& iv,
 		short category_id,
 		const std::string& update_time
-		)const;
+		) const;
 
 	/**
 	 * @brief （update_2_3/4）修改Account表中的第三方绑定账号信息（3/4）
@@ -228,7 +228,7 @@ public:
 		int phone_id,
 		const std::string& email_id,
 		const std::string& update_time
-		)const;
+		) const;
 
 	/**
 	 * @brief （update_2_4/4）修改Account表中的其他信息（4/4）
@@ -243,7 +243,7 @@ public:
 		const std::string& sub_account,
 		const std::string& postscript,
 		const std::string& update_time
-		)const;
+		) const;
 
 	// 此函数有问题
 	[[nodiscard]] DaoStatus update(const std::vector<KeyValuePair>& data, const std::string& id) const;
@@ -253,7 +253,7 @@ public:
 	 * @param id 删除目标的id
 	 * @return 成功与否
 	 */
-	[[nodiscard]] DaoStatus remove(const std::string& id)const;
+	[[nodiscard]] DaoStatus remove(const std::string& id) const;
 
 	// Email部分（特殊的Account）
 	/**
@@ -277,7 +277,7 @@ public:
      * @param email 保存查询到的email信息
      * @return 成功与否
      */
-    DaoStatus findEmailById(const std::string& id, models::ViewAccount& email)const;
+    DaoStatus findEmailById(const std::string& id, models::ViewAccount& email) const;
 
 	/**
 	 * @brief 查询所有email记录
@@ -285,7 +285,7 @@ public:
 	 * @param emails 保存查询到的email信息
 	 * @return 成功与否
 	 */
-	DaoStatus findEmail(const std::string& sys_user_id, std::vector<models::ViewAccount>& emails)const;
+	DaoStatus findEmail(const std::string& sys_user_id, std::vector<models::ViewAccount>& emails) const;
 
 private:
 	ConnectionPool& pool_;

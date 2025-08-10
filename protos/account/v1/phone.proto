@@ -7,6 +7,7 @@ service PhoneService {
     rpc ListPhoneNumbers(ListPhoneNumbersReq) returns (ListPhoneNumbersResp);
     rpc ListPhone(ListPhoneReq) returns (ListPhoneResp);
     rpc FindPhoneById(FindPhoneByIdReq) returns (FindPhoneByIdResp);
+    rpc GetReferenceCount(GetReferenceCountReq) returns (GetReferenceCountResp); // 获取子表引用记录数，用于删除时判断是否有其他记录依赖本条记录，返回值中包含 reference_count
     rpc UpdatePhone(UpdatePhoneReq) returns (UpdatePhoneResp);
     rpc DeletePhone(DeletePhoneReq) returns (DeletePhoneResp);
 }
@@ -66,6 +67,15 @@ message FindPhoneByIdResp{
     string message = 2;
 }
 
+message GetReferenceCountReq{
+    string session_id = 1;
+    int32 id = 2;
+}
+
+message GetReferenceCountResp{
+    int32 reference_count = 1; // 子表引用记录数
+}
+
 message UpdatePhoneReq{
     string session_id = 1;
     int32 phone_id = 2;
@@ -80,9 +90,12 @@ message UpdatePhoneResp{
 message DeletePhoneReq{
     string session_id = 1;
     int32 phone_id = 2;
+    int32 mode = 3; // 删除模式：0 ~ 4
+    int32 replace_phone_id = 4; // 被替换的手机号ID （仅当 mode = 1 时有效）
 }
 
 message DeletePhoneResp{
     bool result = 1;
     string message = 2;
+    int32 reference_count = 3; // 子表引用记录数
 }

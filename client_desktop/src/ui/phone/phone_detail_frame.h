@@ -20,9 +20,9 @@ public:
     explicit PhoneDetailFrame(QFrame *parent = nullptr);
     ~PhoneDetailFrame() override;
 
-    void render_phone_to_ui();
+    void render_phone_to_ui() const;
     zinpass::models::MobilePhone get_phone() const;
-    void fetch_phone_by_id(int id);
+    void fetch_phone_by_id(int id) const;
 
 signals:
     void form_submitted();
@@ -33,9 +33,9 @@ private slots:
 
 private:
     void setup_ui();
-    void initial_input_widgets();
-    void list_telecom_operators();
-    void set_input_read_only(bool enable);
+    void initial_input_widgets() const;
+    void list_telecom_operators() const;
+    void set_input_read_only(bool enable) const;
 
     QLineEdit* edit_id_;            // disable always
     QComboBox* combo_telecom_;

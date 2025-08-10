@@ -5,6 +5,7 @@
 #include "phone_rpc.h"
 #include "telecom_rpc.h"
 #include "dialog_auth.h"
+#include "phone/deletion_guide_dlg.h"
 
 PhoneDetailFrame::PhoneDetailFrame(QFrame *parent) : QFrame(parent){
     this->phone_ = new zinpass::models::MobilePhone;
@@ -17,7 +18,7 @@ PhoneDetailFrame::~PhoneDetailFrame(){
     }
 }
 
-void PhoneDetailFrame::list_telecom_operators(){
+void PhoneDetailFrame::list_telecom_operators() const {
     // 1. 定义变量
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
 
@@ -107,7 +108,7 @@ void PhoneDetailFrame::setup_ui(){
     connect(this->btn_delete_, &QPushButton::clicked, this, &PhoneDetailFrame::on_btn_delete_clicked);
 }
 
-void PhoneDetailFrame::initial_input_widgets(){
+void PhoneDetailFrame::initial_input_widgets() const {
     this->edit_id_->clear();
     list_telecom_operators();   // 获取并列出电信运营商可选项
     this->edit_phone_area_->clear();
@@ -126,7 +127,7 @@ void PhoneDetailFrame::initial_input_widgets(){
     this->btn_delete_->setEnabled( false );   // 默认“删除” disable，填充数据后“删除” enable
 }
 
-void PhoneDetailFrame::set_input_read_only(const bool enable){
+void PhoneDetailFrame::set_input_read_only(const bool enable) const {
     this->combo_telecom_->setEnabled( !enable );
     this->edit_phone_area_->setReadOnly(enable);
     this->edit_phone_->setReadOnly(enable);
@@ -138,7 +139,7 @@ void PhoneDetailFrame::set_input_read_only(const bool enable){
     this->edit_postscript_->setReadOnly(enable);
 }
 
-void PhoneDetailFrame::fetch_phone_by_id(const int id){
+void PhoneDetailFrame::fetch_phone_by_id(const int id) const {
     // 1. 准备数据
     this->phone_->setId(id);    // 先设置id
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
@@ -150,7 +151,7 @@ void PhoneDetailFrame::fetch_phone_by_id(const int id){
     this->phone_->copy(phone);
 }
 
-void PhoneDetailFrame::render_phone_to_ui(){
+void PhoneDetailFrame::render_phone_to_ui() const {
     // enable "编辑"按钮 并禁用输入框编辑功能、暂时禁用编辑功能
     this->btn_edit_->setEnabled(true);
     this->btn_edit_->setText("编辑");
@@ -208,20 +209,20 @@ void PhoneDetailFrame::on_btn_submit_clicked(){
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
 
     // 获取表单数据
-    QString in_phone_id = this->edit_id_->text();
+    const QString in_phone_id = this->edit_id_->text();
     if(in_phone_id.isEmpty()){
         QMessageBox::warning(this, QString("无效数据"), QString::fromStdString("请先查询并选中一条数据后再操作"));
         return;
     }
 
-    QString in_telecom_operator = this->combo_telecom_->currentText();
-    QString in_phone_area = this->edit_phone_area_->text();
-    QString in_phone_number = this->edit_phone_->text();
-    QString in_pin = this->edit_pin_->text();
-    QString in_puk = this->edit_puk_->text();
-    QString in_service_password = this->edit_service_pwd_->text();
-    QString in_join_time = this->edit_join_time_->text();
-    QString in_postscript = this->edit_postscript_->text();
+    const QString in_telecom_operator = this->combo_telecom_->currentText();
+    const QString in_phone_area = this->edit_phone_area_->text();
+    const QString in_phone_number = this->edit_phone_->text();
+    const QString in_pin = this->edit_pin_->text();
+    const QString in_puk = this->edit_puk_->text();
+    const QString in_service_password = this->edit_service_pwd_->text();
+    const QString in_join_time = this->edit_join_time_->text();
+    const QString in_postscript = this->edit_postscript_->text();
 
     // 更新
     const auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
@@ -246,27 +247,31 @@ void PhoneDetailFrame::on_btn_submit_clicked(){
 }
 
 void PhoneDetailFrame::on_btn_delete_clicked(){
-    // 1、准备数据
+    const auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+    zinpass::rpc::PhoneRPC phone_rpc(channel);
     const std::string session_id = zinpass::state::StateManager::instance().getUserState().session_id;
-    QString in_phone_id = this->edit_id_->text();
+    const QString in_phone_id = this->edit_id_->text();
     if(in_phone_id.isEmpty()){
         QMessageBox::warning(this, QString("无效数据"), QString::fromStdString("请先查询并选中一条数据后再操作"));
         return;
     }
-
     const int dest_phone_id = in_phone_id.toInt();
 
+    // 1. 检查子表引用数
+    const auto ref_count = phone_rpc.get_reference_count(session_id, dest_phone_id);
+    if(ref_count == 0) { // 直接删除
+        const auto[result, message, ref_count] =
+            phone_rpc.delete_phone_by_id(session_id, dest_phone_id, 0, -1);
+    }
 
-    // 2. 鉴权
-    /*
-    AuthDlg authDlg;
-    if (authDlg.exec() == QDialog::Accepted) {} else { return; } // 二次鉴权
-    */
+    // 2. 弹出确认框
+    auto* deletion_guide_dlg = new DeletionGuideDlg(dest_phone_id, ref_count,this);
+    deletion_guide_dlg->exec();
+    const int selected_option = deletion_guide_dlg->get_selected_option();
 
-    // 3. 执行删除操作
-    const auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-    zinpass::rpc::PhoneRPC phone_rpc(channel);
-    const auto[result, message] = phone_rpc.delete_phone_by_id(session_id, dest_phone_id);
+    // 3. 再次确认删除
+    const auto[result, message, ref_count2] =
+    phone_rpc.delete_phone_by_id(session_id, dest_phone_id, selected_option, -1);
 
     // 4. 更新UI：更新当前组件以及通知父组件更新 table_view
     if(result){
@@ -275,6 +280,7 @@ void PhoneDetailFrame::on_btn_delete_clicked(){
         QMessageBox::warning(this, QString("失败"), QString("删除失败！%1").arg(message));
     }
 
+    delete deletion_guide_dlg;
     /*
     const int rowCount = ui->tableWidget->rowCount(); // 获取表格行数
     // 删除用户后在ui->tableWidget中也删除那一行（相当于刷新操作，无需再次从数据库中查询）

@@ -10,7 +10,7 @@ namespace zinpass::service {
         auto& session_mgr = mod_session::SessionMgr::get_instance();
         const std::string user_id = session_mgr.validate_session_and_get_user_id(request->session_id());
         if (user_id.empty()){
-            // std::cout << "[RPC] Invalid Session ID" << std::endl;
+
             response->set_message("无效会话");
             return grpc::Status::OK;
         }
