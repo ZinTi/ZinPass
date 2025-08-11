@@ -45,14 +45,14 @@ private:
     QStandardItemModel* table_model_;
     QTableView* table_view_;        // 表格
     PwdGenDlg* passwd_generator_;   // 密码生成器
-    DialogAddAccount* dialog_add_account_; // 新增账号
-    DialogEditAccount* dialog_detail_and_edit_;   // 详情与编辑
+    DialogAddAccount* dlg_add_acc_; // 新增账号
+    DialogEditAccount* dlg_edit_acc_;   // 详情与编辑
 
     QToolButton* btn_data_owner_;   // 数据归属
     QToolButton* btn_passwd_generator_; // 随机密码生成器
     QPushButton* btn_read_passwd_;  // 查看密码
     QPushButton* btn_add_account_;  // 新增
-    QPushButton* btn_detail_and_edit_;  // 更新
+    QPushButton* btn_detail_and_edit_;  // 详情与编辑
 
     int row_of_table_view_ = 0; // 聚焦行
     int column_of_table_view_ = 0;  // 聚焦列

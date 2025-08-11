@@ -259,21 +259,32 @@ void PhoneDetailFrame::on_btn_delete_clicked(){
 
     // 1. 检查子表引用数
     const auto ref_count = phone_rpc.get_reference_count(session_id, dest_phone_id);
+
+    // 2. 第一次删除
     if(ref_count == 0) { // 直接删除
-        const auto[result, message, ref_count] =
+        const auto[result1, msg1, ref_count1] =
             phone_rpc.delete_phone_by_id(session_id, dest_phone_id, 0, -1);
+        if (result1) {
+            QMessageBox::information(this, QString("完成"), QString::fromStdString(msg1));
+        } else {
+            QMessageBox::warning(this, QString("失败"), QString::fromStdString(msg1));
+        }
+        return; // 不管是否成功，都不再弹出二次删除框
     }
 
-    // 2. 弹出确认框
+    // 3. 弹出确认框
     auto* deletion_guide_dlg = new DeletionGuideDlg(dest_phone_id, ref_count,this);
-    deletion_guide_dlg->exec();
+    if (const auto dlg_ret = deletion_guide_dlg->exec();
+        dlg_ret == QDialog::Rejected || dlg_ret != QDialog::Accepted) {
+        return;
+    }
     const int selected_option = deletion_guide_dlg->get_selected_option();
 
-    // 3. 再次确认删除
+    // 4. 第二次删除
     const auto[result, message, ref_count2] =
     phone_rpc.delete_phone_by_id(session_id, dest_phone_id, selected_option, -1);
 
-    // 4. 更新UI：更新当前组件以及通知父组件更新 table_view
+    // 5. 更新UI：更新当前组件以及通知父组件更新 table_view
     if(result){
         QMessageBox::information(this, QString("完成"), QString("删除成功！%1").arg(message));
     }else{

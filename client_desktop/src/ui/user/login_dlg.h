@@ -22,7 +22,7 @@ public:
     ~LoginDlg() override;
 
 private slots:  // 槽函数
-    void on_btn_settings_clicked(); // 处理设置按钮点击事件
+    void on_btn_settings_clicked() const; // 处理设置按钮点击事件
     void on_btn_login_clicked(); // 处理登录按钮点击事件
     void on_btn_signup_clicked(); // 处理注册按钮点击事件
 

@@ -129,19 +129,19 @@ void FunctionMenuForm::setup_ui() {
 }
 
 void FunctionMenuForm::on_btn_pwd_clicked() {
-    emit buttonClicked(1); // 发出自定义信号，携带按钮索引 1
+    emit sig_btn_clicked(1); // 发出自定义信号，携带按钮索引 1
 }
-void FunctionMenuForm::on_btn_tele_clicked(){emit buttonClicked(2);}
-void FunctionMenuForm::on_btn_check_clicked(){emit buttonClicked(3);}
-void FunctionMenuForm::on_btn_owner_clicked(){emit buttonClicked(4);}
+void FunctionMenuForm::on_btn_tele_clicked(){emit sig_btn_clicked(2);}
+void FunctionMenuForm::on_btn_check_clicked(){emit sig_btn_clicked(3);}
+void FunctionMenuForm::on_btn_owner_clicked(){emit sig_btn_clicked(4);}
 
-void FunctionMenuForm::on_btn_out_clicked(){emit buttonClicked(5);}
-void FunctionMenuForm::on_btn_in_clicked(){emit buttonClicked(6);}
+void FunctionMenuForm::on_btn_out_clicked(){emit sig_btn_clicked(5);}
+void FunctionMenuForm::on_btn_in_clicked(){emit sig_btn_clicked(6);}
 
-void FunctionMenuForm::on_btn_log_run_clicked(){emit buttonClicked(7);}
-void FunctionMenuForm::on_btn_log_handle_clicked(){emit buttonClicked(8);}
+void FunctionMenuForm::on_btn_log_run_clicked(){emit sig_btn_clicked(7);}
+void FunctionMenuForm::on_btn_log_handle_clicked(){emit sig_btn_clicked(8);}
 
-void FunctionMenuForm::on_btn_edit_personal_clicked(){emit buttonClicked(9);}
-void FunctionMenuForm::on_btn_preferences_clicked(){emit buttonClicked(10);}
-void FunctionMenuForm::on_btn_session_clicked(){emit buttonClicked(11);}
-void FunctionMenuForm::on_btn_exit_clicked(){emit buttonClicked(12);}
+void FunctionMenuForm::on_btn_edit_personal_clicked(){emit sig_btn_clicked(9);}
+void FunctionMenuForm::on_btn_preferences_clicked(){emit sig_btn_clicked(10);}
+void FunctionMenuForm::on_btn_session_clicked(){emit sig_btn_clicked(11);}
+void FunctionMenuForm::on_btn_exit_clicked(){emit sig_btn_clicked(12);}

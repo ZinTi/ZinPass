@@ -14,6 +14,7 @@ DialogExposedPwd::~DialogExposedPwd() {
 }
 
 void DialogExposedPwd::setup_ui(){
+    this->setMaximumSize(360, 200);
     this->lyt_main_ = new QVBoxLayout(this);
     this->lyt_main_key_ = new QFormLayout(this);
     this->lyt_btn_ = new QHBoxLayout(this);
@@ -24,9 +25,9 @@ void DialogExposedPwd::setup_ui(){
     this->edit_main_key_->setEchoMode(QLineEdit::Password);
     this->edit_main_key_->setPlaceholderText(QString("主密钥"));
     this->btn_read_ = new QPushButton(QString("查看"));
+    this->btn_read_->setDefault(true);
     this->btn_copy_ = new QPushButton(QString("复制"));
     this->btn_read_and_copy_ = new QPushButton(QString("查看并复制"));
-    this->btn_read_and_copy_->setDefault(true);
     this->lyt_main_key_->addRow(QString("密钥"), this->edit_main_key_);
     this->lyt_btn_->addWidget(this->btn_read_);
     this->lyt_btn_->addWidget(this->btn_copy_);

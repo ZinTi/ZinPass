@@ -26,9 +26,12 @@ public:
     explicit MainWorkbench(QWidget *parent = nullptr);
     ~MainWorkbench() override;
 
+signals:
+    void sig_btn_clicked(int index); // qt信号，请求 1-重新登录、2-直接退出
+
 private slots:
     // 自定义槽函数，用于处理 func_menu_form_ 的按钮点击事件
-    void handleButtonClick(int index);
+    void handle_menu_select(int index);
 
 private:
     Ui::MainWorkbench *ui;
@@ -44,6 +47,7 @@ private:
     void page_transfer_init();
     void page_log_init();
     void page_setting_init();
+    void close_this();
 
     AccountMgrForm* acc_mgr_form_; // 管理账号
     PhoneMgrForm* phone_mgr_form_; // 管理手机号

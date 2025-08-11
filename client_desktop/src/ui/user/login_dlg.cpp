@@ -115,7 +115,7 @@ void LoginDlg::refresh_combo_username() const {
     }
 }
 
-void LoginDlg::on_btn_settings_clicked() {
+void LoginDlg::on_btn_settings_clicked() const {
     this->settings_dlg_->exec();
 }
 
@@ -148,6 +148,7 @@ void LoginDlg::on_btn_login_clicked() {
     zinpass::state::StateManager::instance().setUserState(state);
 
     if(zinpass::state::StateManager::instance().getUserState().session_id.size() == 36){
+        this->e_key_->clear();
         accept(); // 登录成功，关闭登录对话框
     } else {
         std::string message;

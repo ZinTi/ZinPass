@@ -36,7 +36,7 @@ MainWorkbench::MainWorkbench(QWidget* parent) : QMainWindow(parent), ui(new Ui::
     setCentralWidget(centralWidget);
 
     // 连接信号和槽
-    connect(func_menu_form_, &FunctionMenuForm::buttonClicked, this, &MainWorkbench::handleButtonClick);
+    connect(func_menu_form_, &FunctionMenuForm::sig_btn_clicked, this, &MainWorkbench::handle_menu_select);
 
 }
 
@@ -62,7 +62,7 @@ MainWorkbench::~MainWorkbench() {
 
 }
 
-void MainWorkbench::handleButtonClick(const int index){
+void MainWorkbench::handle_menu_select(const int index){
     // 设置当前显示的widget页面
     if(index>=1 && index<=4){
         right_stacked_widget_->setCurrentIndex(0);
@@ -122,11 +122,7 @@ void MainWorkbench::handleButtonClick(const int index){
         break;
     }
     case 12:{
-        // 弹出确认退出的消息框
-        const QMessageBox::StandardButton reply = QMessageBox::question(this, QString("退出程序"), QString("确定退出吗？"), QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes) { // 用户点击了“确定”，退出应用程序
-            QApplication::quit();
-        }
+        close_this();
         // break;
     }
     default:
@@ -163,4 +159,29 @@ void MainWorkbench::page_setting_init(){
     page_setting_->addTab(preferences_form_, QString("系统偏好设置"));
     session_form_ = new QWidget(page_setting_);
     page_setting_->addTab(session_form_, QString("会话设置"));
+}
+void MainWorkbench::close_this() {
+    /*
+    const QMessageBox::StandardButton reply = QMessageBox::question(this, QString("退出程序"), QString("确定退出吗？"), QMessageBox::Yes | QMessageBox::No); // 弹出确认退出的消息框
+    if (QMessageBox::Yes == reply) { // 用户点击了“确定”，退出应用程序
+        QApplication::quit(); // 直接退出程序
+    }else if (QMessageBox::No == reply) {
+
+    }*/
+
+    QMessageBox question_box;
+    question_box.setWindowTitle("退出系统");
+    question_box.setText("是否重新登录？");
+
+    const QPushButton* btn_re_login = question_box.addButton("重新登录", QMessageBox::AcceptRole); // 回车键默认触发
+    const QPushButton* btn_quit = question_box.addButton("直接退出", QMessageBox::DestructiveRole); // 表示危险操作，可能高亮显示
+    QPushButton* btn_cancel = question_box.addButton("取消", QMessageBox::ActionRole); // 普通动作按钮，无特殊行为
+    question_box.exec(); // 自定义按钮需通过 clickedButton() 获取用户点击的按钮对象
+
+    if (btn_re_login == question_box.clickedButton()) {
+        emit sig_btn_clicked(1);
+    } else if (btn_quit == question_box.clickedButton()) {
+        emit sig_btn_clicked(2);
+    }
+    // 取消不做任何操作
 }

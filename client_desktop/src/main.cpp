@@ -1,25 +1,44 @@
 #include <QApplication>
 #include <QDir>
+#include <QMessageBox>
+
 #include "state_manager.h"
 #include "login_dlg.h"
 #include "main_workbench.h"
 
 using namespace zinpass;
 
-void init();    // 客户端初始化
+void init();    // 初始化
 
 int main(int argc, char *argv[]){
     init();
 
     QApplication app(argc, argv);
-    LoginDlg login_dlg(nullptr); // 实例化登录窗口
-    if (login_dlg.exec() == QDialog::Accepted) {
-        // 登录成功执行其他处理
-        MainWorkbench mainWorkbench;
-        mainWorkbench.setWindowTitle("工作台 | ZinPass");
-        // mainWorkbench.setStyleSheet("background-color: #8b008b;");
+    LoginDlg login_dlg(nullptr);
+    MainWorkbench mainWorkbench;
+    mainWorkbench.setWindowTitle("工作台 | ZinPass");
+    // mainWorkbench.setStyleSheet("background-color: #8b008b;");
+
+    QObject::connect(&mainWorkbench, &MainWorkbench::sig_btn_clicked, [&](const int index){
+        if (index == 1) { // 重新登录
+            mainWorkbench.close();  // 关闭工作台
+            app.exit(-1);
+        } else if (index == 2) { // 退出
+            // app.quit();
+            app.exit(0);
+        }
+    });
+
+    while (true) {
+        if (QDialog::Accepted != login_dlg.exec()) {
+            break;  // 用户取消登录，退出循环
+        }
+
         mainWorkbench.show();
-        return app.exec();
+
+        if (0 == app.exec()) { // 仅当事件循环返回0时，才表示用户退出登录，其他情况循环登录
+            break;
+        }
     }
 
     return 0;

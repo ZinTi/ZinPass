@@ -17,8 +17,7 @@ public:
     ~FunctionMenuForm() override;
 
 signals:
-    // 自定义信号，携带按钮索引，用于通知主窗口或查看器显示内容
-    void buttonClicked(int index);
+    void sig_btn_clicked(int index); // 携带按钮索引，通知主窗口处理按钮点击事件
 
 private slots:
     void on_btn_pwd_clicked();

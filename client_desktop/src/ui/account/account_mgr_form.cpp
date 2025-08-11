@@ -21,11 +21,11 @@ AccountMgrForm::~AccountMgrForm(){
     if(this->table_model_){
         delete this->table_model_;
     }
-    if(this->dialog_add_account_){
-        delete this->dialog_add_account_;
+    if(this->dlg_add_acc_){
+        delete this->dlg_add_acc_;
     }
-    if(this->dialog_detail_and_edit_){
-        delete this->dialog_detail_and_edit_;
+    if(this->dlg_edit_acc_){
+        delete this->dlg_edit_acc_;
     }
 }
 
@@ -50,12 +50,13 @@ void AccountMgrForm::setup_ui(){
     this->btn_passwd_generator_->setText("随机密码生成器");
     this->btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码
     this->btn_add_account_ = new QPushButton("新增", this);  // 新增
-    this->btn_detail_and_edit_ = new QPushButton("详情和编辑", this);  // 编辑（更新/删除）
+    this->btn_detail_and_edit_ = new QPushButton("详情与编辑", this);  // 编辑（更新/删除）
 
     this->passwd_generator_ = new PwdGenDlg(nullptr);
 
-    this->dialog_add_account_ = new DialogAddAccount(this);
-    this->dialog_add_account_->setWindowTitle(QString("新增账号密码记录"));
+    this->dlg_add_acc_ = new DialogAddAccount(this);
+    this->dlg_add_acc_->setWindowTitle(QString("新增账号密码"));
+    this->dlg_add_acc_->setContentsMargins(12,10,12,10);
     //QModelIndex index = this->table_model_->index(this->row_of_table_view_, 0);
     //const std::string& dest_account_id = this->table_model_->data(index).toLongLong();
 
@@ -217,7 +218,7 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
 
 
 void AccountMgrForm::on_btn_add_account_clicked() const {
-    this->dialog_add_account_->exec();
+    this->dlg_add_acc_->exec();
 }
 
 void AccountMgrForm::on_btn_detail_and_edit_clicked() {
@@ -227,11 +228,12 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() {
         if (item_column0) {
             const QVariant data = item_column0->data(Qt::DisplayRole);
             const std::string account_id = data.toString().toStdString();
-            this->dialog_detail_and_edit_ = new DialogEditAccount(account_id, this);
-            this->dialog_detail_and_edit_->setWindowTitle(QString("详情和编辑(%1)").arg(account_id));
-            this->dialog_detail_and_edit_->exec();
-            if(this->dialog_detail_and_edit_){
-                delete this->dialog_detail_and_edit_;
+            this->dlg_edit_acc_ = new DialogEditAccount(account_id, this);
+            this->dlg_edit_acc_->setWindowTitle(QString("详情与编辑(%1)").arg(account_id));
+            this->dlg_edit_acc_->setContentsMargins(12,10,12,10);
+            this->dlg_edit_acc_->exec();
+            if(this->dlg_edit_acc_){
+                delete this->dlg_edit_acc_;
             }
         }
     }else{

@@ -12,7 +12,8 @@ endif()
 
 # 设置 Qt 库路径（mingw64静态库）
 set(CMAKE_PREFIX_PATH
-        "A:/build/qt-6.9.0-win64-mingw64-static"
+        "A:/build/qt-6.9.0-win64-mingw64-static"    # Qt 6.9.0 mingw64 static (for release)
+        #"A:/app/Qt/6.8.1/mingw_64"                  # Qt 6.8.1 mingw64 dynamic (for debug)
         "A:/build/grpc-1.71.0-amd64-win-mingw64"
 )
 
