@@ -38,7 +38,7 @@ void DeletionGuideDlg::setup_ui() {
     this->group_radio_btn_->setExclusive(true); // 互斥
     this->radio_option1_ = new QRadioButton("【推荐】放弃删除操作，稍后手动为手机号添加备注为“停用”", this);
     this->radio_option2_ = new QRadioButton("【允许】批量修改受影响数据的“手机号”一项，改为", this);
-    this->radio_option3_ = new QRadioButton("【默认】擦除所有受影响数据的“手机号”一项（设置为NULL），然后继续完成删除操作", this);
+    this->radio_option3_ = new QRadioButton("【默认】擦除所有受影响数据的“手机号”一项（设置为NULL），然后完成删除操作", this);
     this->radio_option4_ = new QRadioButton("【危险】级联删除所有受影响数据的记录（所有引用了该手机号的账号数据都将被删除）", this);
 
     this->group_radio_btn_->addButton(this->radio_option1_, 0);
@@ -65,7 +65,7 @@ void DeletionGuideDlg::setup_ui() {
     //this->lyt_radio_->addWidget(this->radio_option2_);
     this->lyt_radio_combo_->addWidget(this->radio_option2_);
     this->lyt_radio_combo_->addWidget(this->combo_phone_);
-    this->lyt_radio_combo_->addWidget(new QLabel("，然后继续完成删除操作", this));
+    this->lyt_radio_combo_->addWidget(new QLabel("，然后完成删除操作", this));
     this->lyt_radio_->addLayout(this->lyt_radio_combo_);
     this->lyt_radio_->addWidget(this->radio_option3_);
     this->lyt_radio_->addWidget(this->radio_option4_);

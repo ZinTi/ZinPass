@@ -17,7 +17,7 @@ PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
     this->lyt_main_->addLayout(this->lyt_a2_);
     this->lyt_main_->addLayout(this->lyt_btn_);
 
-    m_title = new QLabel(QString("随机密码生成器"));
+    m_title = new QLabel(QString("密码生成器"));
     m_title->setAlignment(Qt::AlignHCenter);
     this->lyt_a1_->addWidget(m_title);
 
@@ -63,7 +63,7 @@ PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
     lyt_setting_->addLayout(this->lyt_edit_);
     m_labelLength = new QLabel(QString("密码长度"));
     m_labelNum = new QLabel(QString("生成数量"));
-    m_labelColorful = new QLabel(QString("使用颜色区分字符"));
+    m_labelColorful = new QLabel(QString("启用颜色区分字符"));
     m_editLength = new QSpinBox();
     m_editLength->setRange(6, 999);
     m_editLength->setValue(12);
@@ -102,7 +102,7 @@ PwdGeneratorDlg::PwdGeneratorDlg(QWidget *parent) : QDialog(parent){
 
 
     // 5. 设置对话框属性
-    setWindowTitle(QString("随机密码生成器"));
+    setWindowTitle(QString("密码生成器"));
 
     // 6. 连接信号与槽
     connect(this->m_pBtnBegin, &QPushButton::clicked, this, &PwdGeneratorDlg::on_pBtnBegin_clicked);

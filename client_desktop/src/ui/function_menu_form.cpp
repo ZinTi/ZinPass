@@ -26,7 +26,7 @@ void FunctionMenuForm::setup_ui() {
 
     // 功能菜单工具箱
     this->toolbox_func_menu_ = new QToolBox(this);
-    this->toolbox_func_menu_->setMaximumHeight(240);
+    this->toolbox_func_menu_->setMaximumHeight(300);
 
     // 2.1. 数据管理页面
     this->page_data_mgr_ = new QWidget(this);

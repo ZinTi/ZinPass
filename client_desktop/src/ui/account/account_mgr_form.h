@@ -31,7 +31,7 @@ private slots:
     void on_btn_add_account_clicked() const; // 增加密码记录
     void on_btn_detail_and_edit_clicked(); // 更新记录
     void on_btn_remove_account_clicked();  // 删除密码记录
-    void on_btn_passwd_generator_clicked() const; // 随机密码生成器-toolBtn
+    void on_btn_passwd_generator_clicked() const; // 密码生成器-toolBtn
     void on_table_view_item_clicked(const QModelIndex &index);
 
     void list_accounts();    // 查询accounts
@@ -49,7 +49,7 @@ private:
     DialogEditAccount* dlg_edit_acc_;   // 详情与编辑
 
     QToolButton* btn_data_owner_;   // 数据归属
-    QToolButton* btn_passwd_generator_; // 随机密码生成器
+    QToolButton* btn_passwd_generator_; // 密码生成器
     QPushButton* btn_read_passwd_;  // 查看密码
     QPushButton* btn_add_account_;  // 新增
     QPushButton* btn_detail_and_edit_;  // 详情与编辑

@@ -13,15 +13,16 @@ void init();    // 初始化
 int main(int argc, char *argv[]){
     init();
 
-    QApplication app(argc, argv);
-    LoginDlg login_dlg(nullptr);
-    MainWorkbench mainWorkbench;
-    mainWorkbench.setWindowTitle("工作台 | ZinPass");
-    // mainWorkbench.setStyleSheet("background-color: #8b008b;");
+    const QApplication app(argc, argv);
+    auto* login_dlg = new LoginDlg(nullptr);
+    auto* main_workbench = new MainWorkbench(nullptr);
+    main_workbench->setWindowTitle("工作台 | ZinPass");
+    // main_workbench->setStyleSheet("background-color: #8b008b;");
 
-    QObject::connect(&mainWorkbench, &MainWorkbench::sig_btn_clicked, [&](const int index){
+    QObject::connect(main_workbench, &MainWorkbench::sig_btn_clicked, [&](const int index){
         if (index == 1) { // 重新登录
-            mainWorkbench.close();  // 关闭工作台
+            main_workbench->close();  // 关闭工作台
+            // 这里需要调用方法清空数据，避免切换账号后泄露上一用户数据（暂未实现）
             app.exit(-1);
         } else if (index == 2) { // 退出
             // app.quit();
@@ -30,17 +31,19 @@ int main(int argc, char *argv[]){
     });
 
     while (true) {
-        if (QDialog::Accepted != login_dlg.exec()) {
+        if (QDialog::Accepted != login_dlg->exec()) {
             break;  // 用户取消登录，退出循环
         }
 
-        mainWorkbench.show();
+        main_workbench->show();
 
         if (0 == app.exec()) { // 仅当事件循环返回0时，才表示用户退出登录，其他情况循环登录
             break;
         }
     }
 
+    delete main_workbench;
+    delete login_dlg;
     return 0;
 }
 

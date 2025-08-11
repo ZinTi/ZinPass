@@ -63,7 +63,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/src/ui/account
         ${CMAKE_SOURCE_DIR}/src/ui/phone
         ${CMAKE_SOURCE_DIR}/src/ui/user
-        ${CMAKE_SOURCE_DIR}/src/ui/pwd
+        ${CMAKE_SOURCE_DIR}/src/ui/tools
 
         ${CMAKE_SOURCE_DIR}/generate
         ${CMAKE_SOURCE_DIR}/generate/grpc
@@ -112,7 +112,6 @@ set(PROJECT_SOURCES
         src/ui/user/settings_dlg.cpp
         # (6.3) 主工作台
         src/ui/main_workbench.cpp
-        src/ui/main_workbench.ui
         # (6.4) 主功能菜单
         src/ui/function_menu_form.cpp
         # (6.5) 管理账号：页面框架、添加和修改账号记录、修改账号所属人
@@ -124,17 +123,19 @@ set(PROJECT_SOURCES
         src/ui/account/dialog_edit_account.cpp
         src/ui/account/dialog_delete_account.cpp
         src/ui/account/data_owner_form.cpp
+        src/ui/account/check_pwd_security_form.cpp # 安全检查页面
+
         # (6.6) 管理手机号：页面框架、增加手机号
         src/ui/phone/phone_filter_form.cpp
         src/ui/phone/phone_detail_frame.cpp
         src/ui/phone/dialog_add_phone.cpp
         src/ui/phone/phone_mgr_form.cpp
         src/ui/phone/deletion_guide_dlg.cpp
-        # (6.7) 密码相关页面：随机密码生成器、密码安全检查器
-        src/ui/pwd/pwd_gen_dlg.cpp
-        src/ui/pwd/pwd_generator_dlg.cpp
-        src/ui/pwd/check_pwd_security_form.cpp
-        src/ui/pwd/check_pwd_security_form.ui
+
+        # (6.7) 工具类：密码生成器、密码安全检查器、加密解密器
+        src/ui/tools/pwd_gen_dlg.cpp
+        src/ui/tools/pwd_generator_dlg.cpp
+
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp
         src/ui/input_form.cpp

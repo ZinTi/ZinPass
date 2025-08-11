@@ -46,8 +46,8 @@ void AccountMgrForm::setup_ui(){
 
     this->btn_data_owner_ = new QToolButton(this);
     this->btn_data_owner_->setText("数据归属");
-    this->btn_passwd_generator_ = new QToolButton(this); // 随机密码生成器
-    this->btn_passwd_generator_->setText("随机密码生成器");
+    this->btn_passwd_generator_ = new QToolButton(this); // 密码生成器
+    this->btn_passwd_generator_->setText("密码生成器");
     this->btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码
     this->btn_add_account_ = new QPushButton("新增", this);  // 新增
     this->btn_detail_and_edit_ = new QPushButton("详情与编辑", this);  // 编辑（更新/删除）
@@ -70,11 +70,13 @@ void AccountMgrForm::setup_ui(){
     lyt_display_and_filter_->addWidget(this->filter_form_);
 
     lyt_bottom_btn_->addWidget(this->btn_data_owner_);
-    lyt_bottom_btn_->addSpacing(30);
+    // lyt_bottom_btn_->addSpacing(30);
+    lyt_bottom_btn_->addStretch();
     lyt_bottom_btn_->addWidget(this->btn_read_passwd_);
     lyt_bottom_btn_->addWidget(this->btn_add_account_);
     lyt_bottom_btn_->addWidget(this->btn_detail_and_edit_);
-    lyt_bottom_btn_->addSpacing(30);
+    // lyt_bottom_btn_->addSpacing(30);
+    lyt_bottom_btn_->addStretch();
     lyt_bottom_btn_->addWidget(this->btn_passwd_generator_);
 
     lyt_main_->addWidget(this->search_box_);
@@ -208,8 +210,7 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
             dialog_exposed_pwd.setWindowTitle(QString("查看密码(%1)").arg(account_id));
             dialog_exposed_pwd.exec();
         }
-    }
-    else {
+    } else {
         this->coord_viewer_->setTextColor(QColor::fromRgbF(255, 100, 0, 1.0));
         this->coord_viewer_->setText("表格中无数据！请先查询");
         return;
@@ -218,7 +219,7 @@ void AccountMgrForm::on_btn_read_passwd_clicked() {
 
 
 void AccountMgrForm::on_btn_add_account_clicked() const {
-    this->dlg_add_acc_->exec();
+    this->dlg_add_acc_->show();
 }
 
 void AccountMgrForm::on_btn_detail_and_edit_clicked() {
@@ -231,7 +232,7 @@ void AccountMgrForm::on_btn_detail_and_edit_clicked() {
             this->dlg_edit_acc_ = new DialogEditAccount(account_id, this);
             this->dlg_edit_acc_->setWindowTitle(QString("详情与编辑(%1)").arg(account_id));
             this->dlg_edit_acc_->setContentsMargins(12,10,12,10);
-            this->dlg_edit_acc_->exec();
+            this->dlg_edit_acc_->show();
             if(this->dlg_edit_acc_){
                 delete this->dlg_edit_acc_;
             }
@@ -285,9 +286,9 @@ void AccountMgrForm::on_btn_remove_account_clicked() {
     }*/
 }
 
-// 随机密码生成器-toolBtn
+// 密码生成器-toolBtn
 void AccountMgrForm::on_btn_passwd_generator_clicked() const {
-    this->passwd_generator_->exec();
+    this->passwd_generator_->show();
 }
 
 void AccountMgrForm::on_table_view_item_clicked(const QModelIndex &index){

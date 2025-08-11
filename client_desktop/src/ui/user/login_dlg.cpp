@@ -164,7 +164,7 @@ void LoginDlg::on_btn_login_clicked() {
 }
 
 void LoginDlg::on_btn_signup_clicked() {
-    SignupDlg signupDlg(this);
-    signupDlg.exec();
+    SignupDlg signup_dlg(this);
+    signup_dlg.exec();
     refresh_combo_username();
 }

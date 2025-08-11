@@ -20,10 +20,10 @@ public:
     explicit ComponentsMenuWidget(QWidget *parent = nullptr);
     ~ComponentsMenuWidget() override;
 
-    bool isDigitsChecked() const;
-    bool isLowercaseChecked() const;
-    bool isUppercaseChecked() const;
-    bool isSymbolsChecked() const;
+    [[nodiscard]] bool isDigitsChecked() const;
+    [[nodiscard]] bool isLowercaseChecked() const;
+    [[nodiscard]] bool isUppercaseChecked() const;
+    [[nodiscard]] bool isSymbolsChecked() const;
 
 private:
     QPushButton* m_pBtnComponentsMenu;
@@ -79,12 +79,12 @@ private:
     QTextEdit m_pwdDisplay;
 
     // 布局
-    QVBoxLayout vLayoutMain; // 主框架
-    QHBoxLayout hLayoutHeader; // 1、header
-    QHBoxLayout hLayoutBody; // 2、body
-    QHBoxLayout hLayoutFooter; // 3、footer
-    QVBoxLayout vLayoutSetting; // 2.1 设置
-    QFormLayout fLayoutEdit; // 2.1.2
+    QVBoxLayout lyt_main_; // 主框架
+    QHBoxLayout lyt_header_; // 1、header
+    QHBoxLayout lyt_body_; // 2、body
+    QHBoxLayout lyt_footer_; // 3、footer
+    QVBoxLayout lyt_setting_; // 2.1 设置
+    QFormLayout lyt_edit_; // 2.1.2
 
     void initMember();
     void initLayout();

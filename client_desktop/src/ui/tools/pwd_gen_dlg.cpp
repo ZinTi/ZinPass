@@ -73,7 +73,7 @@ PwdGenDlg::PwdGenDlg(QWidget *parent) : QDialog(parent){
     initMember(); // 初始化控件
     initLayout(); // 初始化布局
 
-    setWindowTitle(QString("随机密码生成器"));  // 设置对话框属性
+    setWindowTitle(QString("密码生成器"));  // 设置对话框属性
 
     // 连接信号与槽
     connect(&m_pBtnBegin, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnBegin_clicked);
@@ -84,7 +84,7 @@ PwdGenDlg::PwdGenDlg(QWidget *parent) : QDialog(parent){
 }
 
 void PwdGenDlg::initMember(){
-    m_title.setText(QString("随机密码生成器"));
+    m_title.setText(QString("密码生成器"));
     m_title.setAlignment(Qt::AlignHCenter);
 
     m_msgDisplay.setText(QString("说明：<br/>1、长度范围6-99；<br/>2、数量范围1-99；"));
@@ -102,7 +102,7 @@ void PwdGenDlg::initMember(){
 
     m_labelLength.setText(QString("密码长度"));
     m_labelNum.setText(QString("生成数量"));
-    m_labelColorful.setText(QString("使用颜色区分字符"));
+    m_labelColorful.setText(QString("启用颜色区分字符"));
     m_editLength.setRange(6, 999);
     m_editLength.setValue(12);
     m_editNum.setRange(1, 99);
@@ -115,31 +115,31 @@ void PwdGenDlg::initMember(){
 }
 
 void PwdGenDlg::initLayout(){
-    vLayoutMain.addLayout(&hLayoutHeader);
-    vLayoutMain.addLayout(&hLayoutBody);
-    vLayoutMain.addLayout(&hLayoutFooter);
+    lyt_main_.addLayout(&lyt_header_);
+    lyt_main_.addLayout(&lyt_body_);
+    lyt_main_.addLayout(&lyt_footer_);
 
-    hLayoutHeader.addWidget(&m_title);
+    lyt_header_.addWidget(&m_title);
 
-    vLayoutSetting.addWidget(&m_msgDisplay);
-    vLayoutSetting.addWidget(m_componentsMenuWidget);
-    vLayoutSetting.addLayout(&fLayoutEdit);
+    lyt_setting_.addWidget(&m_msgDisplay);
+    lyt_setting_.addWidget(m_componentsMenuWidget);
+    lyt_setting_.addLayout(&lyt_edit_);
 
-    fLayoutEdit.addRow(&m_labelLength, &m_editLength);
-    fLayoutEdit.addRow(&m_labelNum, &m_editNum);
-    fLayoutEdit.addRow(&m_setColorful, &m_labelColorful);
+    lyt_edit_.addRow(&m_labelLength, &m_editLength);
+    lyt_edit_.addRow(&m_labelNum, &m_editNum);
+    lyt_edit_.addRow(&m_setColorful, &m_labelColorful);
 
-    hLayoutBody.addLayout(&vLayoutSetting);
+    lyt_body_.addLayout(&lyt_setting_);
 
-    hLayoutBody.addWidget(&m_pwdDisplay);
+    lyt_body_.addWidget(&m_pwdDisplay);
 
-    hLayoutFooter.addWidget(&m_pBtnBegin);
-    hLayoutFooter.addWidget(&m_pBtnCopyResult);
-    hLayoutFooter.addWidget(&m_pBtnClearDisplay);
-    hLayoutFooter.addWidget(&m_pBtnSaveAs);
-    hLayoutFooter.addWidget(&m_pBtnCliMode);
+    lyt_footer_.addWidget(&m_pBtnBegin);
+    lyt_footer_.addWidget(&m_pBtnCopyResult);
+    lyt_footer_.addWidget(&m_pBtnClearDisplay);
+    lyt_footer_.addWidget(&m_pBtnSaveAs);
+    lyt_footer_.addWidget(&m_pBtnCliMode);
 
-    setLayout(&vLayoutMain);
+    setLayout(&lyt_main_);
 }
 
 PwdGenDlg::~PwdGenDlg(){
