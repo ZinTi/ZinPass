@@ -6,65 +6,67 @@
 #include <QWidgetAction>
 #include <QFileDialog>
 #include <QClipboard>
+#include <QProcess>
 #include "pwd_generator.h"
+#include "common/toast.h"
 
-ComponentsMenuWidget::ComponentsMenuWidget(QWidget *parent) : QWidget(parent){
-    m_pBtnComponentsMenu = new QPushButton("使用字符", this);
+ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
+    btn_components_menu_ = new QPushButton("使用字符", this);
 
     // 创建菜单
-    m_componentsMenu = new QMenu(this);
+    menu_components_ = new QMenu(this);
 
     // 创建一个包含四个QCheckBox的QWidget、创建四个QCheckBox并添加到布局中
-    this->chk_box_widget_ = new QWidget(this);
-    this->lyt_chk_box_ = new QVBoxLayout(this->chk_box_widget_);
+    this->wgt_chk_box_ = new QWidget(this);
+    this->lyt_chk_box_ = new QVBoxLayout(this->wgt_chk_box_);
 
-    m_checkBoxDigits.setText("数字（0-9）");
-    m_checkBoxLowercase.setText("小写字母（a-z）");
-    m_checkBoxUppercase.setText("大写字母（A-Z）");
-    m_checkBoxSymbols.setText("其他字符（~!@#$等）");
-    m_checkBoxDigits.setChecked(true);
-    m_checkBoxLowercase.setChecked(true);
-    m_checkBoxUppercase.setChecked(true);
-    m_checkBoxSymbols.setChecked(true);
+    chk_digits_ = new QCheckBox("数字（0-9）", this->wgt_chk_box_);
+    chk_lowercase_ = new QCheckBox("小写字母（a-z）", this->wgt_chk_box_);
+    chk_uppercase_ = new QCheckBox("大写字母（A-Z）", this->wgt_chk_box_);
+    chk_symbols_ = new QCheckBox("特殊字符（~!@#$等）", this->wgt_chk_box_);
+    chk_digits_->setChecked(true);
+    chk_lowercase_->setChecked(true);
+    chk_uppercase_->setChecked(true);
+    chk_symbols_->setChecked(false);
 
-    this->lyt_chk_box_->addWidget(&m_checkBoxDigits);
-    this->lyt_chk_box_->addWidget(&m_checkBoxLowercase);
-    this->lyt_chk_box_->addWidget(&m_checkBoxUppercase);
-    this->lyt_chk_box_->addWidget(&m_checkBoxSymbols);
+    this->lyt_chk_box_->addWidget(chk_digits_);
+    this->lyt_chk_box_->addWidget(chk_lowercase_);
+    this->lyt_chk_box_->addWidget(chk_uppercase_);
+    this->lyt_chk_box_->addWidget(chk_symbols_);
 
     // 创建QWidgetAction并将包含QCheckBox的QWidget添加到其中
-    this->widget_action_ = new QWidgetAction(m_componentsMenu);
-    this->widget_action_->setDefaultWidget(this->chk_box_widget_);
+    this->wgt_action_ = new QWidgetAction(menu_components_);
+    this->wgt_action_->setDefaultWidget(this->wgt_chk_box_);
 
     // 将QWidgetAction添加到菜单中
-    m_componentsMenu->addAction(this->widget_action_);
+    menu_components_->addAction(this->wgt_action_);
 
     // 为按钮绑定菜单
-    m_pBtnComponentsMenu->setMenu(m_componentsMenu);
+    btn_components_menu_->setMenu(menu_components_);
 
     this->lyt_main_ = new QVBoxLayout(this);
-    this->lyt_main_->addWidget(m_pBtnComponentsMenu);
+    this->lyt_main_->addWidget(btn_components_menu_);
     setLayout(this->lyt_main_);
 }
 
-ComponentsMenuWidget::~ComponentsMenuWidget(){
+ComponentsMenuWgt::~ComponentsMenuWgt(){
     // 析构函数中不需要手动删除子部件，Qt会自动处理
 }
 
-bool ComponentsMenuWidget::isDigitsChecked() const{
-    return m_checkBoxDigits.isChecked();
+bool ComponentsMenuWgt::isDigitsChecked() const{
+    return chk_digits_->isChecked();
 }
 
-bool ComponentsMenuWidget::isLowercaseChecked() const{
-    return m_checkBoxLowercase.isChecked();
+bool ComponentsMenuWgt::isLowercaseChecked() const{
+    return chk_lowercase_->isChecked();
 }
 
-bool ComponentsMenuWidget::isUppercaseChecked() const{
-    return m_checkBoxUppercase.isChecked();
+bool ComponentsMenuWgt::isUppercaseChecked() const{
+    return chk_uppercase_->isChecked();
 }
 
-bool ComponentsMenuWidget::isSymbolsChecked() const{
-    return m_checkBoxSymbols.isChecked();
+bool ComponentsMenuWgt::isSymbolsChecked() const{
+    return chk_symbols_->isChecked();
 }
 
 /******************************************************************************/
@@ -75,71 +77,80 @@ PwdGenDlg::PwdGenDlg(QWidget *parent) : QDialog(parent){
 
     setWindowTitle(QString("密码生成器"));  // 设置对话框属性
 
-    // 连接信号与槽
-    connect(&m_pBtnBegin, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnBegin_clicked);
-    connect(&m_pBtnCopyResult, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnCopyResult_clicked);
-    connect(&m_pBtnClearDisplay, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnClearDisplay_clicked);
-    connect(&m_pBtnSaveAs, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnSaveAs_clicked);
-    connect(&m_pBtnCliMode, &QPushButton::clicked, this, &PwdGenDlg::on_pBtnCliMode_clicked);
 }
 
 void PwdGenDlg::initMember(){
-    m_title.setText(QString("密码生成器"));
-    m_title.setAlignment(Qt::AlignHCenter);
+    l_title_ = new QLabel(QString("密码生成器"), this);
+    l_title_->setAlignment(Qt::AlignHCenter);
 
-    m_msgDisplay.setText(QString("说明：<br/>1、长度范围6-99；<br/>2、数量范围1-99；"));
-    m_msgDisplay.setReadOnly(true);
-    m_msgDisplay.setFixedSize(150, 100);
+    txt_display_msg_ = new QTextEdit(QString("说明：<br/>1、长度范围6-99；<br/>2、数量范围1-99；"), this);
+    txt_display_msg_->setReadOnly(true);
+    txt_display_msg_->setFixedSize(150, 100);
 
     // 按钮
-    m_pBtnBegin.setText(QString("生成密码")); // 生成密码
-    m_pBtnCopyResult.setText(QString("复制结果")); // 复制结果
-    m_pBtnClearDisplay.setText(QString("清空")); // 清空
-    m_pBtnSaveAs.setText(QString("另存为")); // 另存为
-    m_pBtnCliMode.setText(QString("命令行模式")); // 命令行模式
+    btn_begin_ = new QPushButton(QString("生成密码"), this);
+    btn_copy_ = new QPushButton(QString("复制结果"), this);
+    btn_clear_ = new QPushButton(QString("清空"), this);
+    btn_save_as_ = new QPushButton(QString("另存为"), this);
+    btn_cli_mode_ = new QPushButton(QString("命令行模式"), this);
 
-    m_componentsMenuWidget = new ComponentsMenuWidget(this); //
+    menu_components_Widget = new ComponentsMenuWgt(this);
 
-    m_labelLength.setText(QString("密码长度"));
-    m_labelNum.setText(QString("生成数量"));
-    m_labelColorful.setText(QString("启用颜色区分字符"));
-    m_editLength.setRange(6, 999);
-    m_editLength.setValue(12);
-    m_editNum.setRange(1, 99);
-    m_editNum.setValue(10);
-    m_setColorful.setChecked(false);
+    l_length_ = new QLabel(QString("密码长度"), this);
+    l_num_ = new QLabel(QString("生成数量"), this);
+    e_length_ = new QSpinBox(this);
+    e_num_ = new QSpinBox(this);
+    rdo_en_colorful_ = new QRadioButton(QString("启用不同颜色区分字符"), this);
+    e_length_->setRange(6, 999);
+    e_length_->setValue(12);
+    e_num_->setRange(1, 99);
+    e_num_->setValue(10);
+    rdo_en_colorful_->setChecked(true);
 
     // 显示
-    m_pwdDisplay.setPlaceholderText(QString("生成结果"));
-    m_pwdDisplay.setReadOnly(true);
+    txt_display_pwd_ = new QTextEdit(this);
+    txt_display_pwd_->setPlaceholderText(QString("生成结果"));
+    txt_display_pwd_->setReadOnly(true);
+
+    connect(btn_begin_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_begin_clicked);
+    connect(btn_copy_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_copy_clicked);
+    connect(btn_clear_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_clear_clicked);
+    connect(btn_save_as_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_save_as_clicked);
+    connect(btn_cli_mode_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_cli_mode_clicked);
 }
 
 void PwdGenDlg::initLayout(){
-    lyt_main_.addLayout(&lyt_header_);
-    lyt_main_.addLayout(&lyt_body_);
-    lyt_main_.addLayout(&lyt_footer_);
+    this->lyt_main_ = new QVBoxLayout(this);
+    this->lyt_header_ = new QHBoxLayout(this);
+    this->lyt_body_ = new QHBoxLayout(this);
+    this->lyt_footer_ = new QHBoxLayout(this);
+    this->lyt_setting_ = new QVBoxLayout(this);
+    this->lyt_edit_ = new QFormLayout(this);
 
-    lyt_header_.addWidget(&m_title);
+    lyt_main_->addLayout(lyt_header_);
+    lyt_main_->addLayout(lyt_body_);
+    lyt_main_->addLayout(lyt_footer_);
 
-    lyt_setting_.addWidget(&m_msgDisplay);
-    lyt_setting_.addWidget(m_componentsMenuWidget);
-    lyt_setting_.addLayout(&lyt_edit_);
+    lyt_header_->addWidget(l_title_);
 
-    lyt_edit_.addRow(&m_labelLength, &m_editLength);
-    lyt_edit_.addRow(&m_labelNum, &m_editNum);
-    lyt_edit_.addRow(&m_setColorful, &m_labelColorful);
+    lyt_setting_->addWidget(txt_display_msg_);
+    lyt_setting_->addWidget(menu_components_Widget);
+    lyt_setting_->addLayout(lyt_edit_);
 
-    lyt_body_.addLayout(&lyt_setting_);
+    lyt_edit_->addRow(l_length_, e_length_);
+    lyt_edit_->addRow(l_num_, e_num_);
+    lyt_edit_->addRow(rdo_en_colorful_); // 独占一行
 
-    lyt_body_.addWidget(&m_pwdDisplay);
+    lyt_body_->addLayout(lyt_setting_);
+    lyt_body_->addWidget(txt_display_pwd_);
 
-    lyt_footer_.addWidget(&m_pBtnBegin);
-    lyt_footer_.addWidget(&m_pBtnCopyResult);
-    lyt_footer_.addWidget(&m_pBtnClearDisplay);
-    lyt_footer_.addWidget(&m_pBtnSaveAs);
-    lyt_footer_.addWidget(&m_pBtnCliMode);
+    lyt_footer_->addWidget(btn_begin_);
+    lyt_footer_->addWidget(btn_copy_);
+    lyt_footer_->addWidget(btn_clear_);
+    lyt_footer_->addWidget(btn_save_as_);
+    lyt_footer_->addWidget(btn_cli_mode_);
 
-    setLayout(&lyt_main_);
+    setLayout(lyt_main_);
 }
 
 PwdGenDlg::~PwdGenDlg(){
@@ -147,35 +158,35 @@ PwdGenDlg::~PwdGenDlg(){
 }
 
 
-void PwdGenDlg::on_pBtnBegin_clicked(){
-    const bool inDigits = m_componentsMenuWidget->isDigitsChecked();
-    const bool inLowercase = m_componentsMenuWidget->isLowercaseChecked();
-    const bool inUppercase = m_componentsMenuWidget->isUppercaseChecked();
-    const bool inSymbols = m_componentsMenuWidget->isSymbolsChecked();
+void PwdGenDlg::on_btn_begin_clicked() const {
+    const bool inDigits = menu_components_Widget->isDigitsChecked();
+    const bool inLowercase = menu_components_Widget->isLowercaseChecked();
+    const bool inUppercase = menu_components_Widget->isUppercaseChecked();
+    const bool inSymbols = menu_components_Widget->isSymbolsChecked();
 
     if(false == (inDigits || inLowercase || inUppercase || inSymbols)){
-        m_msgDisplay.setTextColor(QColor::fromRgb(255, 0, 0));
-        m_msgDisplay.setText(QString("至少选择一种字符"));
+        txt_display_msg_->setTextColor(QColor::fromRgb(255, 0, 0));
+        txt_display_msg_->setText(QString("至少选择一种字符"));
         return;
     }
 
-    const int inLength = m_editLength.value();
-    const int inNum = m_editNum.value();
+    const int inLength = e_length_->value();
+    const int inNum = e_num_->value();
 
-    const bool inColorful = m_setColorful.isChecked();
+    const bool inColorful = rdo_en_colorful_->isChecked();
 
-    std::vector<std::string> new_passwds;
+    std::vector<std::string> new_passwords;
 
     const PwdComponentsType components(inDigits, inUppercase, inLowercase, inSymbols);
-    PwdGenerator pwdG(components, inLength, inNum);
-    if(pwdG.getGwd(new_passwds)){
-        m_msgDisplay.setTextColor(QColor::fromRgb(0, 255, 0));
-        m_msgDisplay.setText(QString("生成成功"));
-        m_pwdDisplay.clear();
+    const PwdGenerator pwdG(components, inLength, inNum);
+    if(pwdG.getGwd(new_passwords)){
+        txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
+        txt_display_msg_->setText(QString("生成成功"));
+        txt_display_pwd_->clear();
         if(inColorful){
             // 显示彩色字符：数字显示绿色、小写英文字母黄色、大写英文字母蓝色、其他字符紫色
-            for (const std::string& pwd : new_passwds) {
-                QTextCursor cursor = m_pwdDisplay.textCursor();
+            for (const std::string& pwd : new_passwords) {
+                QTextCursor cursor = txt_display_pwd_->textCursor();
                 for (const char c : pwd) {
                     QTextCharFormat format;
                     if (std::isdigit(c)) {
@@ -193,40 +204,39 @@ void PwdGenDlg::on_pBtnBegin_clicked(){
             }
         }else{
             // 显示单色字符
-            m_pwdDisplay.setTextColor(QColor::fromRgb(255, 100, 100));
-            for(std::string pwd : new_passwds){
-                m_pwdDisplay.append(QString::fromStdString(pwd));
+            txt_display_pwd_->setTextColor(QColor::fromRgb(255, 100, 100));
+            for(const std::string& passwd : new_passwords){
+                txt_display_pwd_->append(QString::fromStdString(passwd));
             }
         }
     }else{
-        m_msgDisplay.setTextColor(QColor::fromRgb(255, 0, 0));
-        m_msgDisplay.setText(QString("生成失败"));
+        txt_display_msg_->setTextColor(QColor::fromRgb(255, 0, 0));
+        txt_display_msg_->setText(QString("生成失败"));
     }
 }
-void PwdGenDlg::on_pBtnCopyResult_clicked()
-{
+void PwdGenDlg::on_btn_copy_clicked() const {
     // 获取 QTextEdit 中的文本
-    QString text = m_pwdDisplay.toPlainText();
+    const QString text = txt_display_pwd_->toPlainText();
 
     // 将 text 复制到剪贴板
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(text);
 
     // 显示复制结果
-    m_msgDisplay.setTextColor(QColor::fromRgb(0, 255, 0));
-    m_msgDisplay.setText(QString("已经全部复制到剪贴板"));
+    txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
+    txt_display_msg_->setText(QString("已经全部复制到剪贴板"));
 }
 
-void PwdGenDlg::on_pBtnClearDisplay_clicked(){
-    m_pwdDisplay.clear();
+void PwdGenDlg::on_btn_clear_clicked() const {
+    txt_display_pwd_->clear();
 }
 
-void PwdGenDlg::on_pBtnSaveAs_clicked(){  // Save text to file.
+void PwdGenDlg::on_btn_save_as_clicked(){  // Save text to file.
     // 获取 QTextEdit 中的文本
-    QString text = m_pwdDisplay.toPlainText();
+    const QString text = txt_display_pwd_->toPlainText();
 
     // 打开文件保存对话框
-    QString filePath = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
+    const QString filePath = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
 
     if (!filePath.isEmpty()) {
         // 打开文件进行写入操作
@@ -241,10 +251,73 @@ void PwdGenDlg::on_pBtnSaveAs_clicked(){  // Save text to file.
     }
 }
 
-void PwdGenDlg::on_pBtnCliMode_clicked(){
-#ifdef _WIN32
-    system("cmd /C pwdgen.exe");
+void PwdGenDlg::on_btn_cli_mode_clicked() {
+    const QString app_dir = QCoreApplication::applicationDirPath();
+
+#ifdef Q_OS_WIN
+    // Windows 解决方案：使用 cmd.exe 显式打开控制台
+    QString program = "cmd.exe";
+    QStringList arguments;
+    arguments << "/C" << "start" << "cmd.exe" << "/K" << "pwdgen.exe";
+
+    if (!QProcess::startDetached(program, arguments, app_dir)) {
+        Toast::showToast(nullptr, "⚠️ Failed to start pwdgen executable", 3000,
+                        QColor(200, 0, 0, 220), Qt::white);
+    }
 #else
-    system("./pwdgen");
+    // Linux/macOS 解决方案：使用终端模拟器
+    QString terminal;
+
+    // 尝试检测常见的终端模拟器
+    QStringList terminals = {
+        "x-terminal-emulator",  // Debian/Ubuntu 通用
+        "gnome-terminal",      // GNOME
+        "konsole",              // KDE
+        "xfce4-terminal",       // XFCE
+        "lxterminal",           // LXDE
+        "mate-terminal",        // MATE
+        "tilix",                // Tilix
+        "terminator",           // Terminator
+        "alacritty",            // Alacritty
+        "kitty",                // Kitty
+        "wezterm",              // WezTerm
+        "xterm"                 // 最基础的终端（通常可用）
+    };
+
+    // 查找可用的终端
+    for (const QString& term : terminals) {
+        if (QFile::exists("/usr/bin/" + term) ||
+            !QStandardPaths::findExecutable(term).isEmpty()) {
+            terminal = term;
+            break;
+        }
+    }
+
+    if (terminal.isEmpty()) {
+        // 找不到终端，尝试直接运行（可能没有窗口）
+        if (!QProcess::startDetached("./pwdgen", QStringList(), app_dir)) {
+            Toast::showToast(nullptr, "⚠️ Failed to start pwdgen", 3000,
+                            QColor(200, 0, 0, 220), Qt::white);
+        }
+        return;
+    }
+
+    // 准备启动命令
+    QStringList arguments;
+    if (terminal == "gnome-terminal") {
+        arguments << "--" << "./pwdgen";
+    } else if (terminal == "konsole") {
+        arguments << "-e" << "./pwdgen";
+    } else if (terminal == "xterm") {
+        arguments << "-e" << "./pwdgen";
+    } else {
+        // 大多数终端使用 -e 参数
+        arguments << "-e" << "./pwdgen";
+    }
+
+    if (!QProcess::startDetached(terminal, arguments, app_dir)) {
+        Toast::showToast(nullptr, "⚠️ Failed to start terminal for pwdgen", 3000,
+                        QColor(200, 0, 0, 220), Qt::white);
+    }
 #endif
 }

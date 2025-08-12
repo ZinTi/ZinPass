@@ -2,13 +2,14 @@
 #include <QMessageBox>
 
 #include "dialog_exposed_pwd.h"
-#include "is_input_valid.h"
-#include "dialog_auth.h"
+#include "common/is_input_valid.h"
+#include "common/dialog_auth.h"
 #include "state_manager.h"
 #include "view_account.h"
 
 // RPC 封装
 #include "account_rpc.h"
+#include "common/toast.h"
 
 // #include "pwd_generator_dlg.h"
 
@@ -46,13 +47,11 @@ void AccountMgrForm::setup_ui(){
 
     this->btn_data_owner_ = new QToolButton(this);
     this->btn_data_owner_->setText("数据归属");
-    this->btn_passwd_generator_ = new QToolButton(this); // 密码生成器
-    this->btn_passwd_generator_->setText("密码生成器");
+    this->btn_tool2_ = new QToolButton(this); // 工具占位按键
+    this->btn_tool2_->setText("工具占位");
     this->btn_read_passwd_ = new QPushButton("查看密码", this);  // 查看密码
     this->btn_add_account_ = new QPushButton("新增", this);  // 新增
     this->btn_detail_and_edit_ = new QPushButton("详情与编辑", this);  // 编辑（更新/删除）
-
-    this->passwd_generator_ = new PwdGenDlg(nullptr);
 
     this->dlg_add_acc_ = new DialogAddAccount(this);
     this->dlg_add_acc_->setWindowTitle(QString("新增账号密码"));
@@ -77,7 +76,7 @@ void AccountMgrForm::setup_ui(){
     lyt_bottom_btn_->addWidget(this->btn_detail_and_edit_);
     // lyt_bottom_btn_->addSpacing(30);
     lyt_bottom_btn_->addStretch();
-    lyt_bottom_btn_->addWidget(this->btn_passwd_generator_);
+    lyt_bottom_btn_->addWidget(this->btn_tool2_);
 
     lyt_main_->addWidget(this->search_box_);
     lyt_main_->addLayout(lyt_display_and_filter_);
@@ -98,7 +97,7 @@ void AccountMgrForm::setup_ui(){
     );
 
     connect(this->btn_data_owner_, &QToolButton::clicked, this, [](){ qDebug() << "点击了 数据所属用户\n";});
-    connect(this->btn_passwd_generator_, &QToolButton::clicked, this, &AccountMgrForm::on_btn_passwd_generator_clicked);
+    connect(this->btn_tool2_, &QToolButton::clicked, this, &AccountMgrForm::on_btn_tool2_clicked);
     connect(this->btn_read_passwd_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_read_passwd_clicked);
     connect(this->btn_add_account_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_add_account_clicked);
     connect(this->btn_detail_and_edit_, &QPushButton::clicked, this, &AccountMgrForm::on_btn_detail_and_edit_clicked);
@@ -286,9 +285,8 @@ void AccountMgrForm::on_btn_remove_account_clicked() {
     }*/
 }
 
-// 密码生成器-toolBtn
-void AccountMgrForm::on_btn_passwd_generator_clicked() const {
-    this->passwd_generator_->show();
+void AccountMgrForm::on_btn_tool2_clicked() const {
+    Toast::showToast((QWidget*)this, "⚠️ Function not implemented yet!", 3000,QColor(200, 0, 200, 220), Qt::white);
 }
 
 void AccountMgrForm::on_table_view_item_clicked(const QModelIndex &index){

@@ -34,18 +34,18 @@ void DeletionGuideDlg::setup_ui() {
 
     this->combo_phone_ = new QComboBox(this);
 
-    this->group_radio_btn_ = new QButtonGroup(this);
-    this->group_radio_btn_->setExclusive(true); // 互斥
-    this->radio_option1_ = new QRadioButton("【推荐】放弃删除操作，稍后手动为手机号添加备注为“停用”", this);
-    this->radio_option2_ = new QRadioButton("【允许】批量修改受影响数据的“手机号”一项，改为", this);
-    this->radio_option3_ = new QRadioButton("【默认】擦除所有受影响数据的“手机号”一项（设置为NULL），然后完成删除操作", this);
-    this->radio_option4_ = new QRadioButton("【危险】级联删除所有受影响数据的记录（所有引用了该手机号的账号数据都将被删除）", this);
+    this->group_rdo_btn_ = new QButtonGroup(this);
+    this->group_rdo_btn_->setExclusive(true); // 互斥
+    this->rdo_option1_ = new QRadioButton("【推荐】放弃删除操作，稍后手动为手机号添加备注为“停用”", this);
+    this->rdo_option2_ = new QRadioButton("【允许】批量修改受影响数据的“手机号”一项，改为", this);
+    this->rdo_option3_ = new QRadioButton("【默认】擦除所有受影响数据的“手机号”一项（设置为NULL），然后完成删除操作", this);
+    this->rdo_option4_ = new QRadioButton("【危险】级联删除所有受影响数据的记录（所有引用了该手机号的账号数据都将被删除）", this);
 
-    this->group_radio_btn_->addButton(this->radio_option1_, 0);
-    this->group_radio_btn_->addButton(this->radio_option2_, 1);
-    this->group_radio_btn_->addButton(this->radio_option3_, 2);
-    this->group_radio_btn_->addButton(this->radio_option4_, 3);
-    this->radio_option1_->setChecked(true);
+    this->group_rdo_btn_->addButton(this->rdo_option1_, 0);
+    this->group_rdo_btn_->addButton(this->rdo_option2_, 1);
+    this->group_rdo_btn_->addButton(this->rdo_option3_, 2);
+    this->group_rdo_btn_->addButton(this->rdo_option4_, 3);
+    this->rdo_option1_->setChecked(true);
 
     this->dlg_btn_box_ = new QDialogButtonBox(
         QDialogButtonBox::Ok | QDialogButtonBox::Cancel, // 添加标准按钮
@@ -54,21 +54,21 @@ void DeletionGuideDlg::setup_ui() {
 
     this->lyt_main_ = new QVBoxLayout(this);
     this->lyt_title_ = new QHBoxLayout(this);
-    this->lyt_radio_ = new QVBoxLayout(this);
-    this->lyt_radio_combo_ = new QHBoxLayout(this);
+    this->lyt_rdo_ = new QVBoxLayout(this);
+    this->lyt_rdo_combo_ = new QHBoxLayout(this);
     this->group_box_ = new QGroupBox("选项", this);
-    this->group_box_->setLayout(this->lyt_radio_);
+    this->group_box_->setLayout(this->lyt_rdo_);
 
     this->lyt_title_->setAlignment(Qt::AlignCenter);
     this->lyt_title_->addWidget(this->l_title_);
-    this->lyt_radio_->addWidget(this->radio_option1_);
-    //this->lyt_radio_->addWidget(this->radio_option2_);
-    this->lyt_radio_combo_->addWidget(this->radio_option2_);
-    this->lyt_radio_combo_->addWidget(this->combo_phone_);
-    this->lyt_radio_combo_->addWidget(new QLabel("，然后完成删除操作", this));
-    this->lyt_radio_->addLayout(this->lyt_radio_combo_);
-    this->lyt_radio_->addWidget(this->radio_option3_);
-    this->lyt_radio_->addWidget(this->radio_option4_);
+    this->lyt_rdo_->addWidget(this->rdo_option1_);
+    //this->lyt_rdo_->addWidget(this->rdo_option2_);
+    this->lyt_rdo_combo_->addWidget(this->rdo_option2_);
+    this->lyt_rdo_combo_->addWidget(this->combo_phone_);
+    this->lyt_rdo_combo_->addWidget(new QLabel("，然后完成删除操作", this));
+    this->lyt_rdo_->addLayout(this->lyt_rdo_combo_);
+    this->lyt_rdo_->addWidget(this->rdo_option3_);
+    this->lyt_rdo_->addWidget(this->rdo_option4_);
     this->lyt_main_->setAlignment(Qt::AlignCenter);
     this->lyt_main_->setContentsMargins(12, 12, 12, 12);
     this->lyt_main_->addLayout(this->lyt_title_);
@@ -97,7 +97,7 @@ void DeletionGuideDlg::initial_combo_box() const {
 }
 
 void DeletionGuideDlg::on_btn_ok_clicked(){
-    this->selected_option_ = this->group_radio_btn_->checkedId(); // 获取选中值
+    this->selected_option_ = this->group_rdo_btn_->checkedId(); // 获取选中值
     this->accept();
 }
 

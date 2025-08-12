@@ -14,11 +14,11 @@
 #include <QFormLayout>
 #include <QWidgetAction>
 
-
-class ComponentsMenuWidget final : public QWidget{
+// 1/2
+class ComponentsMenuWgt final : public QWidget{
 public:
-    explicit ComponentsMenuWidget(QWidget *parent = nullptr);
-    ~ComponentsMenuWidget() override;
+    explicit ComponentsMenuWgt(QWidget *parent = nullptr);
+    ~ComponentsMenuWgt() override;
 
     [[nodiscard]] bool isDigitsChecked() const;
     [[nodiscard]] bool isLowercaseChecked() const;
@@ -26,68 +26,67 @@ public:
     [[nodiscard]] bool isSymbolsChecked() const;
 
 private:
-    QPushButton* m_pBtnComponentsMenu;
-    QMenu* m_componentsMenu;
-    QCheckBox m_checkBoxDigits;
-    QCheckBox m_checkBoxLowercase;
-    QCheckBox m_checkBoxUppercase;
-    QCheckBox m_checkBoxSymbols;
+    QPushButton* btn_components_menu_;
+    QMenu* menu_components_;
+    QCheckBox* chk_digits_;
+    QCheckBox* chk_lowercase_;
+    QCheckBox* chk_uppercase_;
+    QCheckBox* chk_symbols_;
 
-    QWidgetAction* widget_action_;
-    QWidget* chk_box_widget_;
+    QWidgetAction* wgt_action_;
+    QWidget* wgt_chk_box_;
     
     QVBoxLayout* lyt_main_;
     QVBoxLayout* lyt_chk_box_;
 };
 
-
+// 2/2
 class PwdGenDlg final : public QDialog{
 public:
     explicit PwdGenDlg(QWidget *parent = nullptr);
     ~PwdGenDlg() override;
 
 private slots:
-    void on_pBtnBegin_clicked(); // 生成密码
-    void on_pBtnCopyResult_clicked(); // 复制结果
-    void on_pBtnClearDisplay_clicked(); // 清空
-    void on_pBtnSaveAs_clicked(); // 另存为
+    void on_btn_begin_clicked() const; // 生成密码
+    void on_btn_copy_clicked() const; // 复制结果
+    void on_btn_clear_clicked() const; // 清空
+    void on_btn_save_as_clicked(); // 另存为
 
-    void on_pBtnCliMode_clicked(); // 命令行模式
+    static void on_btn_cli_mode_clicked(); // 命令行模式
 
 private:
-    QLabel m_title; // 标题
-    QTextEdit m_msgDisplay; // 消息显示
+    QLabel* l_title_; // 标题
+    QTextEdit* txt_display_msg_; // 消息显示
 
     // 按钮
-    QPushButton m_pBtnBegin; // 生成密码
-    QPushButton m_pBtnCopyResult; // 复制结果
-    QPushButton m_pBtnClearDisplay; // 清空
-    QPushButton m_pBtnSaveAs; // 另存为
-    QPushButton m_pBtnCliMode; // 命令行模式
+    QPushButton* btn_begin_; // 生成密码
+    QPushButton* btn_copy_; // 复制结果
+    QPushButton* btn_clear_; // 清空
+    QPushButton* btn_save_as_;
+    QPushButton* btn_cli_mode_;
 
     // 设置下拉菜单
-    ComponentsMenuWidget *m_componentsMenuWidget;
+    ComponentsMenuWgt* menu_components_Widget;
 
-    QLabel m_labelLength;
-    QLabel m_labelNum;
-    QLabel m_labelColorful;
-    QSpinBox m_editLength;
-    QSpinBox m_editNum;
-    QRadioButton m_setColorful;
+    QLabel* l_length_;
+    QLabel* l_num_;
+    QSpinBox* e_length_;
+    QSpinBox* e_num_;
+    QRadioButton* rdo_en_colorful_;
 
     // 显示
-    QTextEdit m_pwdDisplay;
+    QTextEdit* txt_display_pwd_;
 
     // 布局
-    QVBoxLayout lyt_main_; // 主框架
-    QHBoxLayout lyt_header_; // 1、header
-    QHBoxLayout lyt_body_; // 2、body
-    QHBoxLayout lyt_footer_; // 3、footer
-    QVBoxLayout lyt_setting_; // 2.1 设置
-    QFormLayout lyt_edit_; // 2.1.2
+    QVBoxLayout* lyt_main_; // 主框架
+    QHBoxLayout* lyt_header_; // 1、header
+    QHBoxLayout* lyt_body_; // 2、body
+    QHBoxLayout* lyt_footer_; // 3、footer
+    QVBoxLayout* lyt_setting_; // 2.1 设置
+    QFormLayout* lyt_edit_; // 2.1.2
 
     void initMember();
     void initLayout();
 };
 
-#endif // PWD_GEN_DLG_H
+#endif

@@ -1,15 +1,4 @@
-/***********************************************************
-  * Copyright (c) 2024 Mr. Zeng Lai. All rights reserved.
-  * 
-  * File: pwdgen.c
-  * Description: 随机密码生成器-命令行版
-  * Version: 0.1
-  * Author: Mr. Zeng Lai (also known as Zin)
-  * Contact: vip201@126.com
-  * Last Modified: Tue Jan 28 16:43:56 2025
-  * 
- ***********************************************************/
-// 系统库
+// 随机密码生成器-命令行版
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,16 +12,20 @@
 
 // 当前项目信息
 #define PROJ_NAME			"PwdGen"
-#define PROJ_VER			"0.1"
+#ifdef _WIN32
+    #define PROJ_VER			"0.1-WinNT"
+#else
+    #define PROJ_VER			"0.1-GNU/Linux"
+#endif
 #define PROJ_YEARS			"2024-2025"
-#define AUTHOR				"Mr. Zeng Lai"
+#define AUTHOR				"Mr. ZENG Lai(Zin)"
 #define CONTACT 			"Email: vip201@126.com"
 
 // 定义密码组成成分
 #define DIGITS                 "0123456789"
 #define UPPERCASE_LETTERS      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define LOWERCASE_LETTERS      "abcdefghijklmnopqrstuvwxyz"
-#define SPECIAL_CHARACTERS     "!@#$%^&*()_+{}[]|:;<>,.?/~"
+#define SPECIAL_CHARACTERS     "!@#$\x25^&*()_+{}[]|:;<>,.?/~"
 
 TextColor COLOR_PROMPT_General    =	{COLOR_BRIGHT_WHITE, COLOR_NONE};
 TextColor COLOR_PROMPT_Error      =	{COLOR_RED, COLOR_NONE};
@@ -92,7 +85,7 @@ int main(void) {
 
 void About(void){
 	printf("%s version %s (compiled %s, %s)\n", PROJ_NAME, PROJ_VER, __TIME__, __DATE__);
-	printf("Copyright (c) %s %s. Licensed under the GNU General Public License.\n%s\n\n", PROJ_YEARS, AUTHOR, CONTACT);
+	printf("Copyleft (c) %s %s. Licensed under the GNU General Public License.\n%s\n\n", PROJ_YEARS, AUTHOR, CONTACT);
 }
 
 int ColorPrintPwd(char* password){

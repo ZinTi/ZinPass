@@ -1,8 +1,6 @@
 #include "main_workbench.h"
 #include <QMessageBox>
 
-#include "pwd_generator_dlg.h"
-
 MainWorkbench::MainWorkbench(QWidget* parent) : QMainWindow(parent) {
     setup_ui();
 
@@ -321,8 +319,8 @@ void MainWorkbench::onCustomize() {
 
 // ================= 工具菜单槽函数实现 =================
 void MainWorkbench::onPasswdGen() {
-    auto* passwd_gen1 = new PwdGenDlg(this);
-    passwd_gen1->show();
+    auto* passwd_generator = new PwdGenDlg(this);
+    passwd_generator->show();
 }
 void MainWorkbench::onEncrypt() {
     QMessageBox::information(this, "加密", "打开加密工具");
@@ -339,7 +337,7 @@ void MainWorkbench::onHelp() {
 void MainWorkbench::onAbout() {
     QMessageBox::about(this, "关于程序",
         "<b>ZinPass 守密司</b><br>"
-        "版本 0.0.5<br><br>"
+        "版本 0.0.3-patch1<br><br>"
         "作者 曾来"
         );
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(client_desktop VERSION 0.0.4 LANGUAGES CXX)
+project(client_desktop VERSION 0.0.3 LANGUAGES CXX)
 
 # 设置平台相关变量
 if(WIN32)
@@ -60,6 +60,7 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/include/models # 用户侧模型
 
         ${CMAKE_SOURCE_DIR}/src/ui
+        ${CMAKE_SOURCE_DIR}/src/ui/common # 公共组件
         ${CMAKE_SOURCE_DIR}/src/ui/account
         ${CMAKE_SOURCE_DIR}/src/ui/phone
         ${CMAKE_SOURCE_DIR}/src/ui/user
@@ -100,10 +101,12 @@ set(PROJECT_SOURCES
         res/resource.qrc
         res/icon_zinpass.rc # windows平台pe文件图标
         # (6.1) 常用模块与公共组件
-        src/ui/search_box.cpp
-        src/ui/is_input_valid.cpp # 判断输入的数据是否合法-前端部分辅助验证
-        src/ui/dialog_auth.cpp # 验证当前用户身份
-        src/ui/widget_public_method.cpp # 部件公用方法
+        src/ui/common/toast.cpp
+        src/ui/common/search_box.cpp
+        src/ui/common/dialog_auth.cpp    # 验证当前用户身份
+        src/ui/common/is_input_valid.cpp # 判断输入的数据是否合法-前端部分辅助验证
+        src/ui/common/widget_public_method.cpp # 部件公用方法
+
         # (6.2) 系统登录界面、系统用户注册界面
         src/ui/user/login_dlg.cpp
         src/ui/user/signup_dlg.cpp

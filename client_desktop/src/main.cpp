@@ -13,7 +13,7 @@ void init();    // 初始化
 int main(int argc, char *argv[]){
     init();
 
-    const QApplication app(argc, argv);
+    QApplication app(argc, argv);
     auto* login_dlg = new LoginDlg(nullptr);
     auto* main_workbench = new MainWorkbench(nullptr);
     main_workbench->setWindowTitle("工作台 | ZinPass");

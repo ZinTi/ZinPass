@@ -18,6 +18,7 @@
 #include "log_handle_form.h"
 #include "personal_mgr_form.h" // 管理个人账号
 #include "preferences_form.h" // 注销账号
+#include "pwd_gen_dlg.h"
 
 namespace Ui {
 class MainWorkbench;

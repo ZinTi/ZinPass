@@ -14,14 +14,18 @@ data/zinpass.db.backup
 data/test.db
 data/test.db.backup
 
-# 忽略所有 .o 文件
+# 忽略以下扩展名的文件
 *.o
+*.obj
 *.tmp
 *.exe
 *.dll
 *.so
 *.a
 *.lib
+*.tar.gz
+*.zip
+*.7z
 
 # 编辑器/IDE 文件
 .idea/

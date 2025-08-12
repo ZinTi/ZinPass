@@ -20,46 +20,45 @@ public:
     ~PwdGeneratorDlg() override;
 
 private slots:
-    void on_pBtnBegin_clicked() const; // 生成密码
-    void on_pBtnCopyResult_clicked() const; // 复制结果
-    void on_pBtnClearDisplay_clicked() const; // 清空
-    void on_pBtnSaveAs_clicked(); // 另存为
+    void on_btn_begin_clicked() const; // 生成密码
+    void on_btn_copy_clicked() const; // 复制结果
+    void on_btn_clear_clicked() const; // 清空
+    void on_btn_save_as_clicked(); // 另存为
 
-    void on_pBtnCliMode_clicked(); // 命令行模式
+    static void on_btn_cli_mode_clicked(); // 命令行模式
 
 private:
-    QLabel* m_title; // 标题
-    QTextEdit* m_msgDisplay; // 消息显示
+    QLabel* l_title_; // 标题
+    QTextEdit* txt_display_msg_; // 消息显示
 
     // 按钮
-    QPushButton* m_pBtnBegin; // 生成密码
-    QPushButton* m_pBtnCopyResult; // 复制结果
-    QPushButton* m_pBtnClearDisplay; // 清空
-    QPushButton* m_pBtnSaveAs; // 另存为
-    QPushButton* m_pBtnCliMode; // 命令行模式
+    QPushButton* btn_begin_; // 生成密码
+    QPushButton* btn_copy_; // 复制结果
+    QPushButton* btn_clear_; // 清空
+    QPushButton* btn_save_as_; // 另存为
+    QPushButton* btn_cli_mode_; // 命令行模式
 
     // 设置
-    QPushButton* m_componentsMenuBtn; // 创建一个按钮用于触发下拉菜单
+    QPushButton* menu_components_Btn; // 创建一个按钮用于触发下拉菜单
 
-    QCheckBox* m_checkBoxDigits;
-    QCheckBox* m_checkBoxLowercase;
-    QCheckBox* m_checkBoxUppercase;
-    QCheckBox* m_checkBoxSymbols;
+    QCheckBox* chk_digits_;
+    QCheckBox* chk_lowercase_;
+    QCheckBox* chk_uppercase_;
+    QCheckBox* chk_symbols_;
 
-    QLabel* m_labelLength;
-    QLabel* m_labelNum;
-    QLabel* m_labelColorful;
-    QSpinBox* m_editLength;
-    QSpinBox* m_editNum;
-    QRadioButton* m_setColorful;
+    QLabel* l_length_;
+    QLabel* l_num_;
+    QSpinBox* e_length_;
+    QSpinBox* e_num_;
+    QRadioButton* rdo_en_colorful_;
 
     // 显示
-    QTextEdit* m_pwdDisplay;
+    QTextEdit* txt_display_pwd_;
 
     // 
     QMenu* menu_components_;
-    QWidget* checkBoxWidget_;
-    QWidgetAction* widgetAction_;
+    QWidget* wgt_chk_;
+    QWidgetAction* wgt_action_;
 
     // 布局
     QVBoxLayout* lyt_main_; // 主布局 从上至下三层
@@ -73,4 +72,4 @@ private:
 
 };
 
-#endif // PWD_GENERATOR_DLG_H
+#endif
