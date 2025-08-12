@@ -4,4 +4,4 @@ project(ZinPassProject)
 # 引入子项目
 add_subdirectory(service)
 add_subdirectory(control)
-# add_subdirectory(client-desktop)
+# add_subdirectory(client_desktop)
