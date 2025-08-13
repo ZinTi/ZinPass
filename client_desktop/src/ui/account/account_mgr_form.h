@@ -11,7 +11,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
-
 #include "common/search_box.h"
 #include "account_filter_form.h"
 #include "dialog_add_account.h"
@@ -44,7 +43,6 @@ private:
     QStandardItemModel* table_model_;
     QTableView* table_view_;        // 表格
     DialogAddAccount* dlg_add_acc_; // 新增账号
-    DialogEditAccount* dlg_edit_acc_;   // 详情与编辑
 
     QToolButton* btn_data_owner_;   // 数据归属
     QToolButton* btn_tool2_;

@@ -159,12 +159,12 @@ PwdGenDlg::~PwdGenDlg(){
 
 
 void PwdGenDlg::on_btn_begin_clicked() const {
-    const bool inDigits = menu_components_Widget->isDigitsChecked();
-    const bool inLowercase = menu_components_Widget->isLowercaseChecked();
-    const bool inUppercase = menu_components_Widget->isUppercaseChecked();
-    const bool inSymbols = menu_components_Widget->isSymbolsChecked();
+    const bool hasDigits = menu_components_Widget->isDigitsChecked();
+    const bool hasLowercase = menu_components_Widget->isLowercaseChecked();
+    const bool hasUppercase = menu_components_Widget->isUppercaseChecked();
+    const bool hasSymbols = menu_components_Widget->isSymbolsChecked();
 
-    if(false == (inDigits || inLowercase || inUppercase || inSymbols)){
+    if(false == (hasDigits || hasLowercase || hasUppercase || hasSymbols)){
         txt_display_msg_->setTextColor(QColor::fromRgb(255, 0, 0));
         txt_display_msg_->setText(QString("至少选择一种字符"));
         return;
@@ -172,46 +172,50 @@ void PwdGenDlg::on_btn_begin_clicked() const {
 
     const int inLength = e_length_->value();
     const int inNum = e_num_->value();
-
     const bool inColorful = rdo_en_colorful_->isChecked();
 
-    std::vector<std::string> new_passwords;
+    try {
+        std::vector<std::string> new_passwords;
+        PwdGenerator pwd_gen(inLength, inNum);
+        pwd_gen.setComponentsByBool(hasDigits, hasUppercase, hasLowercase, hasSymbols);
 
-    const PwdComponentsType components(inDigits, inUppercase, inLowercase, inSymbols);
-    const PwdGenerator pwdG(components, inLength, inNum);
-    if(pwdG.getGwd(new_passwords)){
-        txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
-        txt_display_msg_->setText(QString("生成成功"));
-        txt_display_pwd_->clear();
-        if(inColorful){
-            // 显示彩色字符：数字显示绿色、小写英文字母黄色、大写英文字母蓝色、其他字符紫色
-            for (const std::string& pwd : new_passwords) {
-                QTextCursor cursor = txt_display_pwd_->textCursor();
-                for (const char c : pwd) {
-                    QTextCharFormat format;
-                    if (std::isdigit(c)) {
-                        format.setForeground(QColor::fromRgb(50, 205, 50)); // 亮绿色
-                    } else if (std::islower(c)) {
-                        format.setForeground(QColor::fromRgb(255, 215, 0)); // 金黄色
-                    } else if (std::isupper(c)) {
-                        format.setForeground(QColor::fromRgb(0, 128, 255)); // 亮蓝色
-                    } else {
-                        format.setForeground(QColor::fromRgb(255, 105, 180)); // 粉红色
+        if(pwd_gen.getPasswords(new_passwords)){
+            txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
+            txt_display_msg_->setText(QString("生成成功"));
+            txt_display_pwd_->clear();
+            if(inColorful){
+                // 显示彩色字符：数字显示绿色、小写英文字母黄色、大写英文字母蓝色、其他字符紫色
+                for (const std::string& pwd : new_passwords) {
+                    QTextCursor cursor = txt_display_pwd_->textCursor();
+                    for (const char c : pwd) {
+                        QTextCharFormat format;
+                        if (std::isdigit(c)) {
+                            format.setForeground(QColor::fromRgb(50, 205, 50)); // 亮绿色
+                        } else if (std::islower(c)) {
+                            format.setForeground(QColor::fromRgb(255, 215, 0)); // 金黄色
+                        } else if (std::isupper(c)) {
+                            format.setForeground(QColor::fromRgb(0, 128, 255)); // 亮蓝色
+                        } else {
+                            format.setForeground(QColor::fromRgb(255, 105, 180)); // 粉红色
+                        }
+                        cursor.insertText(QString(c), format);
                     }
-                    cursor.insertText(QString(c), format);
+                    cursor.insertText("\n"); // 换行
                 }
-                cursor.insertText("\n"); // 换行
+            }else{
+                // 显示单色字符
+                txt_display_pwd_->setTextColor(QColor::fromRgb(255, 100, 100));
+                for(const std::string& passwd : new_passwords){
+                    txt_display_pwd_->append(QString::fromStdString(passwd));
+                }
             }
         }else{
-            // 显示单色字符
-            txt_display_pwd_->setTextColor(QColor::fromRgb(255, 100, 100));
-            for(const std::string& passwd : new_passwords){
-                txt_display_pwd_->append(QString::fromStdString(passwd));
-            }
+            txt_display_msg_->setTextColor(QColor::fromRgb(255, 0, 0));
+            txt_display_msg_->setText(QString("生成失败"));
         }
-    }else{
+    } catch(const std::exception& e) {
         txt_display_msg_->setTextColor(QColor::fromRgb(255, 0, 0));
-        txt_display_msg_->setText(QString("生成失败"));
+        txt_display_msg_->setText(QString("发生异常：%1").arg(e.what()));
     }
 }
 void PwdGenDlg::on_btn_copy_clicked() const {
@@ -256,7 +260,7 @@ void PwdGenDlg::on_btn_cli_mode_clicked() {
 
 #ifdef Q_OS_WIN
     // Windows 解决方案：使用 cmd.exe 显式打开控制台
-    QString program = "cmd.exe";
+    const QString program = "cmd.exe";
     QStringList arguments;
     arguments << "/C" << "start" << "cmd.exe" << "/K" << "pwdgen.exe";
 

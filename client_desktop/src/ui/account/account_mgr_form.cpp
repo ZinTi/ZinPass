@@ -25,9 +25,6 @@ AccountMgrForm::~AccountMgrForm(){
     if(this->dlg_add_acc_){
         delete this->dlg_add_acc_;
     }
-    if(this->dlg_edit_acc_){
-        delete this->dlg_edit_acc_;
-    }
 }
 
 void AccountMgrForm::setup_ui(){
@@ -36,10 +33,10 @@ void AccountMgrForm::setup_ui(){
     this->coord_viewer_ = new QTextEdit(this);
     this->coord_viewer_->setMaximumHeight(170);
     if(false == this->coord_viewer_->isReadOnly()) this->coord_viewer_->setReadOnly(true);
-    this->filter_form_ = new AccountFilterForm();
+    this->filter_form_ = new AccountFilterForm(this);
     this->filter_form_->setMaximumHeight(180);
 
-    this->table_view_ = new QTableView;
+    this->table_view_ = new QTableView(this);
     this->table_view_->setSortingEnabled(true); // 启用表头点击排序
     this->table_model_ = new QStandardItemModel(0, 14, this);
     this->table_model_->setHorizontalHeaderLabels({"ID", "服务商", "平台名", "用户名（账号）", "昵称", "子账号", "绑定手机号", "绑定邮箱", "备注", "网址", "客服热线", "类别", "创建时间", "更新时间"});
@@ -222,24 +219,19 @@ void AccountMgrForm::on_btn_add_account_clicked() const {
 }
 
 void AccountMgrForm::on_btn_detail_and_edit_clicked() {
-    const auto row_count = this->table_model_->rowCount();
-    if(this->row_of_table_view_ < row_count){
+    if(this->row_of_table_view_ < this->table_model_->rowCount()){
         const QStandardItem* item_column0 = this->table_model_->item(this->row_of_table_view_, 0);
         if (item_column0) {
             const QVariant data = item_column0->data(Qt::DisplayRole);
             const std::string account_id = data.toString().toStdString();
-            this->dlg_edit_acc_ = new DialogEditAccount(account_id, this);
-            this->dlg_edit_acc_->setWindowTitle(QString("详情与编辑(%1)").arg(account_id));
-            this->dlg_edit_acc_->setContentsMargins(12,10,12,10);
-            this->dlg_edit_acc_->show();
-            if(this->dlg_edit_acc_){
-                delete this->dlg_edit_acc_;
-            }
+            DialogEditAccount dlg_edit_acc(account_id, this);
+            dlg_edit_acc.setWindowTitle(QString("详情与编辑(%1)").arg(account_id));
+            dlg_edit_acc.setContentsMargins(12,10,12,10);
+            dlg_edit_acc.exec();
         }
-    }else{
+    } else {
         this->coord_viewer_->setTextColor(QColor::fromRgbF(255, 100, 0, 1.0));
         this->coord_viewer_->setText("表格中无数据！请先查询");
-        return;
     }
 }
 

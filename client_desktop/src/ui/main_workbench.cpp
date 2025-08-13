@@ -337,7 +337,7 @@ void MainWorkbench::onHelp() {
 void MainWorkbench::onAbout() {
     QMessageBox::about(this, "关于程序",
         "<b>ZinPass 守密司</b><br>"
-        "版本 0.0.3-patch1<br><br>"
+        "版本 0.0.3-patch2<br><br>"
         "作者 曾来"
         );
 }
