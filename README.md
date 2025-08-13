@@ -1,7 +1,7 @@
-# ZinPass 密码管理器 v0.0.3-patch1
+# ZinPass 密码管理器 v0.0.3-patch2
 
 <div style="text-align: center;">
-    <img src="./docs/images/social_preview.png" alt="描述" height="200" />
+    <img src="./docs/images/social_preview.png" alt="logo && slogan" height="200" />
     <p style="font-style: italic; font-size: smaller;">ZinPass is a lightweight password manager built with C++ and Qt6 Widgets, designed to securely store and manage your passwords with a clean and intuitive interface.</p>
 </div>
 
@@ -36,7 +36,7 @@ ZinPass 是一款轻量级密码管理器，分为三部分：
 
   <!-- 右侧图片和图注 -->
   <div style="flex: 1; text-align: center;">
-    <img src="./docs/images/running_v0.0.3-patch1_01_login.png" alt="描述" style="max-width: 180; height: auto;" />
+    <img src="./docs/images/running_v0.0.3-patch1_01_login.png" alt="login" style="max-width: 180; height: 220;" />
     <p style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-1 登录界面</p>
   </div>
 
@@ -54,7 +54,7 @@ ZinPass 是一款轻量级密码管理器，分为三部分：
 
   <!-- 右侧图片和图注 -->
   <div style="flex: 1; text-align: center;">
-    <img src="./docs/images/running_v0.0.3-patch1_02_signup.png" alt="描述" style="max-width: 180; height: auto;" />
+    <img src="./docs/images/running_v0.0.3-patch1_02_signup.png" alt="signup" style="max-width: 180; height: 220;" />
     <p style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-2 注册界面</p>
   </div>
 
@@ -66,7 +66,7 @@ ZinPass 是一款轻量级密码管理器，分为三部分：
 <p>5、登录成功后即进入工作台界面，在工作台界面进行各种操作。工作台顶部为菜单栏，左侧为功能导航区，右侧为工作区。如图 3-3 所示。</p>
 
 <figure style="text-align: center;">
-  <img src="./docs/images/running_v0.0.3-patch1_03_main_workbench.png" alt="描述" width="320" />
+  <img src="./docs/images/running_v0.0.3-patch1_03_main_workbench.png" alt="workbench" width="320" />
   <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-3 工作台界面</figcaption>
 </figure>
 
@@ -79,18 +79,18 @@ ZinPass 是一款轻量级密码管理器，分为三部分：
 <p>7、在工作台界面顶部菜单栏中，预留了一些菜单项，这些菜单项暂时没有实现，但保留了位置，以供以后扩展。其中 工具栏 - 密码生成器 功能已经实现，所以此处以密码生成器功能为例，展示一下其功能界面。如图 3-4 所示。</p>
 
 <figure style="text-align: center;">
-  <img src="./docs/images/running_v0.0.3-patch1_04_password_generator.png" alt="描述" width="320" />
+  <img src="./docs/images/running_v0.0.3-patch1_04_password_generator.png" alt="password generator" width="320" />
   <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-4 工具-密码生成器</figcaption>
 </figure>
 
-<p>8、密码生成器功能支持生成随机密码，你可以指定密码长度、生成数量、允许包含的字符类型（数字、大小写字母与特殊字符），根据需要选择不同的参数生成密码。当前版本存在一个问题，即因为是随机生成的字符串，可能会出现缺少一种或多种字符的情况，而程序又未校验生成的随机字符串是否符合要求，导致生成的密码可能不符合要求。后续版本将会修复这个问题。你可以点击命令行模式，提供了另一个独立的随机密码生成器的程序，就是 bin 目录下的 pwdgen 程序。</p>
+<p>8、密码生成器功能支持生成随机密码，你可以指定密码长度、生成数量、包含的字符类型（数字、大小写字母与特殊字符），根据需要选择不同的参数生成密码。可以点击命令行模式，提供了另一个独立的随机密码生成器的程序，就是 bin 目录下的 pwdgen 程序。</p>
 
 ***
 
 <p>9、查看密码功能示例，支持 “查看 | 复制 | 查看并复制” 三种方式。查看密码后仅显示几秒钟，如图 3-5 所示。这样设计的目的是，有时候用户查看完密码，但来不及/忘记关闭窗口，此时屏幕可能会被恶意程序或不法分子窥窃到，因此设计了一个倒计时，且时间比较短。推荐使用复制功能，复制功能不会明文显示密码，可以粘贴到其他地方使用。不过复制也存在被其他程序读取粘贴板的风险，后续版本将会实现一个隔离的粘贴板，以防止数据泄露。</p>
 
 <figure style="text-align: center;">
-  <img src="./docs/images/running_v0.0.3-patch1_05_fetch_passwd.png" alt="描述" width="320" />
+  <img src="./docs/images/running_v0.0.3-patch1_05_fetch_passwd.png" alt="fetch password" width="320" />
   <figcaption style="font-style: italic; font-size: smaller; margin-top: 5px;">图3-5 读取密码</figcaption>
 </figure>
 
