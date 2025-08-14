@@ -5,6 +5,7 @@
 #include "state_manager.h"
 #include "login_dlg.h"
 #include "main_workbench.h"
+#include "common/font_util.h"
 
 using namespace zinpass;
 
@@ -14,6 +15,10 @@ int main(int argc, char *argv[]){
     init();
 
     QApplication app(argc, argv);
+
+    // 预加载应用程序字体（必须在创建GUI前调用）
+    FontUtil::loadApplicationFonts();
+
     auto* login_dlg = new LoginDlg(nullptr);
     auto* main_workbench = new MainWorkbench(nullptr);
     main_workbench->setWindowTitle("工作台 | ZinPass");

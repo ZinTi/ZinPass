@@ -9,8 +9,10 @@
 #include <QObject>
 #include <QTextBlock>
 
-class line_number_area;
+// 1. 行号区域类
+class LineNumberArea;
 
+// 2. 带行号的文本编辑器类
 class NumberedTextEdit : public QPlainTextEdit {
     Q_OBJECT
 
@@ -31,9 +33,10 @@ private:
     QFont line_number_font;
 };
 
-class line_number_area : public QWidget {
+// 行号区域类的实现
+class LineNumberArea : public QWidget {
 public:
-    explicit line_number_area(NumberedTextEdit* editor) : QWidget(editor), text_edit(editor) {}
+    explicit LineNumberArea(NumberedTextEdit* editor) : QWidget(editor), text_edit(editor) {}
     QSize sizeHint() const override { return QSize(text_edit->line_number_area_width(), 0); }
 
 protected:

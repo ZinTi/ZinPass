@@ -9,6 +9,7 @@
 #include <QProcess>
 #include "pwd_generator.h"
 #include "common/toast.h"
+#include "common/font_util.h"
 
 ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
     btn_components_menu_ = new QPushButton("使用字符", this);
@@ -27,7 +28,7 @@ ComponentsMenuWgt::ComponentsMenuWgt(QWidget *parent) : QWidget(parent){
     chk_digits_->setChecked(true);
     chk_lowercase_->setChecked(true);
     chk_uppercase_->setChecked(true);
-    chk_symbols_->setChecked(false);
+    chk_symbols_->setChecked(true);
 
     this->lyt_chk_box_->addWidget(chk_digits_);
     this->lyt_chk_box_->addWidget(chk_lowercase_);
@@ -106,13 +107,14 @@ void PwdGenDlg::initWidget(){
     e_length_->setRange(6, 999);
     e_length_->setValue(12);
     e_num_->setRange(1, 99);
-    e_num_->setValue(10);
+    e_num_->setValue(5);
     rdo_en_colorful_->setChecked(true);
 
     // 显示
     editor_pwd_ = new NumberedTextEdit(this);
     editor_pwd_->setPlaceholderText(QString("生成结果"));
     editor_pwd_->setReadOnly(true);
+    editor_pwd_->setFont(FontUtil::instance().codeEditorFont()); // 使用工具类获取字体
 
     connect(btn_begin_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_begin_clicked);
     connect(btn_copy_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_copy_clicked);

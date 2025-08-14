@@ -101,6 +101,7 @@ set(PROJECT_SOURCES
         res/resource.qrc
         res/icon_zinpass.rc # windows平台pe文件图标
         # (6.1) 常用模块与公共组件
+        src/ui/common/font_util.cpp
         src/ui/common/toast.cpp
         src/ui/common/numbered_text_edit.cpp
         src/ui/common/search_box.cpp

@@ -22,4 +22,8 @@
         <file>btn/up.png</file>
         <file>btn/write.png</file>
     </qresource>
+    <qresource prefix="/fonts">
+        <file>fonts/JetBrainsMonoNL-Italic.ttf</file>
+        <file>fonts/JetBrainsMonoNL-Regular.ttf</file>
+    </qresource>
 </RCC>

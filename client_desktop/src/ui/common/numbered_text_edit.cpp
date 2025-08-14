@@ -6,7 +6,7 @@
 
 NumberedTextEdit::NumberedTextEdit(QWidget* parent)
     : QPlainTextEdit(parent),
-      line_number_area(new class line_number_area(this)),
+      line_number_area(new class LineNumberArea(this)),
       line_number_font(font()) {
     connect(this, &QPlainTextEdit::blockCountChanged,
             this, &NumberedTextEdit::update_line_number_area_width);
@@ -56,7 +56,7 @@ void NumberedTextEdit::update_line_number_area(const QRect& rect, int dy) {
 
 void NumberedTextEdit::line_number_area_paint_event(QPaintEvent* event) {
     QPainter painter(line_number_area);
-    painter.fillRect(event->rect(), QColor(240, 240, 240));
+    painter.fillRect(event->rect(), QColor(136, 136, 136));
     painter.setFont(line_number_font);
 
     QTextBlock block = firstVisibleBlock();
@@ -67,7 +67,7 @@ void NumberedTextEdit::line_number_area_paint_event(QPaintEvent* event) {
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(block_number + 1);
-            painter.setPen(Qt::darkGray);
+            painter.setPen(Qt::lightGray);
             painter.drawText(0, top,
                             line_number_area->width() - 3,
                             fontMetrics().height(),
