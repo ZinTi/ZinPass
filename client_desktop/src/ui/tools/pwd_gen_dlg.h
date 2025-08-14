@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QMenu>
@@ -13,6 +14,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QWidgetAction>
+#include "common/numbered_text_edit.h"
 
 // 1/2
 class ComponentsMenuWgt final : public QWidget{
@@ -47,7 +49,7 @@ public:
     ~PwdGenDlg() override;
 
 private slots:
-    void on_btn_begin_clicked() const; // 生成密码
+    void on_btn_begin_clicked(); // 生成密码
     void on_btn_copy_clicked() const; // 复制结果
     void on_btn_clear_clicked() const; // 清空
     void on_btn_save_as_clicked(); // 另存为
@@ -55,6 +57,8 @@ private slots:
     static void on_btn_cli_mode_clicked(); // 命令行模式
 
 private:
+    std::vector<std::string> passwords_; // 密码列表
+
     QLabel* l_title_; // 标题
     QTextEdit* txt_display_msg_; // 消息显示
 
@@ -74,8 +78,8 @@ private:
     QSpinBox* e_num_;
     QRadioButton* rdo_en_colorful_;
 
-    // 显示
-    QTextEdit* txt_display_pwd_;
+    // 密码显示
+    NumberedTextEdit* editor_pwd_; // 带行号的文本编辑器用作密码显示
 
     // 布局
     QVBoxLayout* lyt_main_; // 主框架
@@ -85,7 +89,7 @@ private:
     QVBoxLayout* lyt_setting_; // 2.1 设置
     QFormLayout* lyt_edit_; // 2.1.2
 
-    void initMember();
+    void initWidget();
     void initLayout();
 };
 

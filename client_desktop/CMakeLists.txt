@@ -102,6 +102,7 @@ set(PROJECT_SOURCES
         res/icon_zinpass.rc # windows平台pe文件图标
         # (6.1) 常用模块与公共组件
         src/ui/common/toast.cpp
+        src/ui/common/numbered_text_edit.cpp
         src/ui/common/search_box.cpp
         src/ui/common/dialog_auth.cpp    # 验证当前用户身份
         src/ui/common/is_input_valid.cpp # 判断输入的数据是否合法-前端部分辅助验证
@@ -137,7 +138,6 @@ set(PROJECT_SOURCES
 
         # (6.7) 工具类：密码生成器、密码安全检查器、加密解密器
         src/ui/tools/pwd_gen_dlg.cpp
-        src/ui/tools/pwd_generator_dlg.cpp
 
         # (6.8) 迁移备份数据
         src/ui/output_form.cpp

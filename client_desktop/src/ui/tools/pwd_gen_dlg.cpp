@@ -72,14 +72,16 @@ bool ComponentsMenuWgt::isSymbolsChecked() const{
 /******************************************************************************/
 
 PwdGenDlg::PwdGenDlg(QWidget *parent) : QDialog(parent){
-    initMember(); // 初始化控件
+    initWidget(); // 初始化控件
     initLayout(); // 初始化布局
 
     setWindowTitle(QString("密码生成器"));  // 设置对话框属性
 
 }
 
-void PwdGenDlg::initMember(){
+PwdGenDlg::~PwdGenDlg() = default;
+
+void PwdGenDlg::initWidget(){
     l_title_ = new QLabel(QString("密码生成器"), this);
     l_title_->setAlignment(Qt::AlignHCenter);
 
@@ -89,7 +91,7 @@ void PwdGenDlg::initMember(){
 
     // 按钮
     btn_begin_ = new QPushButton(QString("生成密码"), this);
-    btn_copy_ = new QPushButton(QString("复制结果"), this);
+    btn_copy_ = new QPushButton(QString("复制"), this);
     btn_clear_ = new QPushButton(QString("清空"), this);
     btn_save_as_ = new QPushButton(QString("另存为"), this);
     btn_cli_mode_ = new QPushButton(QString("命令行模式"), this);
@@ -108,9 +110,9 @@ void PwdGenDlg::initMember(){
     rdo_en_colorful_->setChecked(true);
 
     // 显示
-    txt_display_pwd_ = new QTextEdit(this);
-    txt_display_pwd_->setPlaceholderText(QString("生成结果"));
-    txt_display_pwd_->setReadOnly(true);
+    editor_pwd_ = new NumberedTextEdit(this);
+    editor_pwd_->setPlaceholderText(QString("生成结果"));
+    editor_pwd_->setReadOnly(true);
 
     connect(btn_begin_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_begin_clicked);
     connect(btn_copy_, &QPushButton::clicked, this, &PwdGenDlg::on_btn_copy_clicked);
@@ -142,7 +144,7 @@ void PwdGenDlg::initLayout(){
     lyt_edit_->addRow(rdo_en_colorful_); // 独占一行
 
     lyt_body_->addLayout(lyt_setting_);
-    lyt_body_->addWidget(txt_display_pwd_);
+    lyt_body_->addWidget(editor_pwd_);
 
     lyt_footer_->addWidget(btn_begin_);
     lyt_footer_->addWidget(btn_copy_);
@@ -153,12 +155,8 @@ void PwdGenDlg::initLayout(){
     setLayout(lyt_main_);
 }
 
-PwdGenDlg::~PwdGenDlg(){
-
-}
-
-
-void PwdGenDlg::on_btn_begin_clicked() const {
+void PwdGenDlg::on_btn_begin_clicked(){
+    passwords_.clear();  // 清空之前的数据
     const bool hasDigits = menu_components_Widget->isDigitsChecked();
     const bool hasLowercase = menu_components_Widget->isLowercaseChecked();
     const bool hasUppercase = menu_components_Widget->isUppercaseChecked();
@@ -175,38 +173,49 @@ void PwdGenDlg::on_btn_begin_clicked() const {
     const bool inColorful = rdo_en_colorful_->isChecked();
 
     try {
-        std::vector<std::string> new_passwords;
         PwdGenerator pwd_gen(inLength, inNum);
         pwd_gen.setComponentsByBool(hasDigits, hasUppercase, hasLowercase, hasSymbols);
 
-        if(pwd_gen.getPasswords(new_passwords)){
+        if(pwd_gen.getPasswords(passwords_)){
             txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
             txt_display_msg_->setText(QString("生成成功"));
-            txt_display_pwd_->clear();
+            editor_pwd_->clear();
             if(inColorful){
-                // 显示彩色字符：数字显示绿色、小写英文字母黄色、大写英文字母蓝色、其他字符紫色
-                for (const std::string& pwd : new_passwords) {
-                    QTextCursor cursor = txt_display_pwd_->textCursor();
-                    for (const char c : pwd) {
+                // 使用文本光标操作显示彩色字符：数字显示粉红色、小写英文字母黄色、大写英文字母蓝色、特殊字符亮绿色
+                QTextCursor cursor(editor_pwd_->document());
+                bool firstPassword = true;
+                for (const std::string& passwd : passwords_) {
+                    if (!firstPassword) {
+                        cursor.insertText("\n"); // 在密码之间添加换行
+                    }
+                    for (const char c : passwd) {
                         QTextCharFormat format;
                         if (std::isdigit(c)) {
-                            format.setForeground(QColor::fromRgb(50, 205, 50)); // 亮绿色
+                            format.setForeground(QColor::fromRgb(255, 105, 180)); // 粉红色
                         } else if (std::islower(c)) {
                             format.setForeground(QColor::fromRgb(255, 215, 0)); // 金黄色
                         } else if (std::isupper(c)) {
                             format.setForeground(QColor::fromRgb(0, 128, 255)); // 亮蓝色
                         } else {
-                            format.setForeground(QColor::fromRgb(255, 105, 180)); // 粉红色
+                            format.setForeground(QColor::fromRgb(50, 205, 50)); // 亮绿色
                         }
                         cursor.insertText(QString(c), format);
                     }
-                    cursor.insertText("\n"); // 换行
+                    firstPassword = false;
                 }
-            }else{
-                // 显示单色字符
-                txt_display_pwd_->setTextColor(QColor::fromRgb(255, 100, 100));
-                for(const std::string& passwd : new_passwords){
-                    txt_display_pwd_->append(QString::fromStdString(passwd));
+            } else {
+                // 使用文本光标显示单色字符
+                QTextCursor cursor(editor_pwd_->document());
+                QTextCharFormat format;
+                format.setForeground(QColor::fromRgb(255, 100, 100));
+                cursor.setCharFormat(format);
+                bool firstPassword = true;
+                for(const std::string& passwd : passwords_){
+                    if (!firstPassword) {
+                        cursor.insertText("\n"); // 在密码之间添加换行
+                    }
+                    cursor.insertText(QString::fromStdString(passwd));
+                    firstPassword = false;
                 }
             }
         }else{
@@ -219,12 +228,18 @@ void PwdGenDlg::on_btn_begin_clicked() const {
     }
 }
 void PwdGenDlg::on_btn_copy_clicked() const {
-    // 获取 QTextEdit 中的文本
-    const QString text = txt_display_pwd_->toPlainText();
+    QString clipboard_text;
+    for (const std::string& passwd : passwords_) {
+        clipboard_text += QString::fromStdString(passwd) + "\n";
+    }
+    // 移除最后一个换行符
+    if (!clipboard_text.isEmpty()) {
+        clipboard_text.chop(1);
+    }
 
-    // 将 text 复制到剪贴板
+    // 获取剪贴板并设置文本
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(text);
+    clipboard->setText(clipboard_text);
 
     // 显示复制结果
     txt_display_msg_->setTextColor(QColor::fromRgb(0, 255, 0));
@@ -232,12 +247,18 @@ void PwdGenDlg::on_btn_copy_clicked() const {
 }
 
 void PwdGenDlg::on_btn_clear_clicked() const {
-    txt_display_pwd_->clear();
+    editor_pwd_->clear();
 }
 
 void PwdGenDlg::on_btn_save_as_clicked(){  // Save text to file.
-    // 获取 QTextEdit 中的文本
-    const QString text = txt_display_pwd_->toPlainText();
+    QString text;
+    for (const std::string& passwd : passwords_) {
+        text += QString::fromStdString(passwd) + "\n";
+    }
+    // 移除最后一个换行符
+    if (!text.isEmpty()) {
+        text.chop(1);
+    }
 
     // 打开文件保存对话框
     const QString filePath = QFileDialog::getSaveFileName(this, "另存为", "", "文本文件 (*.txt)");
